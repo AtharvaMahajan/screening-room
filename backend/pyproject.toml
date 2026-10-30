@@ -11,6 +11,7 @@ dependencies = [
     "pydantic-settings>=2.6",
     "sqlalchemy>=2.0.36",
     "psycopg[binary]>=3.2",
+    "alembic>=1.14",
 ]
 
 [dependency-groups]
@@ -41,11 +42,16 @@ select = [
     "ASYNC",   # flags blocking calls inside async functions
 ]
 
+[tool.ruff.lint.isort]
+# Our migrations folder is named alembic/, which would otherwise make Ruff treat
+# the installed alembic library as first-party code.
+known-third-party = ["alembic"]
+
 # --- mypy: strict on application code (project-structure.md §9) --------------
 [tool.mypy]
 python_version = "3.15"
 strict = true
-files = ["src", "tests"]
+files = ["src", "tests", "alembic"]
 plugins = ["pydantic.mypy"]
 
 # --- pytest ------------------------------------------------------------------

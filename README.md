@@ -29,6 +29,10 @@ cd backend && uv sync && cd ..
 
 # 3. Frontend dependencies (exactly as in package-lock.json)
 cd frontend && npm ci && cd ..
+
+# 4. Start the database and create its schema
+docker compose up -d --wait db
+cd backend && uv run alembic upgrade head && cd ..
 ```
 
 ## Running locally
@@ -63,8 +67,9 @@ These are the same checks CI runs ([`.github/workflows/ci.yml`](.github/workflow
 uv run ruff check .          # lint
 uv run ruff format --check . # formatting (use `uv run ruff format .` to fix)
 uv run mypy                  # strict type checking
-uv run pytest                # all tests; integration tests need the database running
+uv run pytest                # all tests; integration tests need a running, migrated database
 uv run pytest tests/unit     # unit tests only, no database needed
+uv run alembic check         # models and migrations are in sync
 
 # Frontend (from frontend/)
 npm run lint                 # ESLint, including type-aware rules
@@ -72,6 +77,25 @@ npm run typecheck            # tsc
 npm test                     # Vitest (npm run test:watch while developing)
 npm run build                # production build
 ```
+
+Integration tests use the database in `DATABASE_URL`, but every test runs inside a transaction that is rolled back afterwards, so they never change your data.
+
+## Database migrations
+
+The schema is managed with [Alembic](https://alembic.sqlalchemy.org/). Run these from `backend/`:
+
+```bash
+uv run alembic upgrade head          # apply all migrations (after pulling changes)
+uv run alembic current               # which migration the database is at
+
+# After changing ORM models: generate a migration, then REVIEW it by hand.
+# Autogenerate is a draft and can miss things (data-model.md §1).
+uv run alembic revision --autogenerate --rev-id 0002 -m "add users table"
+
+uv run alembic downgrade -1          # undo the latest migration
+```
+
+Migration IDs are sequential (`0001`, `0002`, …): pass the next number as `--rev-id`. New migration files are formatted with Ruff automatically.
 
 ## Configuration
 

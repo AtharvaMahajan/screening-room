@@ -57,6 +57,19 @@ jobs:
       - name: mypy
         run: uv run mypy
 
+      # The service database starts empty, so this also proves the full
+      # migration history applies from scratch.
+      - name: Migrations apply to a fresh database
+        run: uv run alembic upgrade head
+
+      - name: Latest migration round-trips (downgrade, then upgrade again)
+        run: |
+          uv run alembic downgrade -1
+          uv run alembic upgrade head
+
+      - name: Models and migrations are in sync
+        run: uv run alembic check
+
       - name: pytest
         run: uv run pytest
 
