@@ -9,6 +9,7 @@ from alembic import context
 from sqlalchemy import create_engine, pool
 
 # Import every module's models here so autogenerate can see their tables.
+import screening_room.modules.catalog.models  # noqa: F401
 import screening_room.modules.identity.models  # noqa: F401
 from screening_room.config import DatabaseSettings
 from screening_room.db import Base
