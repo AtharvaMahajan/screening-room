@@ -8,12 +8,10 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine, pool
 
-from screening_room.config import get_settings
+# Import every module's models here so autogenerate can see their tables.
+import screening_room.modules.identity.models  # noqa: F401
+from screening_room.config import DatabaseSettings
 from screening_room.db import Base
-
-# Import every module's models here so autogenerate can see their tables, e.g.
-#   import screening_room.modules.identity.models  # noqa: F401
-# (None exist yet: the first tables arrive with authentication in M1.)
 
 config = context.config
 if config.config_file_name is not None:
@@ -22,11 +20,14 @@ if config.config_file_name is not None:
 # What autogenerate compares the database against.
 target_metadata = Base.metadata
 
+# Only the database URL: migrations must not need the web app's secrets.
+DATABASE_URL = DatabaseSettings().database_url
+
 
 def run_migrations_offline() -> None:
     """`alembic upgrade head --sql`: print the SQL instead of running it."""
     context.configure(
-        url=get_settings().database_url,
+        url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
     )
@@ -37,7 +38,7 @@ def run_migrations_offline() -> None:
 def run_migrations_online() -> None:
     """Run migrations against the live database."""
     # NullPool: a one-off command has no use for a connection pool.
-    engine = create_engine(get_settings().database_url, poolclass=pool.NullPool)
+    engine = create_engine(DATABASE_URL, poolclass=pool.NullPool)
     with engine.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)
         # PostgreSQL has transactional DDL, so each run is all-or-nothing.

@@ -4,13 +4,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine, QueuePool, text
 from sqlalchemy.orm import Session
 
-from screening_room.config import get_settings
 from screening_room.db import create_db_engine, create_session_factory, end_read_transaction
 
 
-def test_end_read_transaction_returns_the_connection_to_the_pool() -> None:
+def test_end_read_transaction_returns_the_connection_to_the_pool(database_url: str) -> None:
     # A dedicated engine, so the pool count isn't affected by other fixtures.
-    engine = create_db_engine(get_settings().database_url)
+    engine = create_db_engine(database_url)
     assert isinstance(engine.pool, QueuePool)
     session = create_session_factory(engine)()
     try:

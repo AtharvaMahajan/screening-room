@@ -124,7 +124,19 @@ All configuration comes from environment variables. For local development they'r
 | Variable | Used by | Purpose |
 |---|---|---|
 | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_PORT` | Docker Compose | Local database credentials and host port |
-| `DATABASE_URL` | Backend | SQLAlchemy URL, e.g. `postgresql+psycopg://user:pass@127.0.0.1:5432/db` |
+| `DATABASE_URL` | Backend, migrations | SQLAlchemy URL, e.g. `postgresql+psycopg://user:pass@127.0.0.1:5432/db` |
+| `CSRF_SECRET` | Backend | **Required.** HMAC key for CSRF tokens, at least 32 characters. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
+| `ALLOWED_ORIGINS` | Backend | **Required.** JSON list of origins allowed to make unsafe requests, e.g. `["http://localhost:5173"]` |
+| `SESSION_TTL_DAYS` | Backend | Absolute session lifetime. Default `30` |
+| `COOKIE_SECURE`, `COOKIE_PREFIX_HOST` | Backend | Default `true` (production). Set both to `false` for local http, where browsers drop `Secure` cookies |
+
+Migrations only need `DATABASE_URL`. The web app refuses to start if a required setting is missing.
+
+## Authentication
+
+Email and password, with server-side sessions in an HttpOnly cookie and signed CSRF tokens ([ADR-0007](docs/adr/0007-session-auth-and-csrf.md), [security.md](docs/architecture/security.md)). The API is under `/api/auth`: `GET session`, `POST register`, `POST login`, `POST logout`.
+
+Every POST/PUT/PATCH/DELETE must come from an allowed `Origin` and send the CSRF token from `GET /api/auth/session` in an `X-CSRF-Token` header. Otherwise it gets `403 origin_rejected` or `403 csrf_failed`. Protect a route by adding a `CurrentUserDep` parameter (from `screening_room.modules.identity.dependencies`); it returns `401 unauthenticated` when nobody is signed in.
 
 ## Troubleshooting
 

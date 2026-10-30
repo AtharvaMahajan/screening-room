@@ -16,16 +16,30 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
-from screening_room.config import get_settings
+from screening_room.config import DatabaseSettings, Settings
 from screening_room.db import create_db_engine, get_session
 from screening_room.main import create_app
+from tests.conftest import make_test_settings
 
 ALEMBIC_INI = Path(__file__).resolve().parents[2] / "alembic.ini"
 
 
 @pytest.fixture(scope="session")
-def engine() -> Iterator[Engine]:
-    engine = create_db_engine(get_settings().database_url)
+def database_url() -> str:
+    # Only DATABASE_URL comes from the environment; every other setting is a
+    # fixed test value (see make_test_settings).
+    return DatabaseSettings().database_url
+
+
+@pytest.fixture
+def settings(database_url: str) -> Settings:
+    """Overrides the root fixture: test settings, but with the real database."""
+    return make_test_settings(database_url)
+
+
+@pytest.fixture(scope="session")
+def engine(database_url: str) -> Iterator[Engine]:
+    engine = create_db_engine(database_url)
     yield engine
     engine.dispose()
 
@@ -53,6 +67,10 @@ def db_session(engine: Engine) -> Iterator[Session]:
     `session.commit()` (as write handlers do), only a SAVEPOINT is released and
     nothing is really committed. Rolling back the outer transaction then
     undoes everything the test did.
+
+    When a test writes setup data directly (e.g. to expire a session), it must
+    call `db_session.commit()` too: the `client` fixture rolls back anything
+    uncommitted after each request, just as production does.
     """
     connection = engine.connect()
     outer_transaction = connection.begin()
@@ -70,12 +88,20 @@ def db_session(engine: Engine) -> Iterator[Session]:
 
 
 @pytest.fixture
-def client(db_session: Session) -> Iterator[TestClient]:
-    """An API client whose requests all use the test's rolled-back session."""
-    app = create_app()
+def client(db_session: Session, settings: Settings) -> Iterator[TestClient]:
+    """An API client whose requests all use the test's rolled-back session.
+
+    Cookies persist between requests, like a browser's.
+    """
+    app = create_app(settings)
 
     def override_get_session() -> Iterator[Session]:
         yield db_session
+        # The real get_session closes its session after each request, which
+        # rolls back anything the request didn't commit (e.g. after a failed
+        # insert). Here that rolls back to the last savepoint, so the next
+        # request in the same test starts clean, as it would in production.
+        db_session.rollback()
 
     app.dependency_overrides[get_session] = override_get_session
     with TestClient(app) as test_client:

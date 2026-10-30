@@ -6,12 +6,14 @@ running database. Start one with `docker compose up -d db`.
 
 from fastapi.testclient import TestClient
 
+from screening_room.config import Settings
 from screening_room.main import create_app
 
 
-def test_health_reports_real_database_ok() -> None:
+def test_health_reports_real_database_ok(settings: Settings) -> None:
+    # The app's own engine and get_session, end to end (no fixture override).
     # `with` runs the lifespan, so the engine is disposed afterwards.
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(settings)) as client:
         response = client.get("/api/health")
 
     assert response.status_code == 200, response.text

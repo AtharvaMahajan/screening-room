@@ -13,8 +13,7 @@ from pydantic import BaseModel
 from screening_room.config import Settings
 from screening_room.core.errors import AppError
 from screening_room.main import create_app
-
-UNUSED_DATABASE_URL = "postgresql+psycopg://unused@localhost:1/unused"
+from screening_room.modules.identity.csrf import csrf_protect
 
 
 class SignupIn(BaseModel):
@@ -23,8 +22,10 @@ class SignupIn(BaseModel):
     age: int
 
 
-def build_app() -> FastAPI:
-    app = create_app(Settings(database_url=UNUSED_DATABASE_URL))
+def build_app(settings: Settings) -> FastAPI:
+    app = create_app(settings)
+    # These tests are about error formatting; CSRF has its own tests.
+    app.dependency_overrides[csrf_protect] = lambda: None
 
     def raises_app_error() -> None:
         raise AppError(409, "email_taken", "That email is already registered.")
@@ -41,10 +42,10 @@ def build_app() -> FastAPI:
 
 
 @pytest.fixture
-def client() -> TestClient:
+def client(settings: Settings) -> TestClient:
     # raise_server_exceptions=False: respond with the 500 like production does,
     # instead of re-raising the crash inside the test.
-    return TestClient(build_app(), raise_server_exceptions=False)
+    return TestClient(build_app(settings), raise_server_exceptions=False)
 
 
 def test_app_error_uses_its_status_code_and_message(client: TestClient) -> None:
@@ -102,8 +103,8 @@ def test_unexpected_error_is_a_generic_500_and_is_logged(
     assert "hunter2" in caplog.text  # ...but the full error is logged for us
 
 
-def test_openapi_documents_only_the_standard_error_format() -> None:
-    schema = build_app().openapi()
+def test_openapi_documents_only_the_standard_error_format(settings: Settings) -> None:
+    schema = build_app(settings).openapi()
 
     # FastAPI's own 422 schema would contradict what the API returns.
     assert "HTTPValidationError" not in schema["components"]["schemas"]

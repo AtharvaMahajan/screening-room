@@ -7,16 +7,18 @@ Run locally with:
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, Depends, FastAPI
 
 from screening_room import health
 from screening_room.config import Settings, get_settings
 from screening_room.core.errors import ERROR_RESPONSES, register_error_handlers
 from screening_room.db import create_db_engine, create_session_factory
+from screening_room.modules.identity import router as identity_router
+from screening_room.modules.identity.csrf import csrf_protect
 
 # Every router the app serves. tests/unit/test_sync_handlers.py checks each
 # route here, so a new module's router is registered by adding it to this list.
-ROUTERS: list[APIRouter] = [health.router]
+ROUTERS: list[APIRouter] = [health.router, identity_router.router]
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -43,7 +45,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         # Name each operation after its handler function ("health"), rather than
         # FastAPI's default "health_api_health_get", for readable generated types.
         generate_unique_id_function=lambda route: route.name,
+        # Runs before every route's own dependencies, so CSRF and Origin are
+        # checked before any route-level authentication (security.md §5.3).
+        # Safe methods (GET, HEAD, OPTIONS) return immediately.
+        dependencies=[Depends(csrf_protect)],
     )
+    app.state.settings = settings
     app.state.session_factory = create_session_factory(engine)
     register_error_handlers(app)
 
