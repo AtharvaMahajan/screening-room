@@ -11,6 +11,7 @@ from fastapi import APIRouter, FastAPI
 
 from screening_room import health
 from screening_room.config import Settings, get_settings
+from screening_room.core.errors import ERROR_RESPONSES, register_error_handlers
 from screening_room.db import create_db_engine, create_session_factory
 
 # Every router the app serves. tests/unit/test_sync_handlers.py checks each
@@ -37,8 +38,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         swagger_ui_oauth2_redirect_url="/api/docs/oauth2-redirect",
         redoc_url=None,
         openapi_url="/api/openapi.json",
+        # Every route can fail with the standard error format; say so in OpenAPI.
+        responses=ERROR_RESPONSES,
+        # Name each operation after its handler function ("health"), rather than
+        # FastAPI's default "health_api_health_get", for readable generated types.
+        generate_unique_id_function=lambda route: route.name,
     )
     app.state.session_factory = create_session_factory(engine)
+    register_error_handlers(app)
 
     for router in ROUTERS:
         app.include_router(router)

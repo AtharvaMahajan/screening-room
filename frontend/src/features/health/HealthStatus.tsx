@@ -10,9 +10,9 @@ export function HealthStatus() {
     message = "Checking the API…";
     tone = "pending";
   } else if (isError) {
-    // 503 comes from the health endpoint itself: the API is up but the database isn't.
+    // The API answered with a known error code: it's up, but the database isn't.
     message =
-      error instanceof ApiError && error.status === 503
+      error instanceof ApiError && error.code === "database_unavailable"
         ? "The API is running, but it can't reach the database."
         : "Can't reach the API.";
     tone = "problem";

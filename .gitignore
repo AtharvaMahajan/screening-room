@@ -19,6 +19,8 @@ htmlcov/
 # --- Node / frontend ----------------------------------------------------------
 node_modules/
 frontend/dist/
+# Intermediate file for API type generation; src/api/schema.ts is committed.
+frontend/openapi.json
 *.tsbuildinfo
 coverage/
 

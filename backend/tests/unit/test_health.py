@@ -54,7 +54,9 @@ def test_health_503_when_database_unreachable() -> None:
     response = client_with_session(FakeSession(error=error)).get("/api/health")
 
     assert response.status_code == 503
-    assert response.json() == {"status": "unavailable", "database": "unavailable"}
+    assert response.json() == {
+        "error": {"code": "database_unavailable", "message": "The database is unavailable."}
+    }
     # Connection details from the driver error must not leak to clients.
     assert "secret" not in response.text
 

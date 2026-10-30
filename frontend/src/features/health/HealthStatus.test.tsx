@@ -18,10 +18,13 @@ describe("home page health status", () => {
     expect(await screen.findByText("API and database are up.")).toBeInTheDocument();
   });
 
-  it("distinguishes a database outage (503) from an unreachable API", async () => {
+  it("distinguishes a database outage from an unreachable API", async () => {
     vi.stubGlobal("fetch", () =>
       Promise.resolve(
-        Response.json({ status: "unavailable", database: "unavailable" }, { status: 503 }),
+        Response.json(
+          { error: { code: "database_unavailable", message: "The database is unavailable." } },
+          { status: 503 },
+        ),
       ),
     );
 

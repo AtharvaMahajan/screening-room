@@ -13,7 +13,14 @@
     "lint": "eslint .",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "api:types": "openapi-typescript openapi.json --output src/api/schema.ts",
+    "api:check": "openapi-typescript openapi.json --output src/api/schema.ts --check"
+  },
+  "overrides": {
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   },
   "dependencies": {
     "@tanstack/react-query": "^5.105.0",
@@ -35,6 +42,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "jsdom": "^29.1.1",
+    "openapi-typescript": "^7.13.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.72.1",
     "vite": "^8.3.5",

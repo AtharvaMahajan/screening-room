@@ -1,0 +1,5 @@
+# Use LF line endings in the working tree on every OS.
+# Without this, Git on Windows (core.autocrlf=true) checks files out with CRLF,
+# and generated files such as frontend/src/api/schema.ts would no longer match
+# freshly generated output, failing `npm run api:check`.
+* text=auto eol=lf

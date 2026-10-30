@@ -1,12 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { apiGet } from "../../api/client";
+import type { components } from "../../api/schema";
 
-/** Mirrors `HealthOut` in backend/src/screening_room/health.py. */
-export interface HealthResponse {
-  status: "ok" | "unavailable";
-  database: "ok" | "unavailable";
-}
+export type HealthResponse = components["schemas"]["HealthOut"];
 
 export function useHealth() {
   return useQuery({

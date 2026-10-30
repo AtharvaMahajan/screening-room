@@ -97,6 +97,26 @@ uv run alembic downgrade -1          # undo the latest migration
 
 Migration IDs are sequential (`0001`, `0002`, …): pass the next number as `--rev-id`. New migration files are formatted with Ruff automatically.
 
+## API types and errors
+
+The frontend's API types in `frontend/src/api/schema.ts` are **generated** from the backend's OpenAPI schema. Never edit that file by hand. After changing any route, request or response model, regenerate it and commit the result:
+
+```bash
+cd backend  && uv run python -m screening_room.openapi ../frontend/openapi.json
+cd frontend && npm run api:types     # or `npm run api:check` to only verify
+```
+
+CI fails if `schema.ts` is out of date.
+
+Every error response has the same shape, so the frontend can branch on `code` (`ApiError.code`):
+
+```json
+{"error": {"code": "validation_failed", "message": "The request is invalid.",
+           "details": [{"field": "body.email", "message": "Field required"}]}}
+```
+
+`details` appears only on validation errors (422). Backend code signals expected failures by raising `AppError(status, code, message)` from `screening_room.core.errors`. Unexpected exceptions become a generic `500 internal_error`, and the full error is logged.
+
 ## Configuration
 
 All configuration comes from environment variables. For local development they're read from the repo-root `.env`, and real environment variables take precedence. `.env` is gitignored, and `.env.example` holds placeholders only.
