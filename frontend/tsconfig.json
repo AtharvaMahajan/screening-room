@@ -1,0 +1,6 @@
+{
+  // Two projects: browser code (src/) and Node-side config files (vite.config.ts).
+  // They need different globals (DOM vs Node), so they're type-checked separately.
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+}

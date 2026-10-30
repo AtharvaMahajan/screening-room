@@ -1,0 +1,61 @@
+/*
+ * Minimal base styles. The styling approach (Tailwind vs CSS Modules) is still
+ * open (open-questions.md O3), so this stays plain CSS until it's decided.
+ */
+:root {
+  --color-bg: #fafaf9;
+  --color-text: #1c1917;
+  --color-muted: #57534e;
+  --color-border: #e7e5e4;
+  --color-ok: #15803d;
+  --color-problem: #b91c1c;
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1c1917;
+    --color-text: #f5f5f4;
+    --color-muted: #a8a29e;
+    --color-border: #44403c;
+    --color-ok: #4ade80;
+    --color-problem: #f87171;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+.layout__header {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+}
+
+.layout__brand {
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+}
+
+.layout__main {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.health__message--pending {
+  color: var(--color-muted);
+}
+
+.health__message--ok {
+  color: var(--color-ok);
+}
+
+.health__message--problem {
+  color: var(--color-problem);
+}

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+    "noEmit": true, // Vite does the bundling; tsc only type-checks.
+
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true, // array[i] and record[key] may be undefined
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true, // type-only imports must say `import type`
+    "erasableSyntaxOnly": true // no enums/namespaces: TS syntax must strip cleanly
+  },
+  "include": ["src"]
+}

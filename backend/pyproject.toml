@@ -1,0 +1,54 @@
+[project]
+name = "screening-room"
+version = "0.1.0"
+description = "Screening Room API: personalized movie and TV discovery."
+requires-python = ">=3.15"
+dependencies = [
+    "fastapi>=0.115",
+    # Plain uvicorn, not uvicorn[standard]: the extras (uvloop, httptools, PyYAML
+    # log config) aren't needed locally, and PyYAML has no Python 3.15 wheel yet.
+    "uvicorn>=0.32",
+    "pydantic-settings>=2.6",
+    "sqlalchemy>=2.0.36",
+    "psycopg[binary]>=3.2",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.16", # HTTP client used by fastapi.testclient.TestClient
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<1"]
+build-backend = "uv_build"
+
+# --- Ruff: lint + format ------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py315"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "I",       # isort
+    "B",       # bugbear
+    "UP",      # pyupgrade
+    "SIM",     # simplify
+    "ASYNC",   # flags blocking calls inside async functions
+]
+
+# --- mypy: strict on application code (project-structure.md §9) --------------
+[tool.mypy]
+python_version = "3.15"
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+# --- pytest ------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers"]
