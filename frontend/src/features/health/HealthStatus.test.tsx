@@ -1,34 +1,27 @@
 import { screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
+import { apiError, mockApi, signedOut } from "../../test/mockApi";
 import { renderAt } from "../../test/render";
 
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
-
-describe("home page health status", () => {
+// The status indicator is in the footer of every page, including sign-in.
+describe("footer system status", () => {
   it("reports that API and database are up", async () => {
-    vi.stubGlobal("fetch", () =>
-      Promise.resolve(Response.json({ status: "ok", database: "ok" })),
-    );
+    mockApi({ "GET /api/auth/session": signedOut });
 
-    renderAt("/");
+    renderAt("/sign-in");
 
     expect(await screen.findByText("API and database are up.")).toBeInTheDocument();
   });
 
   it("distinguishes a database outage from an unreachable API", async () => {
-    vi.stubGlobal("fetch", () =>
-      Promise.resolve(
-        Response.json(
-          { error: { code: "database_unavailable", message: "The database is unavailable." } },
-          { status: 503 },
-        ),
-      ),
-    );
+    mockApi({
+      "GET /api/auth/session": signedOut,
+      "GET /api/health": () =>
+        apiError(503, "database_unavailable", "The database is unavailable."),
+    });
 
-    renderAt("/");
+    renderAt("/sign-in");
 
     expect(
       await screen.findByText("The API is running, but it can't reach the database."),
@@ -36,9 +29,12 @@ describe("home page health status", () => {
   });
 
   it("reports an unreachable API when the request fails", async () => {
-    vi.stubGlobal("fetch", () => Promise.reject(new TypeError("Failed to fetch")));
+    mockApi({
+      "GET /api/auth/session": signedOut,
+      "GET /api/health": () => Promise.reject(new TypeError("Failed to fetch")),
+    });
 
-    renderAt("/");
+    renderAt("/sign-in");
 
     expect(await screen.findByText("Can't reach the API.")).toBeInTheDocument();
   });

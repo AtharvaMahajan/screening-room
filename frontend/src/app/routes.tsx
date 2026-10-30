@@ -1,5 +1,8 @@
 import type { RouteObject } from "react-router";
 
+import { RegisterPage } from "../features/auth/RegisterPage";
+import { RequireAuth } from "../features/auth/RequireAuth";
+import { SignInPage } from "../features/auth/SignInPage";
 import { HomePage } from "../features/home/HomePage";
 import { Layout } from "./Layout";
 import { NotFoundPage } from "./NotFoundPage";
@@ -10,7 +13,13 @@ export const routes: RouteObject[] = [
   {
     element: <Layout />,
     children: [
-      { index: true, element: <HomePage /> },
+      // Signed-in users only: everyone else is sent to sign-in.
+      {
+        element: <RequireAuth />,
+        children: [{ index: true, element: <HomePage /> }],
+      },
+      { path: "sign-in", element: <SignInPage /> },
+      { path: "register", element: <RegisterPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

@@ -7,7 +7,7 @@ Product and architecture decisions live in [`docs/`](docs/README.md). Start with
 | Part | Stack | Location |
 |---|---|---|
 | API | Python 3.15, FastAPI (sync handlers), SQLAlchemy 2.0, psycopg 3 | [`backend/`](backend/) |
-| Web app | React, TypeScript (strict), Vite, React Router, TanStack Query | [`frontend/`](frontend/) |
+| Web app | React, TypeScript (strict), Vite, React Router, TanStack Query, Tailwind CSS, React Hook Form + Zod | [`frontend/`](frontend/) |
 | Database | PostgreSQL 17 via Docker Compose (the only infrastructure, [ADR-0002](docs/adr/0002-postgresql-only-infrastructure.md)) | [`docker-compose.yml`](docker-compose.yml) |
 
 ## Prerequisites
@@ -52,7 +52,7 @@ cd frontend
 npm run dev
 ```
 
-Open **http://localhost:5173**. The home page calls `GET /api/health` and should say "API and database are up."
+Open **http://localhost:5173**. You'll be sent to **Sign in**: choose **Create an account**, and after registering you land on the home page, signed in. The footer of every page shows whether the API and database are up.
 
 The browser only talks to Vite. Vite forwards every `/api/...` request to FastAPI, so the app runs same-origin with no CORS setup. API docs are at http://localhost:5173/api/docs.
 

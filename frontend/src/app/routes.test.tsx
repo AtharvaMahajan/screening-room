@@ -1,26 +1,22 @@
 import { screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
+import { mockApi, signedIn, signedOut } from "../test/mockApi";
 import { renderAt } from "../test/render";
 
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
-
 describe("routes", () => {
-  it("renders the home page inside the layout", async () => {
-    vi.stubGlobal("fetch", () =>
-      Promise.resolve(Response.json({ status: "ok", database: "ok" })),
-    );
+  it("renders the signed-in home page inside the layout", async () => {
+    mockApi({ "GET /api/auth/session": () => signedIn() });
 
     renderAt("/");
 
+    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Screening Room" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: "Screening Room" })).toBeInTheDocument();
-    await screen.findByText("API and database are up.");
   });
 
-  it("renders a not-found page for unknown paths", () => {
+  it("renders a not-found page for unknown paths, signed in or not", () => {
+    mockApi({ "GET /api/auth/session": signedOut });
+
     renderAt("/no-such-page");
 
     expect(screen.getByRole("heading", { name: "Page not found" })).toBeInTheDocument();

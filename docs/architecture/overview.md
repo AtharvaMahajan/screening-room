@@ -21,7 +21,7 @@ Screening Room is a responsive web app that turns "What should I watch?" into a 
 | Ratings | 1–5 whole stars. Separate `not_for_me` negative action | Decided | [ADR-0009](../adr/0009-ratings-and-not-for-me.md) |
 | Recommendation engine | Staged, deterministic pipeline with a pure core. Explanations come only from contributing signals. v1 includes `favorite_neighbor` | Decided | [ADR-0010](../adr/0010-staged-deterministic-recommendation-pipeline.md) |
 | Frontend stack | React + TypeScript + Vite, React Router, TanStack Query, OpenAPI-generated API types | Decided (conventions) | [project-structure.md](project-structure.md) |
-| Styling approach | Tailwind CSS as the default | Open | [open-questions.md](open-questions.md) |
+| Styling approach | Tailwind CSS | Decided | [open-questions.md](open-questions.md) (O3) |
 | Hosting target | Not chosen | Open (needed by M5) | [open-questions.md](open-questions.md) |
 
 ## 3. System context

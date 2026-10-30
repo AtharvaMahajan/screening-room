@@ -185,7 +185,7 @@ frontend/src/
 | Server state | TanStack Query. No global client-state library; the little UI-only state left is local | Decided |
 | Forms | React Hook Form + Zod | Decided |
 | API types | Generated from FastAPI's OpenAPI schema (`openapi-typescript`). CI fails if the generated types are out of date | Decided |
-| Styling | Tailwind CSS by default | **Open** (low stakes; confirm in M1) |
+| Styling | Tailwind CSS | Decided (M1, open-questions.md O3) |
 | Dev server | Vite proxies `/api` to FastAPI, giving the same origin and no CORS | Decided |
 | Testing | Vitest + Testing Library. Browser end-to-end tests deferred | Decided |
 

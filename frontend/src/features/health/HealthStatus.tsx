@@ -1,11 +1,18 @@
 import { ApiError } from "../../api/client";
 import { useHealth } from "./api";
 
+const DOT = {
+  ok: "bg-green-600",
+  problem: "bg-red-600",
+  pending: "bg-stone-400",
+} as const;
+
+/** A small system-status indicator, shown in the footer of every page. */
 export function HealthStatus() {
   const { isPending, isError, error, refetch, isFetching } = useHealth();
 
   let message: string;
-  let tone: "ok" | "problem" | "pending";
+  let tone: keyof typeof DOT;
   if (isPending) {
     message = "Checking the API…";
     tone = "pending";
@@ -22,19 +29,18 @@ export function HealthStatus() {
   }
 
   return (
-    <section className="health" aria-labelledby="health-heading">
-      <h2 id="health-heading">System status</h2>
+    <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+      <span aria-hidden="true" className={`size-2 rounded-full ${DOT[tone]}`} />
       {/* role="status" announces changes to screen readers. */}
-      <p role="status" className={`health__message health__message--${tone}`}>
-        {message}
-      </p>
+      <p role="status">{message}</p>
       <button
         type="button"
         onClick={() => void refetch()}
         disabled={isFetching}
+        className="underline hover:text-stone-700 disabled:no-underline dark:hover:text-stone-200"
       >
         {isFetching ? "Checking…" : "Check again"}
       </button>
-    </section>
+    </div>
   );
 }

@@ -5,18 +5,15 @@ cross-origin cases. Checks run in this order: Origin -> CSRF -> route auth (401)
 """
 
 from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from httpx2 import Response
-from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from screening_room.modules.identity.dependencies import CurrentUserDep
-from screening_room.modules.identity.models import UserSession
-from tests.integration.helpers import PASSWORD, bootstrap_csrf, post, register
+from tests.integration.helpers import PASSWORD, bootstrap_csrf, expire_session, post, register
 
 PROTECTED = "/api/test/protected"
 LOGIN = "/api/auth/login"
@@ -135,10 +132,7 @@ def test_expired_session_makes_its_token_fail_then_rebootstrap_works(
     client: TestClient, db_session: Session
 ) -> None:
     token = signed_in(client)
-    db_session.execute(
-        update(UserSession).values(expires_at=datetime.now(UTC) - timedelta(seconds=1))
-    )
-    db_session.commit()  # only releases a savepoint; still undone after the test
+    expire_session(db_session, client)
 
     rejected = post(client, PROTECTED, csrf_token=token)
     fresh_token = bootstrap_csrf(client)  # what the SPA does after csrf_failed

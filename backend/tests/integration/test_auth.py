@@ -1,19 +1,25 @@
 """Register, sign in, sign out and session lookup against real PostgreSQL (ADR-0007)."""
 
 import json
-from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from screening_room.core.security import hash_session_token
 from screening_room.modules.identity.models import User, UserSession
 from tests.conftest import TEST_ORIGIN
-from tests.integration.helpers import PASSWORD, bootstrap_csrf, login, post, register
+from tests.integration.helpers import (
+    PASSWORD,
+    SESSION_COOKIE,
+    bootstrap_csrf,
+    expire_session,
+    login,
+    post,
+    register,
+)
 
-SESSION_COOKIE = "sr_session"  # test settings: cookie_prefix_host=False
 CSRF_COOKIE = "sr_csrf"
 
 
@@ -82,10 +88,15 @@ def test_session_cookie_is_httponly_and_samesite_lax(client: TestClient) -> None
 def test_only_a_hash_of_the_session_token_is_stored(
     client: TestClient, db_session: Session
 ) -> None:
-    register(client)
+    register(client, email="hash-check@example.com")
     token = client.cookies[SESSION_COOKIE]
 
-    stored = db_session.scalars(select(UserSession.token_hash)).all()
+    # Only this test's user: the database may already hold other data.
+    stored = db_session.scalars(
+        select(UserSession.token_hash)
+        .join(User, User.id == UserSession.user_id)
+        .where(User.email == "hash-check@example.com")
+    ).all()
 
     # Also proves requests write through the test's db_session (the M1b gap).
     assert stored == [hash_session_token(token)]
@@ -93,9 +104,9 @@ def test_only_a_hash_of_the_session_token_is_stored(
 
 
 def test_password_is_stored_as_an_argon2id_hash(client: TestClient, db_session: Session) -> None:
-    register(client)
+    register(client, email="argon-check@example.com")
 
-    user = db_session.scalars(select(User)).one()
+    user = db_session.scalars(select(User).where(User.email == "argon-check@example.com")).one()
 
     assert user.password_hash.startswith("$argon2id$")
     assert PASSWORD not in user.password_hash
@@ -207,10 +218,7 @@ def test_an_expired_session_is_treated_as_signed_out(
 ) -> None:
     register(client)
     signed_in_csrf = client.cookies[CSRF_COOKIE]
-    db_session.execute(
-        update(UserSession).values(expires_at=datetime.now(UTC) - timedelta(seconds=1))
-    )
-    db_session.commit()  # only releases a savepoint; still undone after the test
+    expire_session(db_session, client)
 
     body = client.get("/api/auth/session").json()
 
