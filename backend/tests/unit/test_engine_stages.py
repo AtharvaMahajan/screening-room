@@ -266,6 +266,16 @@ def test_favorite_link_is_preferred_over_genres_when_both_qualify() -> None:
     assert explained(item, LIKES_DRAMA)[0] == "favorite_neighbor"
 
 
+def test_genre_reason_says_taste_because_favorites_count_too() -> None:
+    """A favorite's genres count as liked, so "genres you like" could claim a
+    preference the user never stated (M3 walkthrough: Crime via Inception)."""
+    item = ScoredCandidate(make(), breakdown_with(affinity=0.40))
+
+    reasons = explain(item, LIKES_DRAMA, RecommendationContext(), NAMES, CONFIG)
+
+    assert reasons[0].text == "Matches your taste: Drama"
+
+
 def test_weak_signals_produce_no_personal_reason() -> None:
     item = ScoredCandidate(make(), breakdown_with(affinity=0.05, neighbor=0.05))
 

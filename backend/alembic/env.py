@@ -12,6 +12,7 @@ from sqlalchemy import create_engine, pool
 import screening_room.modules.catalog.models  # noqa: F401
 import screening_room.modules.discovery.models  # noqa: F401
 import screening_room.modules.identity.models  # noqa: F401
+import screening_room.modules.library.models  # noqa: F401
 import screening_room.modules.profile.models  # noqa: F401
 from screening_room.config import DatabaseSettings
 from screening_room.db import Base

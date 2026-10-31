@@ -67,7 +67,9 @@ def _personal_reasons(
     if liked and breakdown.affinity.weighted >= config.min_affinity_contribution:
         top = sorted(liked, key=lambda g: (-profile.genre_weights[g], g))[:2]
         names = ", ".join(genre_names.get(g, "?") for g in top)
-        reasons.append(Reason("genre_affinity", f"Matches genres you like: {names}"))
+        # "your taste", not "genres you like": favorites add weight to their genres
+        # too, so the user may never have chosen these genres themselves.
+        reasons.append(Reason("genre_affinity", f"Matches your taste: {names}"))
     return reasons
 
 

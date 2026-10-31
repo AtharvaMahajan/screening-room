@@ -462,6 +462,11 @@ def selectable_genres(session: Session) -> list[GenreOut]:
     return [GenreOut(id=genre.id, slug=genre.slug, name=genre.name) for genre in rows]
 
 
+def title_exists(session: Session, title_id: int) -> bool:
+    """Is this title in the catalog at all (pool or not)?"""
+    return bool(session.scalar(select(exists().where(Title.id == title_id))))
+
+
 def is_candidate(session: Session, title_id: int) -> bool:
     """Is this title in the candidate pool (data-model.md §4)?"""
     return bool(session.scalar(select(exists().where(Title.id == title_id, in_candidate_pool()))))

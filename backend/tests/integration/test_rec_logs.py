@@ -45,7 +45,7 @@ def result(request_id: int, title_id: int, rank: int) -> RecResult:
         rank=rank,
         score=0.5,
         score_breakdown={"affinity": {"value": 1.0, "weighted": 0.45}},
-        reasons=[{"type": "genre_affinity", "text": "Matches genres you like: Drama"}],
+        reasons=[{"type": "genre_affinity", "text": "Matches your taste: Drama"}],
     )
 
 
@@ -57,7 +57,7 @@ def test_a_request_and_its_results_round_trip(db_session: Session) -> None:
 
     stored = db_session.scalars(select(RecResult).where(RecResult.request_id == request_id)).one()
 
-    assert stored.reasons[0]["text"] == "Matches genres you like: Drama"
+    assert stored.reasons[0]["text"] == "Matches your taste: Drama"
     assert stored.score_breakdown["affinity"]["weighted"] == 0.45
 
 

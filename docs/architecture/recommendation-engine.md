@@ -157,7 +157,7 @@ Each signal produces structured reason candidates alongside its value. `explain`
 | Reason type | Emitted when | Display text (template) |
 |---|---|---|
 | `favorite_neighbor` | Weighted contribution ≥ 0.08 | "Because you picked *{anchor}*". M4 rating anchors: "Because you rated *{anchor}* {n}★" |
-| `genre_affinity` | Weighted contribution ≥ 0.10 and the title shares ≥1 genre with positive user weight | "Matches genres you like: {g1}, {g2}" (top 2 by user weight) |
+| `genre_affinity` | Weighted contribution ≥ 0.10 and the title shares ≥1 genre with positive user weight | "Matches your taste: {g1}, {g2}" (top 2 by user weight). *(Changed in M3, engine 1.0.1, from "Matches genres you like": favorites also add genre weight, so the user may not have chosen these genres themselves.)* |
 | `context_genre` | `context.genre_ids` set | "Matches your pick: {genre}" |
 | `runtime_fit` | `max_runtime_minutes` set and the title is a movie | "Fits your time: {1h 42m}" |
 | `well_rated` | `quality` ≥ 0.75 | "Rated {7.9}/10 by {12,400} TMDB users" |

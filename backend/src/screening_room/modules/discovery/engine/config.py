@@ -10,7 +10,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 
-ENGINE_VERSION = "1.0.0"
+ENGINE_VERSION = "1.0.1"  # 1.0.1: genre_affinity wording only; rankings unchanged
 
 
 class EngineConfig(BaseModel):

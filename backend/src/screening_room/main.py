@@ -19,6 +19,7 @@ from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
 from screening_room.modules.discovery import router as discovery_router
 from screening_room.modules.identity import router as identity_router
 from screening_room.modules.identity.csrf import csrf_protect
+from screening_room.modules.library import router as library_router
 from screening_room.modules.profile import router as profile_router
 
 # Every router the app serves. tests/unit/test_sync_handlers.py checks each
@@ -29,6 +30,7 @@ ROUTERS: list[APIRouter] = [
     catalog_router.router,
     profile_router.router,
     discovery_router.router,
+    library_router.router,
 ]
 
 

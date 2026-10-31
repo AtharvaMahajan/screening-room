@@ -260,7 +260,7 @@ Search-only and detail-only rows never become candidates by accident. `favorite_
 | Watchlist | Add (idempotent: re-adding is a no-op) and remove. Saving ≠ liking: it only contributes a small positive signal |
 | Mark watched | Inserts a `viewing_events` row and **removes the watchlist entry in the same transaction**. Marking again records a rewatch. `watched_on` is optional |
 | Un-mark watched | Deletes that title's viewing events (with confirmation in the UI) |
-| Rate | Upserts `ratings`. **Rating an unwatched title also inserts a viewing event**, because a rating implies the user has seen it |
+| Rate | Upserts `ratings`. **Rating an unwatched title also inserts a viewing event**, because a rating implies the user has seen it. *(M4a: it does so through "mark watched", so it also leaves the watchlist.)* |
 | Remove rating | Deletes the rating. Viewing events stay |
 | `not_for_me` | Upserts `title_feedback`. Excluded from recommendations until undone. Its genres contribute negatively ([ADR-0009](../adr/0009-ratings-and-not-for-me.md)) |
 | Undo `not_for_me` | Deletes the feedback row. Available from a "Not for me" list |

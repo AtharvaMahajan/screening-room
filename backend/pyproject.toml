@@ -50,19 +50,30 @@ forbidden_modules = [
     "screening_room.modules.catalog",
     "screening_room.modules.profile",
     "screening_room.modules.discovery",
+    "screening_room.modules.library",
 ]
 
 [[tool.importlinter.contracts]]
-name = "catalog depends on no module except identity (profile -> catalog, never back)"
+name = "catalog depends on no module except identity (profile, library -> catalog, never back)"
 type = "forbidden"
 source_modules = ["screening_room.modules.catalog"]
-forbidden_modules = ["screening_room.modules.profile", "screening_room.modules.discovery"]
+forbidden_modules = [
+    "screening_room.modules.profile",
+    "screening_room.modules.discovery",
+    "screening_room.modules.library",
+]
 
 [[tool.importlinter.contracts]]
 name = "profile depends only on catalog and identity (discovery -> profile, never back)"
 type = "forbidden"
 source_modules = ["screening_room.modules.profile"]
-forbidden_modules = ["screening_room.modules.discovery"]
+forbidden_modules = ["screening_room.modules.discovery", "screening_room.modules.library"]
+
+[[tool.importlinter.contracts]]
+name = "library depends only on catalog and identity (discovery -> library, never back)"
+type = "forbidden"
+source_modules = ["screening_room.modules.library"]
+forbidden_modules = ["screening_room.modules.discovery", "screening_room.modules.profile"]
 
 [[tool.importlinter.contracts]]
 name = "Modules use identity only through its service, schemas and dependencies"
@@ -71,6 +82,7 @@ source_modules = [
     "screening_room.modules.catalog",
     "screening_room.modules.profile",
     "screening_room.modules.discovery",
+    "screening_room.modules.library",
 ]
 forbidden_modules = [
     "screening_room.modules.identity.models",
@@ -84,7 +96,11 @@ allow_indirect_imports = true
 [[tool.importlinter.contracts]]
 name = "Modules use catalog only through its service and schemas"
 type = "forbidden"
-source_modules = ["screening_room.modules.profile", "screening_room.modules.discovery"]
+source_modules = [
+    "screening_room.modules.profile",
+    "screening_room.modules.discovery",
+    "screening_room.modules.library",
+]
 forbidden_modules = [
     "screening_room.modules.catalog.models",
     "screening_room.modules.catalog.router",
@@ -106,6 +122,16 @@ forbidden_modules = [
 allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]
+name = "Modules use library only through its service and schemas"
+type = "forbidden"
+source_modules = ["screening_room.modules.discovery"]
+forbidden_modules = [
+    "screening_room.modules.library.models",
+    "screening_room.modules.library.router",
+]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
 name = "The recommendation engine uses nothing from the app around it (it's pure)"
 type = "forbidden"
 source_modules = ["screening_room.modules.discovery.engine"]
@@ -116,6 +142,7 @@ forbidden_modules = [
     "screening_room.modules.discovery.models",
     "screening_room.modules.catalog",
     "screening_room.modules.profile",
+    "screening_room.modules.library",
     "screening_room.modules.identity",
 ]
 
