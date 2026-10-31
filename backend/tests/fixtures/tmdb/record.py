@@ -1,12 +1,14 @@
 """Record real TMDB responses as test fixtures (catalog-ingestion.md §12).
 
-    uv run python -m tests.fixtures.tmdb.record
+    uv run python -m tests.fixtures.tmdb.record [--only FILE ...]
 
-Needs TMDB_API_TOKEN in .env. Makes 6 requests, using the same paths and
-parameters as TmdbProvider. Re-run it to refresh the fixtures when TMDB's
-responses change; the mapper tests then show what the change broke.
+Needs TMDB_API_TOKEN in .env. Makes one request per fixture (7), using the same
+paths and parameters as TmdbProvider; --only records just the files named.
+Re-run it to refresh the fixtures when TMDB's responses change; the mapper
+tests then show what the change broke.
 """
 
+import argparse
 import json
 from pathlib import Path
 
@@ -38,14 +40,22 @@ REQUESTS: dict[str, tuple[str, dict[str, str | int]]] = {
     ),
     "movie_329865_arrival.json": ("/movie/329865", DETAILS),
     "tv_1396_breaking_bad.json": ("/tv/1396", DETAILS),
+    "search_multi_arrival.json": (
+        "/search/multi",
+        {"query": "arrival", "include_adult": "false", "language": LANGUAGE, "page": 1},
+    ),
 }
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", nargs="+", choices=sorted(REQUESTS), metavar="FILE")
+    wanted = parser.parse_args().only or list(REQUESTS)
     settings = TmdbSettings()
     client = TmdbClient(settings.require_tmdb_token(), rate_limit_rps=4)
     try:
-        for filename, (path, params) in REQUESTS.items():
+        for filename in wanted:
+            path, params = REQUESTS[filename]
             data = client.get_json(path, params)
             text = json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
             (FIXTURES_DIR / filename).write_text(text, encoding="utf-8", newline="\n")

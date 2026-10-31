@@ -223,7 +223,7 @@ def test_someone_credited_twice_as_director_appears_once() -> None:
 
 # --- Search -----------------------------------------------------------------------------------
 
-# Shaped like TMDB's documented /search/multi response (not yet recorded from the real API).
+# Hand-written: covers adult and malformed entries the recorded response doesn't have.
 SEARCH_MULTI = {
     "page": 1,
     "results": [
@@ -260,3 +260,16 @@ def test_search_keeps_movies_and_tv_and_drops_people_adult_and_broken_entries() 
     ]
     assert results[1].release_date == date(2008, 1, 20)  # first_air_date for TV
     assert results[0].provider_genre_ids == (18, 878)
+
+
+def test_recorded_search_drops_people_and_keeps_tmdb_order() -> None:
+    data = fixture("search_multi_arrival.json")  # the real response for "arrival"
+    people = [r for r in data["results"] if r["media_type"] == "person"]
+
+    results = mapper.search_results(data)
+
+    assert people  # the real response mixes in people...
+    assert len(results) == len(data["results"]) - len(people)  # ...which are dropped
+    assert (results[0].ref.provider_id, results[0].name) == (329865, "Arrival")
+    assert results[0].provider_genre_ids  # from genre_ids
+    assert any(r.release_date is None for r in results)  # "" means unknown, not an error

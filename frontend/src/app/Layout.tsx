@@ -50,6 +50,9 @@ function AccountMenu() {
       <Link to="/" className="text-stone-700 hover:underline dark:text-stone-300">
         Discover
       </Link>
+      <Link to="/search" className="text-stone-700 hover:underline dark:text-stone-300">
+        Search
+      </Link>
       <Link to="/library" className="text-stone-700 hover:underline dark:text-stone-300">
         Library
       </Link>

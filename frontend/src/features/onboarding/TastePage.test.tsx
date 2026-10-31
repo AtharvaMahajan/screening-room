@@ -151,7 +151,7 @@ describe("onboarding and taste editing", () => {
     const api = mockApi({
       "GET /api/auth/session": () => signedIn(),
       ...emptyTasteProfile,
-      "GET /api/titles?limit=12&q=arr": json([ARRIVAL]),
+      "GET /api/search?q=arr": json({ source: "tmdb", results: [ARRIVAL] }),
       "POST /api/me/favorites": json(withArrival),
       [`DELETE /api/me/favorites/${String(ARRIVAL.id)}`]: json({
         favorites: [],

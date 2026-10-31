@@ -6,6 +6,7 @@ import { SignInPage } from "../features/auth/SignInPage";
 import { DiscoverPage } from "../features/discover/DiscoverPage";
 import { LibraryPage } from "../features/library/LibraryPage";
 import { TastePage } from "../features/onboarding/TastePage";
+import { SearchPage } from "../features/search/SearchPage";
 import { TitlePage } from "../features/titles/TitlePage";
 import { Layout } from "./Layout";
 import { NotFoundPage } from "./NotFoundPage";
@@ -25,6 +26,7 @@ export const routes: RouteObject[] = [
           { path: "welcome", element: <TastePage welcome /> },
           { path: "taste", element: <TastePage /> },
           { path: "library", element: <LibraryPage /> },
+          { path: "search", element: <SearchPage /> },
         ],
       },
       { path: "sign-in", element: <SignInPage /> },

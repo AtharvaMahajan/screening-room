@@ -47,3 +47,22 @@ export function useTitleSearch(query: string, genreIds: readonly number[], limit
     placeholderData: keepPreviousData,
   });
 }
+
+export type SearchResults = components["schemas"]["SearchOut"];
+
+/**
+ * Search TMDB for any movie or TV show (GET /api/search). `source: "local"` means
+ * TMDB couldn't be reached, so only titles already in our catalog were searched.
+ */
+export function useCatalogSearch(query: string) {
+  return useQuery({
+    queryKey: ["search", query],
+    queryFn: ({ signal }) =>
+      apiGet<SearchResults>(`/api/search?${new URLSearchParams({ q: query }).toString()}`, {
+        signal,
+      }),
+    enabled: query.length > 0,
+    staleTime: 5 * 60 * 1000, // the same words again shouldn't call TMDB again
+    placeholderData: keepPreviousData,
+  });
+}

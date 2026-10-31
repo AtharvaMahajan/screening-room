@@ -4,15 +4,16 @@ import { Poster } from "../../components/Poster";
 import { TextField } from "../../components/TextField";
 import { describeError } from "../../lib/errors";
 import { useDebouncedValue } from "../../lib/useDebouncedValue";
-import { type TitleCard, useTitleSearch } from "../titles/api";
+import { LocalOnlyNotice } from "../search/LocalOnlyNotice";
+import { type TitleCard, useCatalogSearch, useTitleSearch } from "../titles/api";
 import { type Favorites, useAddFavorite, useRemoveFavorite } from "./api";
 
 const RESULTS = 12;
-const TYPING_DELAY_MS = 250;
+const TYPING_DELAY_MS = 400; // typing searches TMDB: one request per pause
 
 /**
- * Pick favorite titles from the local pool: search by name, or choose from
- * well-known titles in the genres you like. Each pick is saved immediately.
+ * Pick favorite titles: search TMDB for anything by name, or choose from
+ * well-known pool titles in the genres you like. Each pick is saved immediately.
  */
 export function FavoritesPicker({
   favorites,
@@ -23,7 +24,11 @@ export function FavoritesPicker({
 }) {
   const [query, setQuery] = useState("");
   const typed = useDebouncedValue(query.trim(), TYPING_DELAY_MS);
-  const results = useTitleSearch(typed, likedGenreIds, RESULTS);
+  const suggestions = useTitleSearch("", likedGenreIds, RESULTS); // local: "popular in..."
+  const found = useCatalogSearch(typed); // TMDB, once something is typed
+  const results = typed
+    ? { error: found.error, items: found.data?.results, localOnly: found.data?.source === "local" }
+    : { error: suggestions.error, items: suggestions.data, localOnly: false };
   const add = useAddFavorite();
   const remove = useRemoveFavorite();
 
@@ -94,18 +99,19 @@ export function FavoritesPicker({
         <h3 id="results-heading" className="font-medium">
           {heading}
         </h3>
-        {results.isError && (
+        {results.localOnly && <LocalOnlyNotice />}
+        {results.error && (
           <p role="alert" className="text-sm">
             {describeError(results.error)}
           </p>
         )}
-        {results.data?.length === 0 && (
+        {results.items?.length === 0 && (
           <p className="text-sm text-stone-500">
-            Nothing matches. Our catalog is a curated set of well-known titles, so try another.
+            {typed ? `No movies or shows match “${typed}”.` : "No suggestions yet."}
           </p>
         )}
         <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
-          {results.data?.map((title) => (
+          {results.items?.map((title) => (
             <li key={title.id}>
               <PickButton
                 title={title}
