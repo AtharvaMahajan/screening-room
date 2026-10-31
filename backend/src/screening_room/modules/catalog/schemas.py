@@ -41,6 +41,13 @@ class TitlePreviewOut(TitleCardOut):
     runtime_minutes: int | None  # movies; often unknown for TV
 
 
+class SearchOut(BaseModel):
+    # tmdb: TMDB's results. local: TMDB couldn't be reached (or isn't configured),
+    # so only titles already in our catalog were searched.
+    source: Literal["tmdb", "local"]
+    results: list[TitleCardOut]  # best match first
+
+
 class CastMemberOut(BaseModel):
     name: str
     character: str | None

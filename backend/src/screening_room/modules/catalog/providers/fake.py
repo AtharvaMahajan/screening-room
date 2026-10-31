@@ -35,6 +35,7 @@ class FakeProvider:
         self._page_size = page_size
         self.missing: set[ProviderRef] = set()  # get_details -> ProviderNotFoundError
         self.failing: set[ProviderRef] = set()  # get_details -> ProviderUnavailableError
+        self.search_failing = False  # search -> ProviderUnavailableError
         self.calls: list[tuple[str, object]] = []  # what was asked, in order
 
     def list_titles(self, query: ListQuery, page: int) -> ListPage:
@@ -62,6 +63,21 @@ class FakeProvider:
     def list_genres(self, media_type: MediaType) -> list[ProviderGenre]:
         self.calls.append(("list_genres", media_type))
         return list(self._genres.get(media_type, []))
+
+    def search(self, query: str) -> list[TitleSummary]:
+        """Case-insensitive substring match on the name, most-voted first."""
+        self.calls.append(("search", query))
+        if self.search_failing:
+            raise ProviderUnavailableError("fake search outage")
+        needle = query.casefold()
+        return sorted(
+            (
+                t.summary
+                for t in self._details.values()
+                if needle in t.summary.name.casefold() and not t.summary.adult
+            ),
+            key=lambda s: (-(s.vote_count or 0), s.ref.provider_id),
+        )
 
 
 def _matches(summary: TitleSummary, query: ListQuery) -> bool:

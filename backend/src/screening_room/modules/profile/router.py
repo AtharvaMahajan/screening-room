@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends, Path, Response, status
 
 from screening_room.config import SettingsDep
 from screening_room.db import SessionDep
+from screening_room.modules.catalog import read_through
+from screening_room.modules.catalog.dependencies import CatalogProviderDep
 from screening_room.modules.identity.dependencies import CurrentUserDep, get_current_user
 from screening_room.modules.profile import service
 from screening_room.modules.profile.schemas import (
@@ -46,10 +48,17 @@ def add_favorite(
     session: SessionDep,
     user: CurrentUserDep,
     settings: SettingsDep,
+    provider: CatalogProviderDep,
 ) -> FavoritesOut:
-    """Add a favorite: 201 if new, 200 if it was already there. Returns the full list."""
+    """Add a favorite: 201 if new, 200 if it was already there. Returns the full list.
+
+    The favorite commits first. A title found through search only has a summary,
+    so its full details (and TMDB recommendation list) are fetched next; if
+    that fails, the favorite still stands (catalog-ingestion.md §11).
+    """
     if service.add_favorite(session, user.id, body.title_id):
         session.commit()
+        read_through.hydrate_title(session, body.title_id, provider)
     else:
         response.status_code = status.HTTP_200_OK
     return service.list_favorites(session, user.id, settings.tmdb_image_base_url)

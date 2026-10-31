@@ -7,7 +7,7 @@ Movies and TV differ in field names:
 """
 
 from datetime import date
-from typing import Any
+from typing import Any, cast
 
 from screening_room.modules.catalog.providers.base import (
     Credit,
@@ -54,6 +54,23 @@ def title_summary(media_type: MediaType, data: JSON) -> TitleSummary:
         adult=bool(data.get("adult", False)),
         provider_genre_ids=tuple(int(genre_id) for genre_id in genre_ids),
     )
+
+
+def search_results(data: JSON) -> list[TitleSummary]:
+    """A multi-search page: movies and TV only (not people), no adult titles.
+
+    A malformed entry is skipped rather than failing the whole search.
+    """
+    results: list[TitleSummary] = []
+    for item in data.get("results", []):
+        media_type = item.get("media_type")
+        if media_type not in ("movie", "tv") or item.get("adult"):
+            continue
+        try:
+            results.append(title_summary(cast(MediaType, media_type), item))
+        except ProviderError:
+            continue
+    return results
 
 
 def title_details(media_type: MediaType, data: JSON) -> TitleDetails:

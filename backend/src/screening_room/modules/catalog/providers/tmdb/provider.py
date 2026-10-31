@@ -7,6 +7,7 @@ from screening_room.modules.catalog.providers.base import (
     ProviderGenre,
     ProviderRef,
     TitleDetails,
+    TitleSummary,
 )
 from screening_room.modules.catalog.providers.tmdb import mapper
 from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
@@ -40,3 +41,11 @@ class TmdbProvider:
     def list_genres(self, media_type: MediaType) -> list[ProviderGenre]:
         data = self._client.get_json(f"/genre/{media_type}/list", {"language": LANGUAGE})
         return mapper.genres(data)
+
+    def search(self, query: str) -> list[TitleSummary]:
+        """TMDB multi-search, first page only (20 results): people are dropped."""
+        data = self._client.get_json(
+            "/search/multi",
+            {"query": query, "include_adult": "false", "language": LANGUAGE, "page": 1},
+        )
+        return mapper.search_results(data)

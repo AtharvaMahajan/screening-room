@@ -65,12 +65,13 @@ def list_favorites(session: Session, user_id: int, image_base_url: str) -> Favor
 def add_favorite(session: Session, user_id: int, title_id: int) -> bool:
     """Add a favorite; True if it was new. Adding one twice changes nothing.
 
-    In M3, favorites come from the candidate pool (local search). Non-pool
-    titles arrive with TMDB search in M4.
+    Any catalog title can be a favorite, including ones found through TMDB
+    search that aren't in the candidate pool (M4). The handler then fetches
+    their full details, so their recommendation lists can anchor.
     """
     if title_id in _favorite_ids(session, user_id):
         return False
-    if not catalog.is_candidate(session, title_id):
+    if not catalog.title_exists(session, title_id):
         raise AppError(404, "title_not_found", "There's no such title to pick.")
     count = session.scalar(
         select(func.count())

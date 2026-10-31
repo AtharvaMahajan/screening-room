@@ -110,7 +110,7 @@ class ProviderUnavailableError(ProviderError):
 
 
 class CatalogProvider(Protocol):
-    """What the catalog needs from a metadata provider. Search arrives in M4."""
+    """What the catalog needs from a metadata provider."""
 
     name: str
 
@@ -119,3 +119,7 @@ class CatalogProvider(Protocol):
     def get_details(self, ref: ProviderRef) -> TitleDetails: ...
 
     def list_genres(self, media_type: MediaType) -> list[ProviderGenre]: ...
+
+    def search(self, query: str) -> list[TitleSummary]:
+        """Movies and TV shows matching `query`, best match first. No adult titles."""
+        ...

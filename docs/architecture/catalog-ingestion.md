@@ -198,6 +198,8 @@ A detail view doesn't add the title to the candidate pool. Pool membership comes
 
 Upserting on a GET is a cache fill, not a user-state change, and it's idempotent.
 
+If TMDB fails (or no token is configured), search falls back to the local catalog search and the response says `source: "local"`, so search degrades instead of failing *(decided in M4e)*.
+
 **Non-pool favorites (M4):** once TMDB search exists, users can favorite titles outside the pool. Adding the favorite commits first. If the title isn't `full`, the handler then calls `read_through.hydrate(...)`, so its recommendation list becomes available as an anchor. If hydration fails, the favorite still exists and contributes through genre affinity once hydrated later.
 
 ## 12. Verification

@@ -219,3 +219,44 @@ def test_someone_credited_twice_as_director_appears_once() -> None:
     credits = mapper.title_details("movie", data).credits
 
     assert [(c.person_provider_id, c.role) for c in credits] == [(7, "director")]
+
+
+# --- Search -----------------------------------------------------------------------------------
+
+# Shaped like TMDB's documented /search/multi response (not yet recorded from the real API).
+SEARCH_MULTI = {
+    "page": 1,
+    "results": [
+        {
+            "media_type": "movie",
+            "id": 329865,
+            "title": "Arrival",
+            "release_date": "2016-11-10",
+            "genre_ids": [18, 878],
+            "adult": False,
+            "vote_count": 20000,
+        },
+        {"media_type": "person", "id": 9827, "name": "Amy Adams", "adult": False},
+        {
+            "media_type": "tv",
+            "id": 1396,
+            "name": "Breaking Bad",
+            "first_air_date": "2008-01-20",
+            "genre_ids": [18, 80],
+            "adult": False,
+        },
+        {"media_type": "movie", "id": 1, "title": "Adult film", "adult": True},
+        {"media_type": "movie", "id": 2},  # malformed: no title
+    ],
+}
+
+
+def test_search_keeps_movies_and_tv_and_drops_people_adult_and_broken_entries() -> None:
+    results = mapper.search_results(SEARCH_MULTI)
+
+    assert [(r.ref.media_type, r.ref.provider_id, r.name) for r in results] == [
+        ("movie", 329865, "Arrival"),
+        ("tv", 1396, "Breaking Bad"),
+    ]
+    assert results[1].release_date == date(2008, 1, 20)  # first_air_date for TV
+    assert results[0].provider_genre_ids == (18, 878)

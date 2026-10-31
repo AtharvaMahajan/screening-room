@@ -156,6 +156,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search
+         * @description Search TMDB for movies and TV shows, beyond our candidate pool (FR-03).
+         *
+         *     Results are stored as catalog rows (so they have ids and title pages) but
+         *     don't become recommendable. Falls back to our own catalog if TMDB is down.
+         */
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/preferences": {
         parameters: {
             query?: never;
@@ -187,6 +210,10 @@ export interface paths {
         /**
          * Add Favorite
          * @description Add a favorite: 201 if new, 200 if it was already there. Returns the full list.
+         *
+         *     The favorite commits first. A title found through search only has a summary,
+         *     so its full details (and TMDB recommendation list) are fetched next; if
+         *     that fails, the favorite still stands (catalog-ingestion.md §11).
          */
         post: operations["add_favorite"];
         delete?: never;
@@ -660,6 +687,16 @@ export interface components {
             /** Watched On */
             watched_on?: string | null;
         };
+        /** SearchOut */
+        SearchOut: {
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "tmdb" | "local";
+            /** Results */
+            results: components["schemas"]["TitleCardOut"][];
+        };
         /**
          * SessionOut
          * @description Who's signed in (null if nobody), and the CSRF token for unsafe requests.
@@ -1119,6 +1156,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TitleDetailOut"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    search: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchOut"];
                 };
             };
             /** @description Client error */

@@ -109,6 +109,12 @@ forbidden_modules = [
     "screening_room.modules.catalog.ingestion",
     "screening_room.modules.catalog.providers",
 ]
+# The one documented exception (catalog-ingestion.md §11): adding a favorite
+# found through search fetches its details via the handler-level helper.
+ignore_imports = [
+    "screening_room.modules.profile.router -> screening_room.modules.catalog.read_through",
+    "screening_room.modules.profile.router -> screening_room.modules.catalog.dependencies",
+]
 allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]
