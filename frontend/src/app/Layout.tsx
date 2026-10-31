@@ -9,7 +9,8 @@ export function Layout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-stone-200 dark:border-stone-800">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
+        {/* Phones: brand and account on one row, page links on a second row below. */}
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
           <Link to="/" className="font-semibold tracking-tight">
             Screening Room
           </Link>
@@ -26,7 +27,7 @@ export function Layout() {
   );
 }
 
-/** The signed-in user and a sign-out button; nothing when signed out. */
+/** Page links, the signed-in user and a sign-out button; nothing when signed out. */
 function AccountMenu() {
   const session = useSession();
   const logout = useLogout();
@@ -46,30 +47,41 @@ function AccountMenu() {
   };
 
   return (
-    <div className="flex items-center gap-3 text-sm">
-      <Link to="/" className="text-stone-700 hover:underline dark:text-stone-300">
-        Discover
-      </Link>
-      <Link to="/search" className="text-stone-700 hover:underline dark:text-stone-300">
-        Search
-      </Link>
-      <Link to="/library" className="text-stone-700 hover:underline dark:text-stone-300">
-        Library
-      </Link>
-      <Link to="/taste" className="text-stone-700 hover:underline dark:text-stone-300">
-        Your taste
-      </Link>
-      <Link to="/account" className="text-stone-600 hover:underline dark:text-stone-400">
-        {user.display_name ?? user.email}
-      </Link>
-      <Button variant="quiet" onClick={signOut} disabled={logout.isPending}>
-        {logout.isPending ? "Signing out…" : "Sign out"}
-      </Button>
-      {logout.isError && (
-        <span role="alert" className="text-red-600">
-          Couldn't sign out. Try again.
-        </span>
-      )}
-    </div>
+    <>
+      <nav
+        aria-label="Main"
+        className="order-last flex w-full gap-4 text-sm sm:order-none sm:w-auto sm:gap-3"
+      >
+        <Link to="/" className="text-stone-700 hover:underline dark:text-stone-300">
+          Discover
+        </Link>
+        <Link to="/search" className="text-stone-700 hover:underline dark:text-stone-300">
+          Search
+        </Link>
+        <Link to="/library" className="text-stone-700 hover:underline dark:text-stone-300">
+          Library
+        </Link>
+        <Link to="/taste" className="text-stone-700 hover:underline dark:text-stone-300">
+          Your taste
+        </Link>
+      </nav>
+      <div className="flex min-w-0 items-center gap-2 text-sm">
+        {/* A long email is cut short rather than pushing "Sign out" off screen. */}
+        <Link
+          to="/account"
+          className="max-w-28 truncate text-stone-600 hover:underline sm:max-w-40 dark:text-stone-400"
+        >
+          {user.display_name ?? user.email}
+        </Link>
+        <Button variant="quiet" onClick={signOut} disabled={logout.isPending}>
+          {logout.isPending ? "Signing out…" : "Sign out"}
+        </Button>
+        {logout.isError && (
+          <span role="alert" className="text-red-600">
+            Couldn't sign out. Try again.
+          </span>
+        )}
+      </div>
+    </>
   );
 }

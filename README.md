@@ -54,7 +54,16 @@ cd frontend
 npm run dev
 ```
 
-Open **http://localhost:5173**. You'll be sent to **Sign in**: choose **Create an account**, and after registering you land on the home page, signed in. The footer of every page shows whether the API and database are up.
+Open **http://localhost:5173**. You'll be sent to **Sign in**: choose **Create an account**. After registering, a short optional onboarding asks for genres and favorite titles, then you land on **Discover**. The footer of every page shows whether the API and database are up.
+
+**Discover needs a catalog.** A fresh database has no titles, so Discover has nothing to recommend until you've filled the pool with the ingestion job (see [Catalog](#catalog-tmdb-ingestion) below; it needs a TMDB token).
+
+Once you're signed in, the header leads to:
+- **Discover**: ask for 3-5 explained recommendations, optionally for movies or TV, a genre or the time you have. Save, mark watched, rate, skip or turn down each one.
+- **Search**: any movie or TV show on TMDB (falls back to titles already in the catalog if TMDB can't be reached).
+- **Library**: your watchlist, viewing history, ratings and "not for me" list.
+- **Your taste**: the genres and favorite titles from onboarding, editable any time.
+- **Your name**: your account, including deleting it.
 
 The browser only talks to Vite. Vite forwards every `/api/...` request to FastAPI, so the app runs same-origin with no CORS setup. API docs are at http://localhost:5173/api/docs.
 
@@ -132,7 +141,7 @@ All configuration comes from environment variables. For local development they'r
 | `ALLOWED_ORIGINS` | Backend | **Required.** JSON list of origins allowed to make unsafe requests, e.g. `["http://localhost:5173"]` |
 | `SESSION_TTL_DAYS` | Backend | Absolute session lifetime. Default `30` |
 | `COOKIE_SECURE`, `COOKIE_PREFIX_HOST` | Backend | Default `true` (production). Set both to `false` for local http, where browsers drop `Secure` cookies |
-| `TMDB_API_TOKEN` | Ingestion, title detail | TMDB **API Read Access Token** (themoviedb.org → Settings → API). Only needed by code that calls TMDB; never commit it |
+| `TMDB_API_TOKEN` | Ingestion, title pages, search | TMDB **API Read Access Token** (themoviedb.org → Settings → API). Never commit it. Without a valid token the app still runs: title pages show what's stored, and search only searches the local catalog |
 | `TMDB_RATE_LIMIT_RPS`, `TMDB_MAX_WORKERS` | Ingestion | Requests per second (default `20`) and parallel detail fetches (default `8`) |
 | `CATALOG_TTL_DAYS` | Ingestion | Title metadata older than this is stale and re-fetched (default `14`) |
 
@@ -149,13 +158,13 @@ uv run python -m screening_room.jobs report                 # what's in the pool
 uv run python -m screening_room.jobs refresh                # re-fetch titles older than CATALOG_TTL_DAYS
 ```
 
-Each title has a page at `http://localhost:5173/titles/<id>`, where `<id>` is our title id (`report` shows none; find one with `SELECT id, name FROM titles`). Nothing links there yet: Discover (M3) and search (M4) will. Pool titles are served from the local catalog. Stale ones are refreshed from TMDB, and if TMDB is down the page still works, with a note that some details may be out of date.
+Each title has a page at `http://localhost:5173/titles/<id>`, linked from Discover, Search and your Library. Pool titles are served from the local catalog. Stale ones are refreshed from TMDB, and if TMDB is down the page still works, with a note that some details may be out of date.
 
 Every run is safe to repeat and to interrupt: re-running continues where it stopped. `--max-requests N` caps the TMDB requests a run may make. Each run is recorded in the `ingestion_runs` table, and the first real run's report is in [docs/evidence/](docs/evidence/m2-first-ingestion-report.txt).
 
 ## Authentication
 
-Email and password, with server-side sessions in an HttpOnly cookie and signed CSRF tokens ([ADR-0007](docs/adr/0007-session-auth-and-csrf.md), [security.md](docs/architecture/security.md)). The API is under `/api/auth`: `GET session`, `POST register`, `POST login`, `POST logout`.
+Email and password, with server-side sessions in an HttpOnly cookie and signed CSRF tokens ([ADR-0007](docs/adr/0007-session-auth-and-csrf.md), [security.md](docs/architecture/security.md)). The API is under `/api/auth`: `GET session`, `POST register`, `POST login`, `POST logout`. Deleting an account is `DELETE /api/me` with the current password re-entered; it removes all the user's data.
 
 Every POST/PUT/PATCH/DELETE must come from an allowed `Origin` and send the CSRF token from `GET /api/auth/session` in an `X-CSRF-Token` header. Otherwise it gets `403 origin_rejected` or `403 csrf_failed`. Protect a route by adding a `CurrentUserDep` parameter (from `screening_room.modules.identity.dependencies`); it returns `401 unauthenticated` when nobody is signed in.
 
