@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { Button } from "../../components/Button";
 import { Poster } from "../../components/Poster";
+import { LibraryPanel } from "../library/LibraryPanel";
 import { describeError } from "../../lib/errors";
 import { formatRuntime, languageName, yearOf } from "../../lib/format";
 import { type TitleDetail, useTitle } from "./api";
@@ -78,6 +79,7 @@ function TitleView({ title }: { title: TitleDetail }) {
             <p className="text-stone-500 italic">{title.original_name}</p>
           )}
           <p className="text-sm text-stone-600 dark:text-stone-400">{facts.join(" · ")}</p>
+          <LibraryPanel titleId={title.id} />
           {title.vote_average !== null && title.vote_count ? (
             <p className="text-sm">
               <span className="font-medium">★ {title.vote_average.toFixed(1)}</span>

@@ -12,7 +12,7 @@ import {
   type DiscoverState,
   useDiscoverState,
   useRecommend,
-  useSkip,
+  useHide,
 } from "./api";
 import { RecommendationCard } from "./RecommendationCard";
 
@@ -208,9 +208,9 @@ function Shortlist({
   isLoading: boolean;
   onMore: () => void;
 }) {
-  const skip = useSkip();
-  const { shortlist, skippedIds } = state;
-  const visible = shortlist.results.filter((result) => !skippedIds.includes(result.title.id));
+  const hide = useHide();
+  const { shortlist, hiddenIds } = state;
+  const visible = shortlist.results.filter((result) => !hiddenIds.includes(result.title.id));
   // Fewer than a full shortlist: nothing else matches (the few_results notice says so).
   const hasMore = shortlist.results.length === SHORTLIST_SIZE;
 
@@ -246,8 +246,8 @@ function Shortlist({
             <li key={recommendation.result_id}>
               <RecommendationCard
                 recommendation={recommendation}
-                onSkip={() => {
-                  skip(recommendation.title.id);
+                onHide={() => {
+                  hide(recommendation.title.id);
                 }}
               />
             </li>
@@ -255,7 +255,7 @@ function Shortlist({
         </ol>
       ) : (
         shortlist.results.length > 0 && (
-          <p className="text-stone-500">You skipped them all. Want to see more?</p>
+          <p className="text-stone-500">That’s all of these set aside. Want to see more?</p>
         )
       )}
 

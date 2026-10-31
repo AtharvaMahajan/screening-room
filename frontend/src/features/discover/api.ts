@@ -11,6 +11,7 @@ import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/reac
 import { apiSend } from "../../api/client";
 import type { components } from "../../api/schema";
 import { userDataKey } from "../auth/api";
+import { type TitleState, useStoreTitleState } from "../library/api";
 
 type RecommendationRequest = components["schemas"]["RecommendationRequestIn"];
 export type Recommendations = components["schemas"]["RecommendationsOut"];
@@ -35,8 +36,8 @@ export interface DiscoverState {
   shortlist: Recommendations;
   /** Every title shown for this context so far: "show me more" leaves them out. */
   seenIds: number[];
-  /** Skipped in this browser session only (ADR-0009: skip is ephemeral). */
-  skippedIds: number[];
+  /** Hidden from this shortlist: skipped (ephemeral, ADR-0009) or marked not for me. */
+  hiddenIds: number[];
 }
 
 export const SHORTLIST_SIZE = 5; // the most the API returns
@@ -68,19 +69,37 @@ export function useRecommend() {
         context,
         shortlist,
         seenIds: [...seenIds, ...newIds],
-        skippedIds: [],
+        hiddenIds: [],
       });
     },
   });
 }
 
-export function useSkip() {
+/** Take a card off the current shortlist (it stays excluded from "show me more"). */
+export function useHide() {
   const queryClient = useQueryClient();
   return (titleId: number) => {
     queryClient.setQueryData<DiscoverState>(discoverKey, (state) =>
-      state && { ...state, skippedIds: [...state.skippedIds, titleId] },
+      state && { ...state, hiddenIds: [...state.hiddenIds, titleId] },
     );
   };
+}
+
+export type ResultEvent = components["schemas"]["ResultEventIn"];
+
+/**
+ * Record what the user did with a result: save, watch, rate, not for me, skip,
+ * open. The server applies the library change with attribution (M4c) and
+ * returns the title's new library state, which updates every view of it.
+ */
+export function useResultEvent(resultId: number) {
+  const store = useStoreTitleState();
+  return useMutation({
+    mutationFn: (event: ResultEvent) =>
+      apiSend<TitleState>("POST", `/api/recommendations/results/${String(resultId)}/events`, event),
+    scope: { id: `result-${String(resultId)}` },
+    onSuccess: store,
+  });
 }
 
 function toRequest(context: DiscoverContext, seenIds: number[]): RecommendationRequest {

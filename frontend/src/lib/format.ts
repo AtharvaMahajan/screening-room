@@ -25,3 +25,9 @@ export function languageName(code: string): string {
     return code;
   }
 }
+
+/** Today's date where the user is, as "2026-10-31" (toISOString() would give UTC's). */
+export function localToday(now: Date = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${String(now.getFullYear())}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}

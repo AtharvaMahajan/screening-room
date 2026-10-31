@@ -1,6 +1,8 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
+import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
+import { fakeLibrary } from "../../test/fakeLibrary";
 import { apiError, callsTo, mockApi, signedIn } from "../../test/mockApi";
 import { renderAt } from "../../test/render";
 import type { TitleDetail } from "./api";
@@ -34,6 +36,7 @@ const ARRIVAL: TitleDetail = {
 
 function showTitle(title: TitleDetail) {
   return mockApi({
+    ...fakeLibrary([title.id]),
     "GET /api/auth/session": () => signedIn(),
     [`GET /api/titles/${String(title.id)}`]: () => Response.json(title),
   });
@@ -133,5 +136,83 @@ describe("title page", () => {
     // useTitle retries server trouble once (~1 s) before showing the error.
     expect(await screen.findByRole("alert")).toHaveTextContent("Can't reach Screening Room");
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  });
+});
+
+describe("your library on the title page", () => {
+  async function openArrival() {
+    const api = showTitle(ARRIVAL);
+    renderAt("/titles/42");
+    const library = await screen.findByRole("region", { name: "Your library" });
+    return { api, library, user: userEvent.setup() };
+  }
+
+  it("saves and unsaves, and marks not for me and undoes it", async () => {
+    const { api, library, user } = await openArrival();
+    const watchlist = within(library).getByRole("button", { name: "Watchlist" });
+    const notForMe = within(library).getByRole("button", { name: "Not for me" });
+
+    await user.click(watchlist);
+    await waitFor(() => {
+      expect(watchlist).toHaveAttribute("aria-pressed", "true");
+    });
+    await user.click(watchlist);
+    await user.click(notForMe);
+    await waitFor(() => {
+      expect(notForMe).toHaveAttribute("aria-pressed", "true");
+    });
+
+    expect(watchlist).toHaveAttribute("aria-pressed", "false");
+    expect(callsTo(api, "PUT /api/me/watchlist/42")).toHaveLength(1);
+    expect(callsTo(api, "DELETE /api/me/watchlist/42")).toHaveLength(1);
+    expect(callsTo(api, "PUT /api/me/not-for-me/42")).toHaveLength(1);
+  });
+
+  it("marks watched with an optional date, then again", async () => {
+    const { api, library, user } = await openArrival();
+
+    await user.type(within(library).getByLabelText("Date watched (optional)"), "2026-10-01");
+    await user.click(within(library).getByRole("button", { name: "Mark watched" }));
+    expect(await within(library).findByText("Watched once, last on 2026-10-01.")).toBeVisible();
+    await user.click(within(library).getByRole("button", { name: "Watched again" }));
+
+    expect(await within(library).findByText(/Watched 2 times/)).toBeVisible();
+    expect(callsTo(api, "POST /api/me/history/42").map((call) => call.body)).toEqual([
+      { watched_on: "2026-10-01" },
+      { watched_on: null },
+    ]);
+  });
+
+  it("asks before removing viewings", async () => {
+    const { api, library, user } = await openArrival();
+    await user.click(within(library).getByRole("button", { name: "Mark watched" }));
+    await user.click(await within(library).findByRole("button", { name: "Remove from history" }));
+
+    await user.click(within(library).getByRole("button", { name: "Cancel" }));
+    expect(callsTo(api, "DELETE /api/me/history/42")).toHaveLength(0);
+
+    await user.click(within(library).getByRole("button", { name: "Remove from history" }));
+    await user.click(within(library).getByRole("button", { name: "Remove" }));
+
+    expect(await within(library).findByRole("button", { name: "Mark watched" })).toBeVisible();
+    expect(callsTo(api, "DELETE /api/me/history/42")).toHaveLength(1);
+  });
+
+  it("rates, which marks it watched, and clears the rating", async () => {
+    const { api, library, user } = await openArrival();
+    const stars = within(library).getByRole("group", { name: "Your rating" });
+
+    await user.click(within(stars).getByRole("button", { name: "5 stars" }));
+    expect(await within(library).findByText(/Watched once/)).toBeVisible();
+    await user.click(within(library).getByRole("button", { name: "Clear rating" }));
+
+    await waitFor(() => {
+      expect(within(stars).getByRole("button", { name: "5 stars" })).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      );
+    });
+    expect(callsTo(api, "PUT /api/me/ratings/42")[0]?.body).toEqual({ value: 5 });
+    expect(callsTo(api, "DELETE /api/me/ratings/42")).toHaveLength(1);
   });
 });

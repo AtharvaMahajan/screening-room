@@ -2,6 +2,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { fakeLibrary } from "../../test/fakeLibrary";
 import { apiError, callsTo, mockApi, signedIn, signedOut } from "../../test/mockApi";
 import { renderAt } from "../../test/render";
 import type { Recommendation, Recommendations } from "./api";
@@ -45,8 +46,14 @@ const FIRST_FIVE = [
 ];
 const NEXT_FIVE = [6, 7, 8, 9, 10].map((id) => result(id, `Film ${String(id)}`));
 
+const ALL = [...FIRST_FIVE, ...NEXT_FIVE];
+
 function discover(routes: Record<string, (body: unknown) => Response> = {}) {
   return mockApi({
+    ...fakeLibrary(
+      ALL.map((r) => r.title.id),
+      Object.fromEntries(ALL.map((r) => [r.result_id, r.title.id])),
+    ),
     "GET /api/auth/session": () => signedIn(),
     "GET /api/genres": () => Response.json([{ id: DRAMA, slug: "drama", name: "Drama" }]),
     [RECOMMEND]: () => shortlist(FIRST_FIVE),
@@ -202,6 +209,98 @@ describe("discover", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Something went wrong on our side");
     expect(screen.getByRole("button", { name: "Find something" })).toBeEnabled();
+  });
+
+  it("saves from a card with attribution, and unsaves without", async () => {
+    const api = discover();
+    renderAt("/");
+    const user = await findSomething();
+    const save = await screen.findByRole("button", { name: "Save Dune" });
+    await waitFor(() => {
+      expect(save).toBeEnabled(); // once its library state has loaded
+    });
+
+    await user.click(save);
+    await waitFor(() => {
+      expect(save).toHaveAttribute("aria-pressed", "true");
+    });
+    await user.click(save);
+    await waitFor(() => {
+      expect(save).toHaveAttribute("aria-pressed", "false");
+    });
+
+    const duneResult = FIRST_FIVE[0]?.result_id ?? 0;
+    expect(callsTo(api, `POST /api/recommendations/results/${String(duneResult)}/events`)).toEqual(
+      [expect.objectContaining({ body: { type: "saved" } })],
+    );
+    expect(callsTo(api, "DELETE /api/me/watchlist/1")).toHaveLength(1);
+  });
+
+  it("rates from a card, which also marks it watched", async () => {
+    const api = discover();
+    renderAt("/");
+    const user = await findSomething();
+    const rating = await screen.findByRole("group", { name: "Rate Dune" });
+    await waitFor(() => {
+      expect(within(rating).getByRole("button", { name: "4 stars" })).toBeEnabled();
+    });
+
+    await user.click(within(rating).getByRole("button", { name: "4 stars" }));
+
+    await waitFor(() => {
+      expect(within(rating).getByRole("button", { name: "4 stars" })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+    });
+    expect(screen.getByRole("button", { name: "Mark Dune watched" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const duneResult = String(FIRST_FIVE[0]?.result_id);
+    expect(callsTo(api, `POST /api/recommendations/results/${duneResult}/events`)[0]?.body).toEqual(
+      { type: "rated", rating: 4 },
+    );
+  });
+
+  it("hides a title marked not for me, once it's saved", async () => {
+    const api = discover();
+    renderAt("/");
+    const user = await findSomething();
+    const notForMe = await screen.findByRole("button", { name: "Contact is not for me" });
+    await waitFor(() => {
+      expect(notForMe).toBeEnabled();
+    });
+
+    await user.click(notForMe);
+
+    await waitFor(() => {
+      expect(shownTitles()).toEqual(["Dune", "Moon", "Solaris", "Gravity"]);
+    });
+    const contactResult = String(FIRST_FIVE[1]?.result_id);
+    expect(
+      callsTo(api, `POST /api/recommendations/results/${contactResult}/events`)[0]?.body,
+    ).toEqual({ type: "not_for_me" });
+  });
+
+  it("logs skips and opened titles", async () => {
+    const api = discover({
+      "GET /api/titles/1": () => apiError(404, "title_not_found", "No such title."),
+    });
+    renderAt("/");
+    const user = await findSomething();
+
+    await user.click(screen.getByRole("button", { name: "Skip Moon" }));
+    await user.click(screen.getByRole("link", { name: "Dune" }));
+
+    const events = (result: Recommendation | undefined) =>
+      callsTo(api, `POST /api/recommendations/results/${String(result?.result_id)}/events`).map(
+        (call) => call.body,
+      );
+    await waitFor(() => {
+      expect(events(FIRST_FIVE[0])).toEqual([{ type: "opened" }]);
+    });
+    expect(events(FIRST_FIVE[2])).toEqual([{ type: "skipped" }]);
   });
 
   it("forgets the shortlist when you sign out", async () => {
