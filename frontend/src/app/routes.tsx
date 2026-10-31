@@ -3,7 +3,7 @@ import type { RouteObject } from "react-router";
 import { RegisterPage } from "../features/auth/RegisterPage";
 import { RequireAuth } from "../features/auth/RequireAuth";
 import { SignInPage } from "../features/auth/SignInPage";
-import { HomePage } from "../features/home/HomePage";
+import { DiscoverPage } from "../features/discover/DiscoverPage";
 import { TastePage } from "../features/onboarding/TastePage";
 import { TitlePage } from "../features/titles/TitlePage";
 import { Layout } from "./Layout";
@@ -19,7 +19,7 @@ export const routes: RouteObject[] = [
       {
         element: <RequireAuth />,
         children: [
-          { index: true, element: <HomePage /> },
+          { index: true, element: <DiscoverPage /> },
           { path: "titles/:titleId", element: <TitlePage /> },
           { path: "welcome", element: <TastePage welcome /> },
           { path: "taste", element: <TastePage /> },

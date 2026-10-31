@@ -13,6 +13,20 @@ export type RegisterIn = components["schemas"]["RegisterIn"];
 export type User = NonNullable<Session["user"]>;
 
 export const sessionQueryKey = ["session"] as const;
+/** Every query holding the signed-in user's own data starts with this. */
+export const userDataKey = ["me"] as const;
+
+/**
+ * Store a new session. When the signed-in user changes (sign-in, sign-out,
+ * expiry), drop the previous user's cached data so nobody sees someone else's.
+ */
+function storeSession(queryClient: QueryClient, session: Session): void {
+  const previous = queryClient.getQueryData<Session>(sessionQueryKey);
+  if (previous?.user?.email !== session.user?.email) {
+    queryClient.removeQueries({ queryKey: userDataKey });
+  }
+  queryClient.setQueryData(sessionQueryKey, session);
+}
 
 /**
  * Keep the session query in sync when the API client refreshes the session on
@@ -20,7 +34,7 @@ export const sessionQueryKey = ["session"] as const;
  */
 export function connectSessionCache(queryClient: QueryClient): void {
   onSessionRefreshed((session) => {
-    queryClient.setQueryData(sessionQueryKey, session);
+    storeSession(queryClient, session);
   });
 }
 
@@ -41,7 +55,7 @@ function useSessionMutation<TInput>(request: (input: TInput) => Promise<Session>
     mutationFn: request,
     onSuccess: (session) => {
       setCsrfToken(session.csrf_token); // rotated by the server on sign-in/out
-      queryClient.setQueryData(sessionQueryKey, session);
+      storeSession(queryClient, session);
     },
   });
 }

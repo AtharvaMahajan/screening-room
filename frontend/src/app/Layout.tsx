@@ -47,6 +47,9 @@ function AccountMenu() {
 
   return (
     <div className="flex items-center gap-3 text-sm">
+      <Link to="/" className="text-stone-700 hover:underline dark:text-stone-300">
+        Discover
+      </Link>
       <Link to="/taste" className="text-stone-700 hover:underline dark:text-stone-300">
         Your taste
       </Link>

@@ -6,13 +6,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { apiGet, apiSend } from "../../api/client";
 import type { components } from "../../api/schema";
+import { userDataKey } from "../auth/api";
 
 export type Preferences = components["schemas"]["PreferencesOut"];
 export type Favorites = components["schemas"]["FavoritesOut"];
 
-const preferencesKey = ["me", "preferences"] as const;
-const favoritesKey = ["me", "favorites"] as const;
-const savePreferencesKey = ["me", "preferences", "save"] as const;
+const preferencesKey = [...userDataKey, "preferences"] as const;
+const favoritesKey = [...userDataKey, "favorites"] as const;
+const savePreferencesKey = [...userDataKey, "preferences", "save"] as const;
 
 export function usePreferences() {
   return useQuery({

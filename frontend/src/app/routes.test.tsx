@@ -10,7 +10,9 @@ describe("routes", () => {
 
     renderAt("/");
 
-    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Find something to watch" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Screening Room" })).toBeInTheDocument();
   });
 

@@ -49,7 +49,9 @@ describe("route guard", () => {
 
     renderAt("/sign-in");
 
-    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Find something to watch" }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -65,7 +67,9 @@ describe("sign in", () => {
 
     await fillSignIn("ada@example.com", "correct horse battery");
 
-    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Find something to watch" }),
+    ).toBeInTheDocument();
     const [login] = callsTo(api, "POST /api/auth/login");
     expect(login?.body).toEqual({ email: "ada@example.com", password: "correct horse battery" });
     expect(login?.headers["X-CSRF-Token"]).toBe("anon-token"); // from the session bootstrap
@@ -96,7 +100,9 @@ describe("sign in", () => {
 
     await fillSignIn("ada@example.com", "correct horse battery");
 
-    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Find something to watch" }),
+    ).toBeInTheDocument();
     expect(router.state.location.pathname).toBe("/");
   });
 

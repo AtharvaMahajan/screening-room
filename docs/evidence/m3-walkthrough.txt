@@ -1,0 +1,38 @@
+M3 evidence: timed walkthrough, sign-up to explained recommendations
+====================================================================
+Roadmap M3 "done when": a new user can sign up, pick genres and a couple of
+favorites, and see 5 explained recommendations in under 2 minutes.
+
+Run 2026-10-31 against the dev stack (Vite dev server + API + dev database with
+the M2 pool of 1,336 titles). Driven through Chrome by Claude Code, so the pace
+is an automated one, not a person's; it shows the number of steps and that
+nothing in the flow is slow. A run by a person is still worth doing.
+
+Timeline (start = opening /register; end = the API logging the first request):
+  0 s     /register: email, password, "Create account"
+          -> lands on /welcome ("What do you like to watch?")
+          liked Science Fiction and Drama, avoided Horror (3 clicks, saved as clicked)
+          picked Interstellar and Inception from "Popular in your genres" (2 clicks)
+          "Show my recommendations" -> Discover, "Find something" (2 clicks)
+  43 s    rec_requests row: 5 results, 2 anchors, 0 anchors without neighbors,
+          latency_ms 114
+
+Interactions: 2 fields typed, 8 clicks. No context set (all optional).
+
+Shortlist shown (media type "either"):
+  1 Avengers: Endgame (movie)  Because you picked Interstellar / Rated 8.2/10 by 29,174 TMDB users
+  2 Project Hail Mary (movie)  Because you picked Interstellar / Rated 8.6/10 by 8,604 TMDB users
+  3 The 100 (TV)               Matches genres you like: Science Fiction, Drama / Rated 7.9/10 ...
+  4 Grey's Anatomy (TV)        Matches genres you like: Drama / Rated 8.2/10 ...
+  5 MINDHUNTER (TV)            Matches genres you like: Drama, Crime / Rated 8.1/10 ...
+
+Also checked in the same session: skip hides a card; opening a title and going
+back keeps the shortlist without a new request; "Show me more" returns 5 new
+titles (exclude count 5 in the log) and scrolls to the top of the new list; no
+console errors. Logged latencies for the session's 4 requests: 114, 235, 166, 91 ms.
+
+Observation (open): "Matches genres you like: Drama, Crime" on MINDHUNTER. The user
+liked only Science Fiction and Drama; Crime comes from a favorite (our data tags
+Inception Action, Crime, Science Fiction), which the engine counts as +1.0 for its
+genres (recommendation-engine.md §4). Accurate to the data, but the wording claims
+a stated preference. Raised as a wording question for the engine.

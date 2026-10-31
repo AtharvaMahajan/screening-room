@@ -11,6 +11,9 @@ import { onSessionRefreshed, setCsrfToken } from "../api/client";
 // fail at random on a busy machine (and CI runners are often slower still).
 configure({ asyncUtilTimeout: 5000 });
 
+// jsdom doesn't lay pages out, so it has no scrollIntoView. Spy on it to check calls.
+Element.prototype.scrollIntoView = () => {};
+
 afterEach(() => {
   // Vitest globals are off, so Testing Library can't register this itself.
   cleanup();
