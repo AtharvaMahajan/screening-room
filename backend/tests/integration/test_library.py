@@ -8,10 +8,10 @@ from datetime import UTC, date, datetime, timedelta
 import pytest
 from fastapi.testclient import TestClient
 from httpx2 import Response
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
-from screening_room.modules.library.models import ViewingEvent
+from screening_room.modules.library.models import ViewingEvent, WatchlistItem
 from tests.integration.helpers import add_candidate, register, send
 
 Send = Callable[..., Response]
@@ -238,3 +238,88 @@ def test_each_user_sees_and_changes_only_their_own_library(
         )
     )
     assert viewers == 2
+
+
+# --- Lists (FR-12) --------------------------------------------------------------------------
+
+
+def names(response: Response) -> list[str]:
+    assert response.status_code == 200, response.text
+    return [item["title"]["name"] for item in response.json()]
+
+
+def test_lists_are_newest_first_and_filter_by_media_type(me: Send, db_session: Session) -> None:
+    film = add_candidate(db_session, "Film A")
+    show = add_candidate(db_session, "Show B", media_type="tv")
+    later = add_candidate(db_session, "Film C")
+    for minutes, title_id in enumerate((film, show, later)):
+        me("PUT", f"/api/me/watchlist/{title_id}")
+        # now() is the transaction's start time, and a test is one transaction:
+        # give each save its own time, as separate requests would have.
+        db_session.execute(
+            update(WatchlistItem)
+            .where(WatchlistItem.title_id == title_id)
+            .values(added_at=datetime(2026, 10, 1, 12, minutes, tzinfo=UTC))
+        )
+    db_session.commit()
+
+    assert names(me("GET", "/api/me/watchlist")) == ["Film C", "Show B", "Film A"]
+    assert names(me("GET", "/api/me/watchlist?media_type=movie")) == ["Film C", "Film A"]
+    assert names(me("GET", "/api/me/watchlist?media_type=tv")) == ["Show B"]
+    assert names(me("GET", "/api/me/watchlist?limit=1")) == ["Film C"]
+    assert names(me("GET", "/api/me/watchlist?media_type=movie&limit=1")) == ["Film C"]
+    # The limit counts matching titles: filter first, then limit.
+    assert names(me("GET", "/api/me/watchlist?media_type=tv&limit=1")) == ["Show B"]
+
+
+def test_history_lists_every_viewing_with_its_date(me: Send, title: int) -> None:
+    me("POST", f"/api/me/history/{title}", {"watched_on": "2024-02-03"})
+    me("POST", f"/api/me/history/{title}", {})
+
+    viewings = me("GET", "/api/me/history").json()
+
+    assert [(v["title"]["name"], v["watched_on"]) for v in viewings] == [
+        ("Arrival", None),  # the rewatch, recorded last
+        ("Arrival", "2024-02-03"),
+    ]
+
+
+def test_ratings_and_not_for_me_lists(me: Send, title: int, db_session: Session) -> None:
+    other = add_candidate(db_session, "Dune")
+    me("PUT", f"/api/me/ratings/{title}", {"value": 4})
+    me("PUT", f"/api/me/not-for-me/{other}")
+
+    rated = me("GET", "/api/me/ratings").json()
+    dismissed = me("GET", "/api/me/not-for-me").json()
+
+    assert [(r["title"]["name"], r["value"]) for r in rated] == [("Arrival", 4)]
+    assert [d["title"]["name"] for d in dismissed] == ["Dune"]
+    assert dismissed[0]["title"] | {"poster_url": None, "year": None} == {
+        "id": other,
+        "media_type": "movie",
+        "name": "Dune",
+        "year": None,
+        "poster_url": None,
+    }
+
+
+@pytest.mark.parametrize("path", ["watchlist", "history", "ratings", "not-for-me"])
+def test_lists_show_only_your_own_entries(
+    client: TestClient, me: Send, title: int, path: str
+) -> None:
+    me("PUT", f"/api/me/ratings/{title}", {"value": 5})  # also a viewing
+    me("PUT", f"/api/me/watchlist/{title}")
+    me("PUT", f"/api/me/not-for-me/{title}")
+    other = signed_up(TestClient(client.app), "nosy@example.com")
+
+    assert me("GET", f"/api/me/{path}").json() != []
+    assert other("GET", f"/api/me/{path}").json() == []
+
+
+@pytest.mark.parametrize("query", ["media_type=film", "limit=0", "limit=501"])
+def test_list_parameters_are_validated(me: Send, query: str) -> None:
+    assert me("GET", f"/api/me/watchlist?{query}").status_code == 422
+
+
+def test_lists_need_a_session(client: TestClient) -> None:
+    assert client.get("/api/me/watchlist").status_code == 401

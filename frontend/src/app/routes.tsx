@@ -4,6 +4,7 @@ import { RegisterPage } from "../features/auth/RegisterPage";
 import { RequireAuth } from "../features/auth/RequireAuth";
 import { SignInPage } from "../features/auth/SignInPage";
 import { DiscoverPage } from "../features/discover/DiscoverPage";
+import { LibraryPage } from "../features/library/LibraryPage";
 import { TastePage } from "../features/onboarding/TastePage";
 import { TitlePage } from "../features/titles/TitlePage";
 import { Layout } from "./Layout";
@@ -23,6 +24,7 @@ export const routes: RouteObject[] = [
           { path: "titles/:titleId", element: <TitlePage /> },
           { path: "welcome", element: <TastePage welcome /> },
           { path: "taste", element: <TastePage /> },
+          { path: "library", element: <LibraryPage /> },
         ],
       },
       { path: "sign-in", element: <SignInPage /> },

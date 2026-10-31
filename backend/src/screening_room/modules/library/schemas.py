@@ -5,6 +5,8 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, Field
 
+from screening_room.modules.catalog.schemas import TitleCardOut
+
 
 class TitleStateOut(BaseModel):
     """Everything the signed-in user has recorded about one title (ADR-0008).
@@ -26,6 +28,34 @@ class ViewingIn(BaseModel):
 
 class RatingIn(BaseModel):
     value: int = Field(ge=1, le=5)  # whole stars (ADR-0009)
+
+
+# --- Library lists (M4d, FR-12) -----------------------------------------------------------
+
+
+class WatchlistItemOut(BaseModel):
+    title: TitleCardOut
+    added_at: datetime
+
+
+class ViewingOut(BaseModel):
+    """One viewing: a rewatch is its own entry."""
+
+    id: int
+    title: TitleCardOut
+    watched_on: date | None  # when the user said they watched it, if they did
+    created_at: datetime  # when it was recorded
+
+
+class RatingOut(BaseModel):
+    title: TitleCardOut
+    value: int
+    rated_at: datetime  # last changed
+
+
+class NotForMeOut(BaseModel):
+    title: TitleCardOut
+    marked_at: datetime
 
 
 # --- For the recommender (M4b) ---------------------------------------------------------------

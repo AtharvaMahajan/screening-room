@@ -13,8 +13,13 @@ import type { components } from "../../api/schema";
 import { userDataKey } from "../auth/api";
 
 export type TitleState = components["schemas"]["TitleStateOut"];
+export type WatchlistItem = components["schemas"]["WatchlistItemOut"];
+export type Viewing = components["schemas"]["ViewingOut"];
+export type RatedItem = components["schemas"]["RatingOut"];
+export type NotForMeItem = components["schemas"]["NotForMeOut"];
 
 export const titleStateKey = (titleId: number) => [...userDataKey, "titles", titleId] as const;
+const listsKey = [...userDataKey, "library"] as const;
 
 export function useTitleState(titleId: number) {
   return useQuery({
@@ -23,11 +28,15 @@ export function useTitleState(titleId: number) {
   });
 }
 
-/** Store a title's new state, as returned by any library change. */
+/**
+ * Store a title's new state, as returned by any library change. The Library
+ * page's lists are now out of date too: they refetch when next shown.
+ */
 export function useStoreTitleState() {
   const queryClient = useQueryClient();
   return (state: TitleState) => {
     queryClient.setQueryData(titleStateKey(state.title_id), state);
+    void queryClient.invalidateQueries({ queryKey: listsKey });
   };
 }
 
@@ -70,5 +79,26 @@ export function useLibraryChange(titleId: number) {
     mutationFn: (change: LibraryChange) => send(titleId, change),
     scope: { id: `library-${String(titleId)}` },
     onSuccess: store,
+  });
+}
+
+// --- Library lists (FR-12) -----------------------------------------------------------------
+
+export type MediaFilter = "all" | "movie" | "tv";
+
+interface Lists {
+  watchlist: WatchlistItem[];
+  history: Viewing[];
+  ratings: RatedItem[];
+  "not-for-me": NotForMeItem[];
+}
+export type ListName = keyof Lists;
+
+/** One of the Library page's lists, newest first. */
+export function useLibraryList<Name extends ListName>(name: Name, media: MediaFilter) {
+  const query = media === "all" ? "" : `?media_type=${media}`;
+  return useQuery({
+    queryKey: [...listsKey, name, media],
+    queryFn: ({ signal }) => apiGet<Lists[Name]>(`/api/me/${name}${query}`, { signal }),
   });
 }
