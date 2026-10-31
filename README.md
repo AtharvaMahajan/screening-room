@@ -131,8 +131,24 @@ All configuration comes from environment variables. For local development they'r
 | `ALLOWED_ORIGINS` | Backend | **Required.** JSON list of origins allowed to make unsafe requests, e.g. `["http://localhost:5173"]` |
 | `SESSION_TTL_DAYS` | Backend | Absolute session lifetime. Default `30` |
 | `COOKIE_SECURE`, `COOKIE_PREFIX_HOST` | Backend | Default `true` (production). Set both to `false` for local http, where browsers drop `Secure` cookies |
+| `TMDB_API_TOKEN` | Ingestion, title detail | TMDB **API Read Access Token** (themoviedb.org → Settings → API). Only needed by code that calls TMDB; never commit it |
+| `TMDB_RATE_LIMIT_RPS`, `TMDB_MAX_WORKERS` | Ingestion | Requests per second (default `20`) and parallel detail fetches (default `8`) |
+| `CATALOG_TTL_DAYS` | Ingestion | Title metadata older than this is stale and re-fetched (default `14`) |
 
 Migrations only need `DATABASE_URL`. The web app refuses to start if a required setting is missing.
+
+## Catalog (TMDB ingestion)
+
+Recommendations draw on a local pool of movies and TV shows, filled from TMDB by a command-line job ([catalog-ingestion.md](docs/architecture/catalog-ingestion.md)). It needs `TMDB_API_TOKEN` in `.env`. Run these from `backend/`:
+
+```bash
+uv run python -m screening_room.jobs ingest --dry-run       # the plan; no requests, no writes
+uv run python -m screening_room.jobs ingest                 # build or update the pool (~2 min, ~1,500 requests)
+uv run python -m screening_room.jobs report                 # what's in the pool (no requests)
+uv run python -m screening_room.jobs refresh                # re-fetch titles older than CATALOG_TTL_DAYS
+```
+
+Every run is safe to repeat and to interrupt: re-running continues where it stopped. `--max-requests N` caps the TMDB requests a run may make. Each run is recorded in the `ingestion_runs` table, and the first real run's report is in [docs/evidence/](docs/evidence/m2-first-ingestion-report.txt).
 
 ## Authentication
 

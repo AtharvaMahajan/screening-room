@@ -1,0 +1,84 @@
+M2 evidence: first real ingestion of the candidate pool (catalog-ingestion.md §12)
+==================================================================================
+Seed plan starter-v1 against TMDB, built in three runs on 2026-10-30:
+  #175  ingest --max-requests 150   partial    trial run: real-API check (150 requests)
+  #194  ingest                      failed     stopped on TV genre 10749 "Romance" (a
+                                               movie-only genre) after 1,043 titles. Led to
+                                               the shared-genre-id rule (catalog-ingestion.md
+                                               §4.2). Nothing was lost: hydrated titles were
+                                               already committed.
+  #214  ingest                      succeeded  resumed and finished the last 249 titles
+Total TMDB requests: 1,903. (Run ids are high because test runs use up identity values.)
+
+Report output follows, unedited.
+----------------------------------------------------------------------------------
+
+Screening Room catalog report (2026-10-31 03:02 UTC)
+
+Latest run: #214 ingest (starter-v1), succeeded
+  started 2026-10-31 03:01, finished 2026-10-31 03:01
+  counts: discovered=2075, failed=0, hydrated=249, inserted=0, missing=0, pool_added=0, requests=355, selected=249, skipped_by_cap=0, sources=64, updated=2075
+
+Candidate pool: 1336 titles (movie 711, tv 625)
+  pool members by detail level: full 1336, summary only 0
+  stale (details older than 14 days): 0
+  missing at provider: 0
+  with sync errors: 0
+
+Candidates by genre:
+                          movie     tv
+  action                   204    173 
+  adventure                181    173 
+  animation                 84    134 
+  comedy                   145    190 
+  crime                     88    108 
+  documentary               41     43 
+  drama                    306    359 
+  family                    80     75 
+  fantasy                  113    178 
+  history                   56      1 
+  horror                    76      0 
+  kids                       0     51 
+  music                     46      0 
+  mystery                   63     94 
+  news                       0      2 
+  politics                   0     44 
+  reality                    0     42 
+  romance                   94      1 
+  science-fiction          118    178 
+  soap                       0     45 
+  talk                       0      2 
+  thriller                 160      0 
+  tv-movie                   1      0 
+  war                       49     44 
+  western                   40     35 
+  ! = fewer than 30 titles (thin coverage, see §5)
+
+Candidates by decade (release / first air):
+                          movie     tv
+  1920s                      4      0 
+  1930s                      2      0 
+  1940s                      1      0 
+  1950s                      3      4 
+  1960s                     13      1 
+  1970s                     26!    22!
+  1980s                     38     27!
+  1990s                     60     56 
+  2000s                    159     95 
+  2010s                    279    240 
+  2020s                    126    179 
+  unknown                    0      1 
+  ! = fewer than 30 titles (thin coverage, see §5)
+
+Candidates by original language:
+  en 890, es 92, ja 74, ko 56, fr 45, zh 42, de 41, hi 41, it 40, pt 5, other 10
+
+Recommendation lists (for favorite_neighbor):
+  candidates with a stored list: 1335 of 1336
+  mean list length: 19.9
+  targets that are themselves candidates: 12%
+  candidates whose list has no candidate at all: 263
+
+Memberships not seen in the latest ingest run (#214): 0
+
+

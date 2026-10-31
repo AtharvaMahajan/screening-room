@@ -54,7 +54,20 @@ class TmdbSettings(_EnvSettings):
         return self.tmdb_api_token.get_secret_value()
 
 
-class Settings(DatabaseSettings, TmdbSettings):
+class CatalogSettings(TmdbSettings):
+    """Catalog freshness and ingestion tuning (initial values: catalog-ingestion.md §9-10)."""
+
+    # Metadata older than this is stale and gets re-fetched.
+    catalog_ttl_days: int = Field(default=14, gt=0)
+    # Worker threads fetching details in parallel during ingestion.
+    tmdb_max_workers: int = Field(default=8, gt=0, le=32)
+
+
+class JobSettings(DatabaseSettings, CatalogSettings):
+    """What the ingestion CLI needs: database and TMDB, but none of the web app's secrets."""
+
+
+class Settings(DatabaseSettings, CatalogSettings):
     """Everything the web app needs."""
 
     # --- Required: the app refuses to start without these rather than guessing ---

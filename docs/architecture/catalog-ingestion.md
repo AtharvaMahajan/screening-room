@@ -93,6 +93,8 @@ TMDB's movie and TV genre lists differ. TV merges some genres, e.g. "Action & Ad
 
 The taxonomy and mapping are reference data, loaded by a migration and reviewed in M2. The adapter fetches the provider genre lists and **fails loudly** if a provider genre has no mapping, rather than silently dropping it.
 
+TMDB genre IDs are one shared ID space across its movie and TV lists, and titles are sometimes tagged with a genre only the other list offers. The first real ingestion found a TV show tagged 10749 "Romance", a movie-only genre. Such a genre uses the other media type's mapping. Ingestion still stops on an ID that neither list knows. *(Decided in M2.)*
+
 ## 5. Sizing and growth
 
 Start with ~1,000–2,000 titles, and **grow only on evidence**. `report` and the recommendation logs make each trigger measurable:
