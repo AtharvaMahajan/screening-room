@@ -10,6 +10,7 @@ from sqlalchemy import create_engine, pool
 
 # Import every module's models here so autogenerate can see their tables.
 import screening_room.modules.catalog.models  # noqa: F401
+import screening_room.modules.discovery.models  # noqa: F401
 import screening_room.modules.identity.models  # noqa: F401
 import screening_room.modules.profile.models  # noqa: F401
 from screening_room.config import DatabaseSettings

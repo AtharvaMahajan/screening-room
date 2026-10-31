@@ -20,6 +20,7 @@ from screening_room.config import DatabaseSettings, Settings
 from screening_room.db import create_db_engine, get_session
 from screening_room.main import create_app
 from screening_room.modules.catalog.models import IngestionRun, Person, Title
+from screening_room.modules.discovery.models import RecRequest
 from screening_room.modules.profile.models import UserFavoriteTitle
 from tests.conftest import make_test_settings
 
@@ -114,6 +115,7 @@ def client(db_session: Session, settings: Settings) -> Iterator[TestClient]:
 def empty_catalog(db_session: Session) -> None:
     """Start from an EMPTY catalog, so tests that look at the whole pool aren't
     affected by your real one. Undone with the rest of the test's transaction."""
+    db_session.execute(delete(RecRequest))  # results reference titles (RESTRICT)
     db_session.execute(delete(UserFavoriteTitle))  # they reference titles (RESTRICT)
     db_session.execute(delete(Title))  # cascades to genres, credits, memberships, lists
     db_session.execute(delete(IngestionRun))
