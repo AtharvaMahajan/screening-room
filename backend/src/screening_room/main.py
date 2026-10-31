@@ -13,23 +13,38 @@ from screening_room import health
 from screening_room.config import Settings, get_settings
 from screening_room.core.errors import ERROR_RESPONSES, register_error_handlers
 from screening_room.db import create_db_engine, create_session_factory
+from screening_room.modules.catalog import router as catalog_router
+from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
+from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
 from screening_room.modules.identity import router as identity_router
 from screening_room.modules.identity.csrf import csrf_protect
 
 # Every router the app serves. tests/unit/test_sync_handlers.py checks each
 # route here, so a new module's router is registered by adding it to this list.
-ROUTERS: list[APIRouter] = [health.router, identity_router.router]
+ROUTERS: list[APIRouter] = [health.router, identity_router.router, catalog_router.router]
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Build a configured app. Tests pass their own ``settings``."""
     settings = settings or get_settings()
     engine = create_db_engine(settings.database_url)
+    # Without a token the app still runs; title pages show the data we have.
+    tmdb_client = (
+        TmdbClient(
+            settings.tmdb_api_token.get_secret_value(),
+            rate_limit_rps=settings.tmdb_rate_limit_rps,
+            max_attempts=2,  # user-facing: at most one retry (catalog-ingestion.md §10)
+        )
+        if settings.tmdb_api_token
+        else None
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         yield
         engine.dispose()  # close pooled connections on shutdown
+        if tmdb_client is not None:
+            tmdb_client.close()
 
     app = FastAPI(
         title="Screening Room API",
@@ -52,6 +67,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = settings
     app.state.session_factory = create_session_factory(engine)
+    app.state.catalog_provider = TmdbProvider(tmdb_client) if tmdb_client else None
     register_error_handlers(app)
 
     for router in ROUTERS:

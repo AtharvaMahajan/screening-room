@@ -69,6 +69,7 @@ These are the same checks CI runs ([`.github/workflows/ci.yml`](.github/workflow
 uv run ruff check .          # lint
 uv run ruff format --check . # formatting (use `uv run ruff format .` to fix)
 uv run mypy                  # strict type checking
+uv run lint-imports          # module boundaries (ADR-0001), configured in pyproject.toml
 uv run pytest                # all tests; integration tests need a running, migrated database
 uv run pytest tests/unit     # unit tests only, no database needed
 uv run alembic check         # models and migrations are in sync
@@ -147,6 +148,8 @@ uv run python -m screening_room.jobs ingest                 # build or update th
 uv run python -m screening_room.jobs report                 # what's in the pool (no requests)
 uv run python -m screening_room.jobs refresh                # re-fetch titles older than CATALOG_TTL_DAYS
 ```
+
+Each title has a page at `http://localhost:5173/titles/<id>`, where `<id>` is our title id (`report` shows none; find one with `SELECT id, name FROM titles`). Nothing links there yet: Discover (M3) and search (M4) will. Pool titles are served from the local catalog. Stale ones are refreshed from TMDB, and if TMDB is down the page still works, with a note that some details may be out of date.
 
 Every run is safe to repeat and to interrupt: re-running continues where it stopped. `--max-requests N` caps the TMDB requests a run may make. Each run is recorded in the `ingestion_runs` table, and the first real run's report is in [docs/evidence/](docs/evidence/m2-first-ingestion-report.txt).
 

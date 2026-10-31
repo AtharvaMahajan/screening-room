@@ -19,5 +19,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // Multi-step form tests can take several seconds on a loaded machine.
+    testTimeout: 15_000,
   },
 });

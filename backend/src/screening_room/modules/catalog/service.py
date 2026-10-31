@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from screening_room.modules.catalog.models import (
     CandidatePoolMembership,
+    Genre,
     Person,
     ProviderGenreMap,
     ProviderTitleRecommendation,
@@ -29,6 +30,7 @@ from screening_room.modules.catalog.providers.base import (
     TitleDetails,
     TitleSummary,
 )
+from screening_room.modules.catalog.schemas import CastMember, TitleRecord
 
 # (media type, provider genre id) -> internal genre ids, e.g. ("tv", 10765) -> [scifi, fantasy]
 GenreMap = Mapping[tuple[str, int], Sequence[int]]
@@ -369,3 +371,48 @@ def count_pool_titles(session: Session) -> int:
     """Titles with any pool membership (hydrated or not): what --max-titles caps."""
     count = session.scalar(select(func.count(CandidatePoolMembership.title_id.distinct())))
     return count or 0
+
+
+def load_title_record(session: Session, title_id: int) -> TitleRecord | None:
+    """A title with its genres and credits, as plain values (None if unknown)."""
+    title = session.get(Title, title_id)
+    if title is None:
+        return None
+    genres = session.execute(
+        select(Genre.slug, Genre.name)
+        .join(TitleGenre, TitleGenre.genre_id == Genre.id)
+        .where(TitleGenre.title_id == title_id)
+        .order_by(TitleGenre.position)
+    ).all()
+    credits = session.execute(
+        select(TitleCredit.role, TitleCredit.character_name, Person.name, Person.profile_path)
+        .join(Person, Person.id == TitleCredit.person_id)
+        .where(TitleCredit.title_id == title_id)
+        .order_by(TitleCredit.role, TitleCredit.credit_order)
+    ).all()
+    return TitleRecord(
+        id=title.id,
+        ref=ProviderRef(title.provider, cast(MediaType, title.media_type), title.provider_id),
+        name=title.name,
+        original_name=title.original_name,
+        overview=title.overview,
+        release_date=title.release_date,
+        runtime_minutes=title.runtime_minutes,
+        number_of_seasons=title.number_of_seasons,
+        original_language=title.original_language,
+        vote_average=title.vote_average,
+        vote_count=title.vote_count,
+        poster_path=title.poster_path,
+        backdrop_path=title.backdrop_path,
+        adult=title.adult,
+        detail_level=title.detail_level,
+        details_synced_at=title.details_synced_at,
+        genres=tuple((slug, name) for slug, name in genres),
+        cast=tuple(
+            CastMember(name, character, profile)
+            for role, character, name, profile in credits
+            if role == "cast"
+        ),
+        directors=tuple(name for role, _, name, _ in credits if role == "director"),
+        creators=tuple(name for role, _, name, _ in credits if role == "creator"),
+    )

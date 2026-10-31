@@ -57,6 +57,9 @@ jobs:
       - name: mypy
         run: uv run mypy
 
+      - name: Module boundaries (ADR-0001)
+        run: uv run lint-imports
+
       # The service database starts empty, so this also proves the full
       # migration history applies from scratch.
       - name: Migrations apply to a fresh database

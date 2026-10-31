@@ -30,11 +30,9 @@ describe("route guard", () => {
 
     renderAt("/");
 
-    // useSession retries once (after ~1 s) before giving up, so wait longer
-    // than findByRole's default 1 s.
-    expect(await screen.findByRole("alert", {}, { timeout: 3000 })).toHaveTextContent(
-      "Can't reach Screening Room",
-    );
+    // useSession retries once (after ~1 s) before giving up; the 5 s wait in
+    // test/setup.ts covers that.
+    expect(await screen.findByRole("alert")).toHaveTextContent("Can't reach Screening Room");
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 

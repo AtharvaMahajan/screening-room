@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router";
 
 import { Button } from "../../components/Button";
 import { useSession } from "./api";
-import { describeError } from "./formErrors";
+import { describeError } from "../../lib/errors";
 import { signInPath } from "./redirect";
 
 /**

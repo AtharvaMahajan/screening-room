@@ -1,10 +1,15 @@
 // Adds DOM matchers such as toBeInTheDocument() to Vitest's expect.
 import "@testing-library/jest-dom/vitest";
 
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
 import { onSessionRefreshed, setCsrfToken } from "../api/client";
+
+// findBy*/waitFor resolve as soon as the element appears; this only bounds how
+// long a genuinely missing element is waited for. The 1 s default made tests
+// fail at random on a busy machine (and CI runners are often slower still).
+configure({ asyncUtilTimeout: 5000 });
 
 afterEach(() => {
   // Vitest globals are off, so Testing Library can't register this itself.

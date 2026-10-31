@@ -61,6 +61,8 @@ class CatalogSettings(TmdbSettings):
     catalog_ttl_days: int = Field(default=14, gt=0)
     # Worker threads fetching details in parallel during ingestion.
     tmdb_max_workers: int = Field(default=8, gt=0, le=32)
+    # We store image paths only and build URLs from this (ADR-0004).
+    tmdb_image_base_url: str = "https://image.tmdb.org/t/p"
 
 
 class JobSettings(DatabaseSettings, CatalogSettings):

@@ -98,10 +98,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/titles/{title_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Title */
+        get: operations["get_title"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** CastMemberOut */
+        CastMemberOut: {
+            /** Name */
+            name: string;
+            /** Character */
+            character: string | null;
+            /** Profile Url */
+            profile_url: string | null;
+        };
         /** ErrorBody */
         ErrorBody: {
             /** Code */
@@ -121,6 +147,13 @@ export interface components {
             field: string;
             /** Message */
             message: string;
+        };
+        /** GenreOut */
+        GenreOut: {
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
         };
         /** HealthOut */
         HealthOut: {
@@ -165,6 +198,51 @@ export interface components {
             user: components["schemas"]["UserOut"] | null;
             /** Csrf Token */
             csrf_token: string;
+        };
+        /** TitleDetailOut */
+        TitleDetailOut: {
+            /** Id */
+            id: number;
+            /**
+             * Media Type
+             * @enum {string}
+             */
+            media_type: "movie" | "tv";
+            /** Name */
+            name: string;
+            /** Original Name */
+            original_name: string | null;
+            /** Overview */
+            overview: string | null;
+            /** Release Date */
+            release_date: string | null;
+            /** Runtime Minutes */
+            runtime_minutes: number | null;
+            /** Number Of Seasons */
+            number_of_seasons: number | null;
+            /** Original Language */
+            original_language: string | null;
+            /** Vote Average */
+            vote_average: number | null;
+            /** Vote Count */
+            vote_count: number | null;
+            /** Poster Url */
+            poster_url: string | null;
+            /** Backdrop Url */
+            backdrop_url: string | null;
+            /** Genres */
+            genres: components["schemas"]["GenreOut"][];
+            /** Cast */
+            cast: components["schemas"]["CastMemberOut"][];
+            /** Directors */
+            directors: string[];
+            /** Creators */
+            creators: string[];
+            /**
+             * Metadata Status
+             * @enum {string}
+             */
+            metadata_status: "fresh" | "stale" | "partial";
         };
         /** UserOut */
         UserOut: {
@@ -358,6 +436,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SessionOut"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_title: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                title_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleDetailOut"];
                 };
             };
             /** @description Client error */

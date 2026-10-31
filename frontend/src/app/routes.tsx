@@ -4,6 +4,7 @@ import { RegisterPage } from "../features/auth/RegisterPage";
 import { RequireAuth } from "../features/auth/RequireAuth";
 import { SignInPage } from "../features/auth/SignInPage";
 import { HomePage } from "../features/home/HomePage";
+import { TitlePage } from "../features/titles/TitlePage";
 import { Layout } from "./Layout";
 import { NotFoundPage } from "./NotFoundPage";
 
@@ -16,7 +17,10 @@ export const routes: RouteObject[] = [
       // Signed-in users only: everyone else is sent to sign-in.
       {
         element: <RequireAuth />,
-        children: [{ index: true, element: <HomePage /> }],
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: "titles/:titleId", element: <TitlePage /> },
+        ],
       },
       { path: "sign-in", element: <SignInPage /> },
       { path: "register", element: <RegisterPage /> },

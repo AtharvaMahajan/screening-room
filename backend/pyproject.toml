@@ -21,6 +21,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "import-linter>=2.1",
     "mypy>=1.13",
     "pytest>=8.3",
     "ruff>=0.8",
@@ -29,6 +30,36 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.9,<1"]
 build-backend = "uv_build"
+
+# --- Module boundaries (ADR-0001), checked by `uv run lint-imports` ------------
+# Add each new module (profile, discovery, library) to these lists as it arrives.
+[tool.importlinter]
+root_package = "screening_room"
+
+[[tool.importlinter.contracts]]
+name = "Shared infrastructure (core, db, config) doesn't depend on feature modules"
+type = "forbidden"
+source_modules = ["screening_room.core", "screening_room.db", "screening_room.config"]
+forbidden_modules = ["screening_room.modules"]
+
+[[tool.importlinter.contracts]]
+name = "identity depends on no other module (all modules may depend on identity)"
+type = "forbidden"
+source_modules = ["screening_room.modules.identity"]
+forbidden_modules = ["screening_room.modules.catalog"]
+
+[[tool.importlinter.contracts]]
+name = "Modules use identity only through its service, schemas and dependencies"
+type = "forbidden"
+source_modules = ["screening_room.modules.catalog"]
+forbidden_modules = [
+    "screening_room.modules.identity.models",
+    "screening_room.modules.identity.router",
+    "screening_room.modules.identity.csrf",
+]
+# A public function may use its own module's private parts (dependencies ->
+# service -> models), so only DIRECT imports of private parts are forbidden.
+allow_indirect_imports = true
 
 # --- Ruff: lint + format ------------------------------------------------------
 [tool.ruff]
