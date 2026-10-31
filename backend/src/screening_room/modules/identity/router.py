@@ -14,6 +14,7 @@ from screening_room.core.errors import AppError
 from screening_room.db import SessionDep
 from screening_room.modules.identity import csrf, service
 from screening_room.modules.identity.dependencies import AuthDep, CurrentUserDep, get_current_user
+from screening_room.modules.identity.rate_limits import AuthRateLimitsDep, client_ip
 from screening_room.modules.identity.schemas import (
     AuthenticatedSession,
     CurrentUser,
@@ -49,8 +50,15 @@ def read_session(
 
 @router.post("/register", status_code=201)
 def register(
-    body: RegisterIn, response: Response, session: SessionDep, auth: AuthDep, settings: SettingsDep
+    body: RegisterIn,
+    request: Request,
+    response: Response,
+    session: SessionDep,
+    auth: AuthDep,
+    settings: SettingsDep,
+    limits: AuthRateLimitsDep,
 ) -> SessionOut:
+    limits.before_registration(client_ip(request))
     user = service.register_user(session, body.email, body.password, body.display_name)
     new_session = _replace_session(session, auth, user, settings)
     session.commit()
@@ -59,10 +67,18 @@ def register(
 
 @router.post("/login")
 def login(
-    body: LoginIn, response: Response, session: SessionDep, auth: AuthDep, settings: SettingsDep
+    body: LoginIn,
+    request: Request,
+    response: Response,
+    session: SessionDep,
+    auth: AuthDep,
+    settings: SettingsDep,
+    limits: AuthRateLimitsDep,
 ) -> SessionOut:
+    limits.before_login(client_ip(request), body.email)
     user = service.authenticate(session, body.email, body.password)
     if user is None:
+        limits.login_failed(body.email)
         # One message for unknown email and wrong password (security.md §2).
         raise AppError(401, "invalid_credentials", "Invalid email or password.")
     new_session = _replace_session(session, auth, user, settings)

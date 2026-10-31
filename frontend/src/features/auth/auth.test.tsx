@@ -119,6 +119,19 @@ describe("sign in", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Invalid email or password.");
   });
 
+  it("explains when there have been too many attempts", async () => {
+    const message = "Too many attempts. Please wait a few minutes and try again.";
+    mockApi({
+      "GET /api/auth/session": signedOut,
+      "POST /api/auth/login": () => apiError(429, "rate_limited", message),
+    });
+    renderAt("/sign-in");
+
+    await fillSignIn("ada@example.com", "correct horse battery");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(message);
+  });
+
   it("validates in the browser before sending anything", async () => {
     const api = mockApi({ "GET /api/auth/session": signedOut });
     renderAt("/sign-in");

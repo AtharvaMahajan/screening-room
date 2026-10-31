@@ -88,6 +88,13 @@ class Settings(DatabaseSettings, CatalogSettings):
     cookie_secure: bool = True  # send cookies over HTTPS only
     cookie_prefix_host: bool = True  # use __Host- cookie names (requires Secure)
 
+    # Login and registration rate limits (security.md §8; initial values).
+    login_attempts_per_ip: int = Field(default=30, gt=0)  # generous: offices share an IP
+    login_failures_per_email: int = Field(default=10, gt=0)  # failures only: no lockout DoS
+    login_window_minutes: int = Field(default=15, gt=0)
+    registrations_per_ip: int = Field(default=10, gt=0)
+    registration_window_minutes: int = Field(default=60, gt=0)
+
     @property
     def session_cookie_name(self) -> str:
         return "__Host-sr_session" if self.cookie_prefix_host else "sr_session"

@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, FastAPI
 from screening_room import health
 from screening_room.config import Settings, get_settings
 from screening_room.core.errors import ERROR_RESPONSES, register_error_handlers
+from screening_room.core.headers import add_security_headers
 from screening_room.db import create_db_engine, create_session_factory
 from screening_room.modules.catalog import router as catalog_router
 from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
@@ -19,6 +20,7 @@ from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
 from screening_room.modules.discovery import router as discovery_router
 from screening_room.modules.identity import router as identity_router
 from screening_room.modules.identity.csrf import csrf_protect
+from screening_room.modules.identity.rate_limits import AuthRateLimits
 from screening_room.modules.library import router as library_router
 from screening_room.modules.profile import router as profile_router
 
@@ -79,7 +81,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.session_factory = create_session_factory(engine)
     app.state.catalog_provider = TmdbProvider(tmdb_client) if tmdb_client else None
+    app.state.auth_rate_limits = AuthRateLimits(settings)  # per app, so per test too
     register_error_handlers(app)
+    # cookie_secure is on exactly when the app is served over HTTPS (production).
+    add_security_headers(app, https=settings.cookie_secure)
 
     for router in ROUTERS:
         app.include_router(router)

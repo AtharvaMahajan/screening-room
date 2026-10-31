@@ -141,7 +141,8 @@ def search_titles(
         try:
             summaries = provider.search(query)
         except ProviderError as error:
-            logger.warning("search for %r failed: %s", query, error)
+            # Not the query itself: what people search for is their business (security.md §9).
+            logger.warning("search failed, falling back to the local catalog: %s", error)
         else:
             now = datetime.now(UTC)
             # A cache fill, not a user change: idempotent (§11).

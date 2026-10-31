@@ -13,6 +13,7 @@ from httpx2 import Response
 from sqlalchemy.orm import Session
 
 from screening_room.modules.identity.dependencies import CurrentUserDep
+from tests.conftest import TEST_ORIGIN
 from tests.integration.helpers import PASSWORD, bootstrap_csrf, expire_session, post, register
 
 PROTECTED = "/api/test/protected"
@@ -169,3 +170,33 @@ def test_signed_in_request_with_valid_token_succeeds(client: TestClient) -> None
 def test_safe_methods_need_no_origin_or_token(client: TestClient) -> None:
     assert client.get("/api/auth/session").status_code == 200
     assert client.get("/api/health").status_code == 200
+
+
+@pytest.mark.parametrize(
+    "content_type", ["text/plain", "application/x-www-form-urlencoded", "multipart/form-data"]
+)
+def test_mutations_accept_json_only(client: TestClient, content_type: str) -> None:
+    """HTML forms can send only these types, so a cross-site form can't post a JSON body
+    (security.md §7). Even with a valid token and origin, anything but JSON is refused."""
+    token = bootstrap_csrf(client)
+
+    response = client.post(
+        "/api/auth/login",
+        content=b'{"email": "ada@example.com", "password": "correct horse battery"}',
+        headers={"Origin": TEST_ORIGIN, "X-CSRF-Token": token, "Content-Type": content_type},
+    )
+
+    assert response.status_code == 422
+
+
+def test_the_same_request_as_json_gets_past_body_parsing(client: TestClient) -> None:
+    """Control for the test above: only the content type differs, and this one is read."""
+    token = bootstrap_csrf(client)
+
+    response = client.post(
+        "/api/auth/login",
+        content=b'{"email": "ada@example.com", "password": "correct horse battery"}',
+        headers={"Origin": TEST_ORIGIN, "X-CSRF-Token": token, "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 401  # parsed and checked: no such user

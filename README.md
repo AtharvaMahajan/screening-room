@@ -79,6 +79,7 @@ uv run ruff check .          # lint
 uv run ruff format --check . # formatting (use `uv run ruff format .` to fix)
 uv run mypy                  # strict type checking
 uv run lint-imports          # module boundaries (ADR-0001), configured in pyproject.toml
+uv run pip-audit --skip-editable  # known vulnerabilities in Python dependencies
 uv run pytest                # all tests; integration tests need a running, migrated database
 uv run pytest tests/unit     # unit tests only, no database needed
 uv run alembic check         # models and migrations are in sync
@@ -88,6 +89,7 @@ npm run lint                 # ESLint, including type-aware rules
 npm run typecheck            # tsc
 npm test                     # Vitest (npm run test:watch while developing)
 npm run build                # production build
+npm audit --omit=dev         # known vulnerabilities in shipped dependencies
 ```
 
 Integration tests use the database in `DATABASE_URL`, but every test runs inside a transaction that is rolled back afterwards, so they never change your data.
@@ -141,6 +143,7 @@ All configuration comes from environment variables. For local development they'r
 | `ALLOWED_ORIGINS` | Backend | **Required.** JSON list of origins allowed to make unsafe requests, e.g. `["http://localhost:5173"]` |
 | `SESSION_TTL_DAYS` | Backend | Absolute session lifetime. Default `30` |
 | `COOKIE_SECURE`, `COOKIE_PREFIX_HOST` | Backend | Default `true` (production). Set both to `false` for local http, where browsers drop `Secure` cookies |
+| `LOGIN_ATTEMPTS_PER_IP`, `LOGIN_FAILURES_PER_EMAIL`, `LOGIN_WINDOW_MINUTES`, `REGISTRATIONS_PER_IP`, `REGISTRATION_WINDOW_MINUTES` | Backend | Rate limits (security.md §8). Defaults: 30 login attempts per IP and 10 failed logins per email per 15 minutes; 10 registrations per IP per hour |
 | `TMDB_API_TOKEN` | Ingestion, title pages, search | TMDB **API Read Access Token** (themoviedb.org → Settings → API). Never commit it. Without a valid token the app still runs: title pages show what's stored, and search only searches the local catalog |
 | `TMDB_RATE_LIMIT_RPS`, `TMDB_MAX_WORKERS` | Ingestion | Requests per second (default `20`) and parallel detail fetches (default `8`) |
 | `CATALOG_TTL_DAYS` | Ingestion | Title metadata older than this is stale and re-fetched (default `14`) |

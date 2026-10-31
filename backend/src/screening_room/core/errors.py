@@ -57,11 +57,18 @@ ERROR_RESPONSES: dict[int | str, dict[str, object]] = {
 class AppError(Exception):
     """An expected failure with a stable code, e.g. AppError(404, "title_not_found", ...)."""
 
-    def __init__(self, status_code: int, code: str, message: str) -> None:
+    def __init__(
+        self,
+        status_code: int,
+        code: str,
+        message: str,
+        headers: Mapping[str, str] | None = None,  # e.g. Retry-After on a 429
+    ) -> None:
         super().__init__(message)
         self.status_code = status_code
         self.code = code
         self.message = message
+        self.headers = headers
 
 
 # --- Handlers ---------------------------------------------------------------------
@@ -92,7 +99,7 @@ def _status_code_name(status_code: int) -> str:
 
 def handle_app_error(_: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, AppError)
-    return _error_response(exc.status_code, exc.code, exc.message)
+    return _error_response(exc.status_code, exc.code, exc.message, headers=exc.headers)
 
 
 def handle_http_exception(_: Request, exc: Exception) -> JSONResponse:

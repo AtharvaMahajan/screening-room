@@ -149,11 +149,13 @@ Rotating `CSRF_SECRET` invalidates all outstanding CSRF tokens. The next unsafe 
 - Mutations accept `application/json` only, which also blocks form-based CSRF payloads.
 - Errors use the standard error body. No stack traces or SQL in responses.
 - SQL goes only through SQLAlchemy expressions or bound parameters.
-- **M5 hardening:** HSTS, a Content-Security-Policy (with TMDB's image CDN allowed for `img-src`), `X-Content-Type-Options`, `Referrer-Policy`, `frame-ancestors 'none'`.
+- **M5 hardening:** HSTS, a Content-Security-Policy (with TMDB's image CDN allowed for `img-src`), `X-Content-Type-Options`, `Referrer-Policy`, `frame-ancestors 'none'`. *Implemented in M5a* (`core/headers.py`), plus `X-Frame-Options`, `Cross-Origin-Opener-Policy` and `Permissions-Policy`. HSTS only over HTTPS. The API docs page is exempt from the CSP and is turned off in production.
 
 ## 8. Rate limiting
 
 **Login and registration rate limiting is required before public deployment (M5).** The initial approach is a fixed window per IP and per email address. With a single API instance it can be in-process, and it moves to PostgreSQL or Redis only if multiple instances need shared state ([ADR-0002](../adr/0002-postgresql-only-infrastructure.md)).
+
+*Implemented in M5a* (initial values, in settings): login 30 attempts per IP per 15 minutes; login **failures** per email 10 per 15 minutes (successful logins don't count, so nobody can lock a user out by trying their address); registration 10 per IP per hour. Over the limit: `429 rate_limited` with `Retry-After`.
 
 ## 9. Logging hygiene
 

@@ -60,6 +60,9 @@ jobs:
       - name: Module boundaries (ADR-0001)
         run: uv run lint-imports
 
+      - name: Known vulnerabilities in Python dependencies
+        run: uv run pip-audit --skip-editable
+
       # The service database starts empty, so this also proves the full
       # migration history applies from scratch.
       - name: Migrations apply to a fresh database
@@ -128,6 +131,11 @@ jobs:
 
       - name: Install dependencies (exactly as locked)
         run: npm ci
+
+      # Shipped dependencies only. Dev tooling has an accepted moderate finding
+      # (docs/evidence/m5a-security-review.md).
+      - name: Known vulnerabilities in shipped dependencies
+        run: npm audit --omit=dev
 
       - name: ESLint
         run: npm run lint
