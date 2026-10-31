@@ -13,6 +13,7 @@ from screening_room import health
 from screening_room.config import Settings, get_settings
 from screening_room.core.errors import ERROR_RESPONSES, register_error_handlers
 from screening_room.core.headers import add_security_headers
+from screening_room.core.logging import add_request_logging, configure_logging
 from screening_room.db import create_db_engine, create_session_factory
 from screening_room.modules.catalog import router as catalog_router
 from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
@@ -40,6 +41,7 @@ ROUTERS: list[APIRouter] = [
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Build a configured app. Tests pass their own ``settings``."""
     settings = settings or get_settings()
+    configure_logging(settings.log_format, settings.log_level)
     engine = create_db_engine(settings.database_url)
     # Without a token the app still runs; title pages show the data we have.
     tmdb_client = (
@@ -85,6 +87,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_error_handlers(app)
     # cookie_secure is on exactly when the app is served over HTTPS (production).
     add_security_headers(app, https=settings.cookie_secure)
+    add_request_logging(app)  # added last, so it's outermost and times everything
 
     for router in ROUTERS:
         app.include_router(router)

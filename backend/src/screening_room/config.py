@@ -10,7 +10,7 @@ settings explicitly in .env, because browsers drop `Secure` cookies over http.
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import Depends, Request
 from pydantic import Field, SecretStr
@@ -34,6 +34,14 @@ class DatabaseSettings(_EnvSettings):
 
     # e.g. postgresql+psycopg://user:password@127.0.0.1:5432/screening_room
     database_url: str
+
+
+class LogSettings(_EnvSettings):
+    """How log lines look (M5b). JSON in production, where tools read them;
+    text locally, where people do."""
+
+    log_format: Literal["json", "text"] = "text"
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
 
 class TmdbSettings(_EnvSettings):
@@ -65,11 +73,11 @@ class CatalogSettings(TmdbSettings):
     tmdb_image_base_url: str = "https://image.tmdb.org/t/p"
 
 
-class JobSettings(DatabaseSettings, CatalogSettings):
+class JobSettings(DatabaseSettings, CatalogSettings, LogSettings):
     """What the ingestion CLI needs: database and TMDB, but none of the web app's secrets."""
 
 
-class Settings(DatabaseSettings, CatalogSettings):
+class Settings(DatabaseSettings, CatalogSettings, LogSettings):
     """Everything the web app needs."""
 
     # --- Required: the app refuses to start without these rather than guessing ---

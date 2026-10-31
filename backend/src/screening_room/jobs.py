@@ -5,18 +5,19 @@
     uv run python -m screening_room.jobs refresh [--older-than-days 14] [--limit N]
                                                  [--max-requests N]
     uv run python -m screening_room.jobs report
+    uv run python -m screening_room.jobs metrics [--days 7]
 
 This module only parses arguments and wires up real dependencies; the work is
 in modules/catalog/ingestion/, where tests run it against a FakeProvider.
 """
 
 import argparse
-import logging
 import sys
 from collections.abc import Sequence
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
-from screening_room.config import JobSettings
+from screening_room.config import JobSettings, LogSettings
+from screening_room.core.logging import configure_logging
 from screening_room.db import create_db_engine, create_session_factory
 from screening_room.modules.catalog.ingestion.report import build_report
 from screening_room.modules.catalog.ingestion.runs import (
@@ -30,6 +31,7 @@ from screening_room.modules.catalog.ingestion.runs import (
 from screening_room.modules.catalog.ingestion.seed_plan import PLANS, SEED_PLAN_VERSION
 from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
 from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
+from screening_room.modules.discovery.metrics import format_report, recommendation_metrics
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -51,6 +53,11 @@ def build_parser() -> argparse.ArgumentParser:
     refresh.add_argument("--max-requests", type=int)
 
     commands.add_parser("report", help="pool composition and health (no provider calls)")
+
+    metrics = commands.add_parser(
+        "metrics", help="recommendation latency, coverage and outcomes (no provider calls)"
+    )
+    metrics.add_argument("--days", type=int, default=7, help="window, ending now")
     return parser
 
 
@@ -80,10 +87,8 @@ def print_result(result: RunResult) -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    # The HTTP library logs every request with its full URL at INFO. Our client logs
-    # what matters (path and status of failures, catalog-ingestion.md §10).
-    logging.getLogger("httpx2").setLevel(logging.WARNING)
+    log_settings = LogSettings()
+    configure_logging(log_settings.log_format, log_settings.log_level)
 
     if args.command == "ingest" and args.dry_run:
         options = IngestOptions(args.plan, args.media, args.max_titles, args.max_requests)
@@ -94,6 +99,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     engine = create_db_engine(settings.database_url)
     session_factory = create_session_factory(engine)
     try:
+        if args.command == "metrics":
+            since = datetime.now(UTC) - timedelta(days=args.days)
+            with session_factory() as session:
+                print(format_report(recommendation_metrics(session, since)))
+            return 0
         if args.command == "report":
             with session_factory() as session:
                 print(

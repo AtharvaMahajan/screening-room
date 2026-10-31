@@ -5,6 +5,7 @@ once, so the engine never does, and stages the request and its results for the
 handler's single commit (overview.md §6.1). Reads only the local database.
 """
 
+import logging
 import time
 from dataclasses import asdict
 from datetime import UTC, date, datetime
@@ -36,6 +37,8 @@ from screening_room.modules.discovery.schemas import (
     ResultEventIn,
 )
 from screening_room.modules.library import service as library
+
+logger = logging.getLogger(__name__)
 
 ENGINE_CONFIG = EngineConfig()
 CONFIG_HASH = config_hash(ENGINE_CONFIG)
@@ -69,6 +72,19 @@ def recommend_for_user(
 
     request, rows = _log(
         session, user_id, context, outcome, inputs.pool_stats.pool_size, latency_ms
+    )
+    logger.info(
+        "recommendations served",
+        extra={
+            "fields": {
+                "rec_request_id": request.id,
+                "latency_ms": latency_ms,
+                "results": len(outcome.results),
+                "eligible": outcome.diagnostics.eligible_count,
+                "cold_start": outcome.cold_start,
+                "media_type": context.media_type,
+            }
+        },
     )
     previews = catalog.title_previews(
         session, (r.title_id for r in outcome.results), image_base_url
@@ -194,4 +210,8 @@ def record_result_event(
         case "opened" | "skipped":
             pass  # logged only
     session.add(RecResultEvent(result_id=result_id, event_type=event.type))
+    logger.info(
+        "result event",
+        extra={"fields": {"event": event.type, "result_id": result_id, "title_id": title_id}},
+    )
     return title_id

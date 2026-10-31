@@ -109,7 +109,12 @@ def _hydrate(
         session.commit()
         return False
     except ProviderError as error:  # timeouts, outages, bad credentials...
-        logger.warning("read-through for title %d failed: %s", title_id, error)
+        logger.warning(
+            "read-through for title %d failed: %s",
+            title_id,
+            error,
+            extra={"fields": {"provider": "tmdb", "title_id": title_id}},
+        )
         service.record_sync_error(session, title_id, str(error), now)
         session.commit()
         return False
@@ -142,7 +147,11 @@ def search_titles(
             summaries = provider.search(query)
         except ProviderError as error:
             # Not the query itself: what people search for is their business (security.md §9).
-            logger.warning("search failed, falling back to the local catalog: %s", error)
+            logger.warning(
+                "search failed, falling back to the local catalog: %s",
+                error,
+                extra={"fields": {"provider": "tmdb", "fallback": "local"}},
+            )
         else:
             now = datetime.now(UTC)
             # A cache fill, not a user change: idempotent (§11).

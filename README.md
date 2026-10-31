@@ -141,6 +141,7 @@ All configuration comes from environment variables. For local development they'r
 | `DATABASE_URL` | Backend, migrations | SQLAlchemy URL, e.g. `postgresql+psycopg://user:pass@127.0.0.1:5432/db` |
 | `CSRF_SECRET` | Backend | **Required.** HMAC key for CSRF tokens, at least 32 characters. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
 | `ALLOWED_ORIGINS` | Backend | **Required.** JSON list of origins allowed to make unsafe requests, e.g. `["http://localhost:5173"]` |
+| `LOG_FORMAT`, `LOG_LEVEL` | Backend, jobs | `text` (default, for people) or `json` (production: one JSON object per line). Level default `INFO` |
 | `SESSION_TTL_DAYS` | Backend | Absolute session lifetime. Default `30` |
 | `COOKIE_SECURE`, `COOKIE_PREFIX_HOST` | Backend | Default `true` (production). Set both to `false` for local http, where browsers drop `Secure` cookies |
 | `LOGIN_ATTEMPTS_PER_IP`, `LOGIN_FAILURES_PER_EMAIL`, `LOGIN_WINDOW_MINUTES`, `REGISTRATIONS_PER_IP`, `REGISTRATION_WINDOW_MINUTES` | Backend | Rate limits (security.md §8). Defaults: 30 login attempts per IP and 10 failed logins per email per 15 minutes; 10 registrations per IP per hour |
@@ -164,6 +165,16 @@ uv run python -m screening_room.jobs refresh                # re-fetch titles ol
 Each title has a page at `http://localhost:5173/titles/<id>`, linked from Discover, Search and your Library. Pool titles are served from the local catalog. Stale ones are refreshed from TMDB, and if TMDB is down the page still works, with a note that some details may be out of date.
 
 Every run is safe to repeat and to interrupt: re-running continues where it stopped. `--max-requests N` caps the TMDB requests a run may make. Each run is recorded in the `ingestion_runs` table, and the first real run's report is in [docs/evidence/](docs/evidence/m2-first-ingestion-report.txt).
+
+## Logs and metrics
+
+Every request is logged as one line with a `request_id` (also returned in the `X-Request-ID` response header), the route, status and duration, plus the user's id when signed in. Lines written while handling that request carry the same id. Events are logged with fields too: recommendations served (with `latency_ms`), actions on results, TMDB failures and retries, and rate-limit hits. Never logged: passwords, tokens, cookies, email addresses, query strings or search text (security.md §9). Set `LOG_FORMAT=json` in production.
+
+Recommendation metrics come from the database's own logs, with no metrics server (from `backend/`):
+
+```bash
+uv run python -m screening_room.jobs metrics --days 7   # latency p50/p95, cold starts, coverage, action rates
+```
 
 ## Authentication
 

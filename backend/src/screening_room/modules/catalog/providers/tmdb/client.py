@@ -120,7 +120,20 @@ class TmdbClient:
                 problem = f"HTTP {status}"
 
             logger.warning(
-                "TMDB %s failed (%s), attempt %d of %d", path, problem, attempt, self._max_attempts
+                "TMDB %s failed (%s), attempt %d of %d",
+                path,
+                problem,
+                attempt,
+                self._max_attempts,
+                extra={
+                    "fields": {
+                        "provider": "tmdb",
+                        "path": path,
+                        "problem": problem,
+                        "attempt": attempt,
+                        "will_retry": attempt < self._max_attempts,
+                    }
+                },
             )
             if attempt < self._max_attempts:
                 self._sleep(delay)
