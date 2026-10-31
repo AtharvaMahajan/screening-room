@@ -6,7 +6,7 @@ once, after the service call succeeds.
 
 from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import func, select, update
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -59,6 +59,19 @@ def authenticate(session: Session, email: str, password: str) -> CurrentUser | N
     if password_needs_rehash(user.password_hash):
         user.password_hash = hash_password(password)  # saved by the handler's commit
     return _to_current_user(user)
+
+
+def delete_account(session: Session, user_id: int, password: str) -> None:
+    """Delete the user and, through ON DELETE CASCADE, all their personal data:
+    sessions, taste profile, recommendation logs, library (data-model.md §6).
+
+    Catalog rows stay. The password must be re-entered: a session alone (say,
+    on a shared computer left signed in) isn't enough to destroy an account.
+    """
+    password_hash = session.scalar(select(User.password_hash).where(User.id == user_id))
+    if not verify_password(password_hash, password):
+        raise AppError(403, "wrong_password", "That password isn't right.")
+    session.execute(delete(User).where(User.id == user_id))
 
 
 def create_session(session: Session, user_id: int, ttl_days: int) -> NewSession:

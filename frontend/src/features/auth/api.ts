@@ -73,3 +73,25 @@ export function useRegister() {
 export function useLogout() {
   return useSessionMutation(() => apiSend<Session>("POST", "/api/auth/logout"));
 }
+
+/**
+ * Delete the account (DELETE /api/me, password required). The server signs the
+ * user out; `onDeleted` should go to a public page, which then calls
+ * useRefreshSession(). Clearing the session here instead would let the sign-in
+ * guard redirect first: React Router navigates in a low-priority transition.
+ */
+export function useDeleteAccount(onDeleted: () => void) {
+  return useMutation({
+    mutationFn: (password: string) => apiSend<Session>("DELETE", "/api/me", { password }),
+    onSuccess: onDeleted,
+  });
+}
+
+/** Forget the previous user's cached data and ask the server who's signed in now. */
+export function useRefreshSession() {
+  const queryClient = useQueryClient();
+  return () => {
+    queryClient.removeQueries({ queryKey: userDataKey });
+    return queryClient.invalidateQueries({ queryKey: sessionQueryKey });
+  };
+}

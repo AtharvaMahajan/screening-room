@@ -1,5 +1,7 @@
 import type { RouteObject } from "react-router";
 
+import { AccountPage } from "../features/auth/AccountPage";
+import { GoodbyePage } from "../features/auth/GoodbyePage";
 import { RegisterPage } from "../features/auth/RegisterPage";
 import { RequireAuth } from "../features/auth/RequireAuth";
 import { SignInPage } from "../features/auth/SignInPage";
@@ -27,10 +29,12 @@ export const routes: RouteObject[] = [
           { path: "taste", element: <TastePage /> },
           { path: "library", element: <LibraryPage /> },
           { path: "search", element: <SearchPage /> },
+          { path: "account", element: <AccountPage /> },
         ],
       },
       { path: "sign-in", element: <SignInPage /> },
       { path: "register", element: <RegisterPage /> },
+      { path: "goodbye", element: <GoodbyePage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

@@ -22,6 +22,12 @@ class LoginIn(BaseModel):
     password: str = Field(max_length=PASSWORD_MAX_LENGTH)
 
 
+class DeleteAccountIn(BaseModel):
+    """Deleting an account needs the current password again (security.md §6)."""
+
+    password: str = Field(max_length=PASSWORD_MAX_LENGTH)
+
+
 class UserOut(BaseModel):
     email: str
     display_name: str | None

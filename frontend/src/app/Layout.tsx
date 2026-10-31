@@ -59,7 +59,9 @@ function AccountMenu() {
       <Link to="/taste" className="text-stone-700 hover:underline dark:text-stone-300">
         Your taste
       </Link>
-      <span className="text-stone-600 dark:text-stone-400">{user.display_name ?? user.email}</span>
+      <Link to="/account" className="text-stone-600 hover:underline dark:text-stone-400">
+        {user.display_name ?? user.email}
+      </Link>
       <Button variant="quiet" onClick={signOut} disabled={logout.isPending}>
         {logout.isPending ? "Signing out…" : "Sign out"}
       </Button>

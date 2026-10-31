@@ -98,6 +98,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Account
+         * @description Delete your account and all your data, for good (FR-01, security.md §6).
+         *
+         *     Needs the session-bound CSRF token (like every write) and your password.
+         *     Signs you out: both cookies are cleared, as on logout.
+         */
+        delete: operations["delete_account"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/genres": {
         parameters: {
             query?: never;
@@ -481,6 +504,14 @@ export interface components {
             character: string | null;
             /** Profile Url */
             profile_url: string | null;
+        };
+        /**
+         * DeleteAccountIn
+         * @description Deleting an account needs the current password again (security.md §6).
+         */
+        DeleteAccountIn: {
+            /** Password */
+            password: string;
         };
         /** ErrorBody */
         ErrorBody: {
@@ -1027,6 +1058,48 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionOut"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_account: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteAccountIn"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

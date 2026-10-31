@@ -6,17 +6,18 @@ service calls succeed and before returning (project-structure.md §5).
 
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
 from screening_room.config import Settings, SettingsDep
 from screening_room.core.errors import AppError
 from screening_room.db import SessionDep
 from screening_room.modules.identity import csrf, service
-from screening_room.modules.identity.dependencies import AuthDep
+from screening_room.modules.identity.dependencies import AuthDep, CurrentUserDep, get_current_user
 from screening_room.modules.identity.schemas import (
     AuthenticatedSession,
     CurrentUser,
+    DeleteAccountIn,
     LoginIn,
     NewSession,
     RegisterIn,
@@ -24,6 +25,8 @@ from screening_room.modules.identity.schemas import (
 )
 
 router = APIRouter(prefix="/api/auth")
+# The signed-in user's account itself (security.md §6).
+account_router = APIRouter(prefix="/api/me", dependencies=[Depends(get_current_user)])
 
 
 @router.get("/session")
@@ -75,16 +78,25 @@ def logout(
     if auth is not None:
         service.revoke_session(session, auth.token_hash)
         session.commit()
-    response.delete_cookie(
-        settings.session_cookie_name,
-        path="/",
-        secure=settings.cookie_secure,
-        httponly=True,
-        samesite="lax",
-    )
-    token = csrf.mint_csrf_token(settings.csrf_secret.get_secret_value(), csrf.ANONYMOUS_BINDING)
-    _set_csrf_cookie(response, settings, token, expires_at=None)
-    return SessionOut(user=None, csrf_token=token)
+    return _signed_out(response, settings)
+
+
+@account_router.delete("")
+def delete_account(
+    body: DeleteAccountIn,
+    response: Response,
+    session: SessionDep,
+    user: CurrentUserDep,
+    settings: SettingsDep,
+) -> SessionOut:
+    """Delete your account and all your data, for good (FR-01, security.md §6).
+
+    Needs the session-bound CSRF token (like every write) and your password.
+    Signs you out: both cookies are cleared, as on logout.
+    """
+    service.delete_account(session, user.id, body.password)
+    session.commit()
+    return _signed_out(response, settings)
 
 
 # --- Helpers ------------------------------------------------------------------------
@@ -100,6 +112,20 @@ def _replace_session(
     if auth is not None:
         service.revoke_session(session, auth.token_hash)
     return service.create_session(session, user.id, settings.session_ttl_days)
+
+
+def _signed_out(response: Response, settings: Settings) -> SessionOut:
+    """Clear the session cookie and rotate to an anonymous CSRF token."""
+    response.delete_cookie(
+        settings.session_cookie_name,
+        path="/",
+        secure=settings.cookie_secure,
+        httponly=True,
+        samesite="lax",
+    )
+    token = csrf.mint_csrf_token(settings.csrf_secret.get_secret_value(), csrf.ANONYMOUS_BINDING)
+    _set_csrf_cookie(response, settings, token, expires_at=None)
+    return SessionOut(user=None, csrf_token=token)
 
 
 def _signed_in(

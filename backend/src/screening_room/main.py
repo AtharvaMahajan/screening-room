@@ -27,6 +27,7 @@ from screening_room.modules.profile import router as profile_router
 ROUTERS: list[APIRouter] = [
     health.router,
     identity_router.router,
+    identity_router.account_router,
     catalog_router.router,
     profile_router.router,
     discovery_router.router,
