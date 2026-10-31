@@ -51,7 +51,7 @@ def recommend_for_user(
     as_of = as_of or datetime.now(UTC).date()
 
     started = time.perf_counter()
-    inputs = retrieve(session, user_id)
+    inputs = retrieve(session, user_id, ENGINE_CONFIG)
     outcome = recommend(
         inputs.signals,
         context,

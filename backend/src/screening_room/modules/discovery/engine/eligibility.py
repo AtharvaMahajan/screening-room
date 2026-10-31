@@ -27,6 +27,15 @@ class EligibilityInput:
     def favorite_ids(self) -> frozenset[int]:
         return frozenset(f.title_id for f in self.signals.favorites)
 
+    @property
+    def watched_or_rated_ids(self) -> frozenset[int]:
+        watched = {t.title_id for t in self.signals.watched}
+        return frozenset(watched | {r.title_id for r in self.signals.ratings})
+
+    @property
+    def not_for_me_ids(self) -> frozenset[int]:
+        return frozenset(t.title_id for t in self.signals.not_for_me)
+
 
 Rule = Callable[[Candidate, EligibilityInput], Rejection | None]
 
@@ -75,6 +84,19 @@ def favorite(c: Candidate, i: EligibilityInput) -> Rejection | None:
     return None
 
 
+def watched_or_rated(c: Candidate, i: EligibilityInput) -> Rejection | None:
+    """Already seen. ("Revisit watched titles" is a deferred context option.)"""
+    if c.title_id in i.watched_or_rated_ids:
+        return Rejection(c.title_id, "watched_or_rated", "already watched or rated")
+    return None
+
+
+def not_for_me(c: Candidate, i: EligibilityInput) -> Rejection | None:
+    if c.title_id in i.not_for_me_ids:
+        return Rejection(c.title_id, "not_for_me", "marked not for me")
+    return None
+
+
 def explicit_exclusion(c: Candidate, i: EligibilityInput) -> Rejection | None:
     if c.title_id in i.context.exclude_title_ids:
         return Rejection(c.title_id, "explicit_exclusion", "skipped or already shown")
@@ -87,7 +109,6 @@ def unreleased(c: Candidate, i: EligibilityInput) -> Rejection | None:
     return None
 
 
-# M4 adds watched_or_rated and not_for_me.
 ELIGIBILITY_RULES: tuple[Rule, ...] = (
     pool_status,
     media_type,
@@ -95,6 +116,8 @@ ELIGIBILITY_RULES: tuple[Rule, ...] = (
     max_runtime,
     avoided_genre,
     favorite,
+    watched_or_rated,
+    not_for_me,
     explicit_exclusion,
     unreleased,
 )

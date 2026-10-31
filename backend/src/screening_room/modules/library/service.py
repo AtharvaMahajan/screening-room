@@ -19,7 +19,11 @@ from screening_room.modules.library.models import (
     ViewingEvent,
     WatchlistItem,
 )
-from screening_room.modules.library.schemas import TitleStateOut
+from screening_room.modules.library.schemas import (
+    LibrarySignals,
+    RatedTitleRef,
+    TitleStateOut,
+)
 
 NOT_FOR_ME = "not_for_me"
 
@@ -167,4 +171,28 @@ def undo_not_for_me(session: Session, user_id: int, title_id: int) -> None:
             TitleFeedback.title_id == title_id,
             TitleFeedback.kind == NOT_FOR_ME,
         )
+    )
+
+
+# --- For the recommender (M4b) ---------------------------------------------------------------
+
+
+def taste_signals(session: Session, user_id: int) -> LibrarySignals:
+    """The user's library as plain values, for the recommender."""
+
+    def title_ids(table: type[WatchlistItem | ViewingEvent | TitleFeedback]) -> frozenset[int]:
+        return frozenset(
+            session.scalars(select(table.title_id).where(table.user_id == user_id).distinct())
+        )
+
+    ratings = session.execute(
+        select(Rating.title_id, Rating.value, Rating.updated_at)
+        .where(Rating.user_id == user_id)
+        .order_by(Rating.title_id)
+    )
+    return LibrarySignals(
+        ratings=tuple(RatedTitleRef(t, value, at) for t, value, at in ratings),
+        watched_title_ids=title_ids(ViewingEvent),
+        watchlist_title_ids=title_ids(WatchlistItem),
+        not_for_me_title_ids=title_ids(TitleFeedback),  # its only kind is not_for_me
     )

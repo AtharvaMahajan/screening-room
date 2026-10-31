@@ -1,5 +1,5 @@
 {
-  "engine_version": "1.0.1",
+  "engine_version": "1.1.0",
   "personas": {
     "new_user": [
       {
@@ -204,6 +204,41 @@
       },
       {
         "title_id": 709,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ],
+    "library_user": [
+      {
+        "title_id": 905,
+        "reasons": [
+          "favorite_neighbor",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 903,
+        "reasons": [
+          "favorite_neighbor",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 904,
+        "reasons": [
+          "favorite_neighbor",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1305,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1008,
         "reasons": [
           "well_rated"
         ]

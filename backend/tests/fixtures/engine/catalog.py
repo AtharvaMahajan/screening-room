@@ -14,9 +14,11 @@ from typing import Any
 from screening_room.modules.discovery.engine.types import (
     Candidate,
     Favorite,
+    LibraryTitle,
     MediaType,
     Neighbor,
     PoolStats,
+    RatedTitle,
     RecommendationContext,
     UserSignals,
 )
@@ -169,6 +171,24 @@ def favorite(title: int, picked_day: int) -> Favorite:
     )
 
 
+def genres_of(title: int) -> frozenset[int]:
+    return frozenset(GENRES[g] for g in THEMES[title // 100 - 1][2])
+
+
+def rated(title: int, stars: int, rated_day: int) -> RatedTitle:
+    return RatedTitle(
+        title_id=title,
+        name=name_of(title),
+        genre_ids=genres_of(title),
+        stars=stars,
+        rated_at=datetime(2026, 5, rated_day, tzinfo=UTC),
+    )
+
+
+def shelf(*titles: int) -> tuple[LibraryTitle, ...]:
+    return tuple(LibraryTitle(title, genres_of(title)) for title in titles)
+
+
 # --- Personas (§14) ---------------------------------------------------------------------
 
 
@@ -211,6 +231,16 @@ PERSONAS = [
         "no_usable_neighbors",
         # Indie Gem favorites: their recommendation lists are empty.
         UserSignals(favorites=(favorite(1000, 1), favorite(1001, 2))),
+    ),
+    Persona(
+        "library_user",
+        # M4: no onboarding at all, only library activity.
+        UserSignals(
+            ratings=(rated(900, 5, 3), rated(1100, 1, 4)),  # Heist 0 loved, Frontier 0 hated
+            watched=shelf(900, 1100, 901),  # Heist 1 watched, not rated
+            watchlist=shelf(800),  # Prestige Drama 0 saved
+            not_for_me=shelf(902),  # Heist 2 turned down
+        ),
     ),
 ]
 PERSONAS_BY_NAME = {p.name: p for p in PERSONAS}

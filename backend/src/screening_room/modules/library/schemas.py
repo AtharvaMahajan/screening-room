@@ -1,6 +1,7 @@
 """Library API models (data-model.md §3.5, §5)."""
 
-from datetime import date
+from dataclasses import dataclass
+from datetime import date, datetime
 
 from pydantic import BaseModel, Field
 
@@ -25,3 +26,31 @@ class ViewingIn(BaseModel):
 
 class RatingIn(BaseModel):
     value: int = Field(ge=1, le=5)  # whole stars (ADR-0009)
+
+
+# --- For the recommender (M4b) ---------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class RatedTitleRef:
+    title_id: int
+    stars: int
+    rated_at: datetime  # last set: newer ratings win anchor ties
+
+
+@dataclass(frozen=True)
+class LibrarySignals:
+    """What the recommender needs from the library (recommendation-engine.md §4, §6)."""
+
+    ratings: tuple[RatedTitleRef, ...]  # by title id
+    watched_title_ids: frozenset[int]
+    watchlist_title_ids: frozenset[int]
+    not_for_me_title_ids: frozenset[int]
+
+    @property
+    def title_ids(self) -> frozenset[int]:
+        """Every title mentioned: retrieval looks up their names and genres."""
+        rated = {r.title_id for r in self.ratings}
+        return frozenset(
+            rated | self.watched_title_ids | self.watchlist_title_ids | self.not_for_me_title_ids
+        )

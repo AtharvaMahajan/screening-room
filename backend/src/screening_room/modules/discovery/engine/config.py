@@ -10,7 +10,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 
-ENGINE_VERSION = "1.0.1"  # 1.0.1: genre_affinity wording only; rankings unchanged
+ENGINE_VERSION = "1.1.0"  # 1.1.0: library signals (M4b). 1.0.1: genre_affinity wording
 
 
 class EngineConfig(BaseModel):
@@ -27,6 +27,12 @@ class EngineConfig(BaseModel):
     favorite_genre_weight: float = 1.0  # to each genre of each favorite
     favorite_anchor_weight: float = 1.0
     max_anchors: int = 30
+    # M4 library signals, per genre of the title (ADR-0009):
+    rating_genre_weights: dict[int, float] = {5: 1.0, 4: 0.5, 3: 0.0, 2: -0.5, 1: -1.0}
+    watched_genre_weight: float = 0.3  # watched but not rated
+    watchlist_genre_weight: float = 0.15  # saving isn't liking
+    not_for_me_genre_weight: float = -0.3  # weaker than 2★: they haven't watched it
+    rating_anchor_weights: dict[int, float] = {5: 1.0, 4: 0.6}  # low ratings aren't anchors
 
     # --- favorite_neighbor (§7.1): rank 1 -> 1.0 ... rank 20 -> 0.05 ---
     neighbor_rank_span: int = 20

@@ -6,6 +6,7 @@ exists for; golden tests pin the exact results to ENGINE_VERSION.
 
 import random
 from collections import Counter
+from dataclasses import replace
 
 import pytest
 
@@ -16,7 +17,6 @@ from screening_room.modules.discovery.engine.types import (
     PERSONAL_REASONS,
     Candidate,
     RecommendationOutcome,
-    UserSignals,
 )
 from tests.fixtures.engine import golden
 from tests.fixtures.engine.catalog import (
@@ -33,6 +33,7 @@ from tests.fixtures.engine.catalog import (
 )
 
 CANDIDATES = {c.title_id: c for c in candidates()}
+CONFIG = EngineConfig()
 by_name = pytest.mark.parametrize("persona", PERSONAS, ids=lambda p: p.name)
 
 
@@ -74,6 +75,9 @@ def test_every_result_has_one_or_two_reasons(persona: Persona) -> None:
 @by_name
 def test_personal_reasons_match_real_contributions(persona: Persona) -> None:
     """A personal reason is only allowed if its signal really added to the score (FR-10)."""
+    anchor_ids = {f.title_id for f in persona.signals.favorites} | {
+        r.title_id for r in persona.signals.ratings if r.stars in CONFIG.rating_anchor_weights
+    }
     for result in run(persona).results:
         for reason in result.reasons:
             if reason.type == "favorite_neighbor":
@@ -81,7 +85,7 @@ def test_personal_reasons_match_real_contributions(persona: Persona) -> None:
                 source = result.breakdown.neighbor_source
                 assert source is not None
                 assert reason.params["anchor_title_id"] == source.anchor_title_id
-                assert source.anchor_title_id in {f.title_id for f in persona.signals.favorites}
+                assert source.anchor_title_id in anchor_ids  # a favorite or a 4-5★ rating
             elif reason.type == "genre_affinity":
                 assert result.breakdown.affinity.weighted > 0
             assert reason.type in PERSONAL_REASONS or reason.type in {
@@ -114,19 +118,25 @@ def test_diversity_rules_hold_unless_relaxed(persona: Persona) -> None:
 @by_name
 @pytest.mark.parametrize("seed", [1, 2, 3])
 def test_output_does_not_depend_on_input_order(persona: Persona, seed: int) -> None:
-    """Shuffle candidates, favorites, neighbor lists and dict order: same outcome (§11)."""
+    """Shuffle candidates, every signal list, neighbor lists and dict order: same outcome (§11)."""
     shuffler = random.Random(seed)  # in the TEST only; the engine never uses randomness
     items = candidates()
     shuffler.shuffle(items)
-    favorites = list(persona.signals.favorites)
-    shuffler.shuffle(favorites)
     index_items = list(neighbor_index().items())
     shuffler.shuffle(index_items)
     shuffled_index = {k: tuple(shuffler.sample(v, len(v))) for k, v in index_items}
-    signals = UserSignals(
-        liked_genre_ids=persona.signals.liked_genre_ids,
-        avoided_genre_ids=persona.signals.avoided_genre_ids,
-        favorites=tuple(favorites),
+
+    def mixed[T](items: tuple[T, ...]) -> tuple[T, ...]:
+        return tuple(shuffler.sample(items, len(items)))
+
+    given = persona.signals
+    signals = replace(
+        given,
+        favorites=mixed(given.favorites),
+        ratings=mixed(given.ratings),
+        watched=mixed(given.watched),
+        watchlist=mixed(given.watchlist),
+        not_for_me=mixed(given.not_for_me),
     )
 
     shuffled = recommend(
@@ -179,6 +189,21 @@ def test_favorites_without_usable_neighbors_fall_back_cleanly() -> None:
     assert not any(
         reason.type == "favorite_neighbor" for r in outcome.results for reason in r.reasons
     )
+
+
+def test_library_user_gets_rated_anchors_and_never_seen_or_dismissed_titles() -> None:
+    persona = PERSONAS_BY_NAME["library_user"]
+    outcome = run(persona)
+    texts = [reason.text for r in outcome.results for reason in r.reasons]
+    shown = {r.title_id for r in outcome.results}
+
+    assert not outcome.cold_start  # library activity alone personalizes
+    assert sum(text == "Because you rated Heist 0 5★" for text in texts) >= 2
+    assert shown.isdisjoint({900, 901, 1100, 902})  # rated, watched, not for me
+    rules = {r.title_id: r.rule for r in outcome.rejected}
+    assert (rules[901], rules[902]) == ("watched_or_rated", "not_for_me")
+    # The 1★ western pushes westerns down: none make the shortlist.
+    assert not any(GENRES["western"] in candidate(t).genre_ids for t in shown)
 
 
 def test_comedy_movie_under_90_minutes() -> None:

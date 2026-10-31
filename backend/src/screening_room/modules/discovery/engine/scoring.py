@@ -74,6 +74,7 @@ def best_neighbor_sources(
                 anchor_name=anchor.name,
                 anchor_kind=anchor.kind,
                 provider_rank=neighbor.provider_rank,
+                anchor_stars=anchor.stars,
             )
             current = best.get(neighbor.title_id)
             if current is None or _rank_key(value, source) < _rank_key(*current):

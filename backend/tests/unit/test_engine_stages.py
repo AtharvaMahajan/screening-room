@@ -15,9 +15,11 @@ from screening_room.modules.discovery.engine.types import (
     Anchor,
     Candidate,
     Favorite,
+    LibraryTitle,
     Neighbor,
     NeighborSource,
     PoolStats,
+    RatedTitle,
     RecommendationContext,
     ScoreBreakdown,
     ScoredCandidate,
@@ -51,6 +53,18 @@ def fav(title_id: int, day: int, genres: frozenset[int] = frozenset({3})) -> Fav
     return Favorite(title_id, f"Fav {title_id}", genres, datetime(2026, 5, day, tzinfo=UTC))
 
 
+def rated(
+    title_id: int, stars: int, day: int = 1, genres: frozenset[int] = frozenset({3})
+) -> RatedTitle:
+    return RatedTitle(
+        title_id, f"Rated {title_id}", genres, stars, datetime(2026, 5, day, tzinfo=UTC)
+    )
+
+
+def seen(title_id: int, genres: frozenset[int] = frozenset({3})) -> tuple[LibraryTitle, ...]:
+    return (LibraryTitle(title_id, genres),)
+
+
 # --- Profile ---------------------------------------------------------------------------------
 
 
@@ -61,6 +75,40 @@ def test_profile_adds_liked_genres_and_favorite_genres() -> None:
     )
 
     assert profile.genre_weights == {1: 1.0, 3: 2.0}
+
+
+@pytest.mark.parametrize(("stars", "weight"), [(5, 1.0), (4, 0.5), (3, None), (2, -0.5), (1, -1.0)])
+def test_ratings_weigh_their_genres_by_stars(stars: int, weight: float | None) -> None:
+    profile = build_profile(UserSignals(ratings=(rated(10, stars),)), CONFIG)
+
+    assert profile.genre_weights == ({} if weight is None else {3: weight})  # 3★ is neutral
+
+
+def test_library_lists_weigh_their_genres() -> None:
+    profile = build_profile(
+        UserSignals(
+            watched=seen(10, frozenset({1})),
+            watchlist=seen(11, frozenset({2})),
+            not_for_me=seen(12, frozenset({4})),
+        ),
+        CONFIG,
+    )
+
+    assert profile.genre_weights == {1: 0.3, 2: 0.15, 4: -0.3}
+
+
+def test_a_rated_title_counts_its_rating_not_also_watched() -> None:
+    profile = build_profile(UserSignals(ratings=(rated(10, 4),), watched=seen(10)), CONFIG)
+
+    assert profile.genre_weights == {3: 0.5}
+
+
+def test_one_not_for_me_cannot_cancel_a_liked_genre() -> None:
+    profile = build_profile(
+        UserSignals(liked_genre_ids=frozenset({3}), not_for_me=seen(12)), CONFIG
+    )
+
+    assert profile.genre_weights == {3: 0.7}
 
 
 def test_avoided_genres_get_no_weight() -> None:
@@ -77,6 +125,22 @@ def test_anchors_newest_first_then_lowest_id_and_capped() -> None:
     )
 
     assert [a.title_id for a in profile.anchors] == [10, 20]  # day 3 before day 1; tie -> lower id
+
+
+def test_well_rated_titles_are_anchors_and_a_favorite_counts_once() -> None:
+    profile = build_profile(
+        UserSignals(
+            favorites=(fav(10, 1),),
+            ratings=(rated(10, 4, day=9), rated(20, 5), rated(30, 4), rated(40, 3)),
+        ),
+        CONFIG,
+    )
+
+    assert [(a.title_id, a.kind, a.weight, a.stars) for a in profile.anchors] == [
+        (10, "favorite", 1.0, None),  # also rated 4★: the heavier favorite wins
+        (20, "rated", 1.0, 5),
+        (30, "rated", 0.6, 4),
+    ]  # 3★ isn't an anchor
 
 
 # --- Eligibility ------------------------------------------------------------------------------
@@ -124,6 +188,9 @@ def check(
             UserSignals(),
             "explicit_exclusion",
         ),
+        (make(title_id=7), None, UserSignals(watched=seen(7)), "watched_or_rated"),
+        (make(title_id=7), None, UserSignals(ratings=(rated(7, 2),)), "watched_or_rated"),
+        (make(title_id=7), None, UserSignals(not_for_me=seen(7)), "not_for_me"),
         (make(release_date=date(2026, 6, 2)), None, UserSignals(), "unreleased"),
         (make(release_date=None), None, UserSignals(), "unreleased"),
         (make(adult=True), None, UserSignals(), "pool_status"),
@@ -274,6 +341,17 @@ def test_genre_reason_says_taste_because_favorites_count_too() -> None:
     reasons = explain(item, LIKES_DRAMA, RecommendationContext(), NAMES, CONFIG)
 
     assert reasons[0].text == "Matches your taste: Drama"
+
+
+def test_a_rated_anchor_says_how_it_was_rated() -> None:
+    source = NeighborSource(10, "Heat", "rated", 1, anchor_stars=5)
+    breakdown = replace(breakdown_with(neighbor=0.20), neighbor_source=source)
+
+    reasons = explain(
+        ScoredCandidate(make(), breakdown), LIKES_DRAMA, RecommendationContext(), NAMES, CONFIG
+    )
+
+    assert reasons[0].text == "Because you rated Heat 5★"
 
 
 def test_weak_signals_produce_no_personal_reason() -> None:

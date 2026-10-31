@@ -55,12 +55,13 @@ def _personal_reasons(
 
     source = breakdown.neighbor_source
     if source and breakdown.favorite_neighbor.weighted >= config.min_neighbor_contribution:
+        text = (
+            f"Because you rated {source.anchor_name} {source.anchor_stars}★"
+            if source.anchor_kind == "rated"
+            else f"Because you picked {source.anchor_name}"
+        )
         reasons.append(
-            Reason(
-                "favorite_neighbor",
-                f"Because you picked {source.anchor_name}",
-                {"anchor_title_id": source.anchor_title_id},
-            )
+            Reason("favorite_neighbor", text, {"anchor_title_id": source.anchor_title_id})
         )
 
     liked = [g for g in item.candidate.genre_ids if profile.genre_weights.get(g, 0) > 0]

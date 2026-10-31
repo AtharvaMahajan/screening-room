@@ -35,12 +35,33 @@ class Favorite:
 
 
 @dataclass(frozen=True)
+class RatedTitle:
+    title_id: int
+    name: str  # for "Because you rated {name} 5★"
+    genre_ids: frozenset[int]
+    stars: int  # 1-5
+    rated_at: datetime  # newer ratings win anchor ties
+
+
+@dataclass(frozen=True)
+class LibraryTitle:
+    """A title in one of the user's library lists, with its genres."""
+
+    title_id: int
+    genre_ids: frozenset[int]
+
+
+@dataclass(frozen=True)
 class UserSignals:
-    """M3: onboarding preferences. M4 adds ratings, watched, watchlist, not_for_me."""
+    """Onboarding preferences (M3) and library state (M4)."""
 
     liked_genre_ids: frozenset[int] = frozenset()
     avoided_genre_ids: frozenset[int] = frozenset()
     favorites: tuple[Favorite, ...] = ()
+    ratings: tuple[RatedTitle, ...] = ()
+    watched: tuple[LibraryTitle, ...] = ()  # at least one viewing
+    watchlist: tuple[LibraryTitle, ...] = ()
+    not_for_me: tuple[LibraryTitle, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -88,8 +109,9 @@ NeighborIndex = Mapping[int, tuple[Neighbor, ...]]
 class Anchor:
     title_id: int
     name: str
-    kind: Literal["favorite"]  # M4 adds rated titles
+    kind: Literal["favorite", "rated"]
     weight: float
+    stars: int | None = None  # rated anchors: the rating
 
 
 @dataclass(frozen=True)
@@ -111,6 +133,7 @@ class NeighborSource:
     anchor_kind: str
     provider_rank: int
     provider: str = "tmdb"
+    anchor_stars: int | None = None  # rated anchors: "Because you rated X 5★"
 
 
 @dataclass(frozen=True)

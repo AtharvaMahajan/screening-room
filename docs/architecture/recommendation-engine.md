@@ -80,7 +80,7 @@ There's **no time decay in v1.** A new product's history is all recent, so decay
 | Rated 5★ | 1.0 | M4 |
 | Rated 4★ | 0.6 | M4 |
 
-Anchors are capped at 30 (initial value), selected deterministically by `(anchor_weight desc, created_at desc, title_id asc)`. Low ratings aren't used as negative anchors in v1.
+Anchors are capped at 30 (initial value), selected deterministically by `(anchor_weight desc, created_at desc, title_id asc)`. Low ratings aren't used as negative anchors in v1. A title that is both a favorite and rated is one anchor, with the heavier weight *(decided in M4b)*.
 
 All values in these tables are *initial values* in `EngineConfig`.
 

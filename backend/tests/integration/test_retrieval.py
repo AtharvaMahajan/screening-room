@@ -14,6 +14,7 @@ from screening_room.modules.discovery.engine.pipeline import recommend
 from screening_room.modules.discovery.engine.types import Neighbor, RecommendationContext
 from screening_room.modules.discovery.retrieval import retrieve
 from screening_room.modules.identity.models import User
+from screening_room.modules.library import service as library
 from screening_room.modules.profile import service as profile
 from screening_room.modules.profile.schemas import PreferencesIn
 from tests.integration.helpers import add_candidate, genre_id
@@ -67,7 +68,7 @@ def test_retrieval_builds_engine_inputs_from_the_pool(
     profile.add_favorite(db_session, user.id, favorite)
     db_session.commit()
 
-    inputs = retrieve(db_session, user.id)
+    inputs = retrieve(db_session, user.id, EngineConfig())
 
     assert {c.title_id for c in inputs.candidates} == {favorite, neighbor_a, neighbor_b}
     assert inputs.pool_stats.pool_size == 3
@@ -106,8 +107,46 @@ def test_a_user_with_no_profile_gets_empty_signals(
     db_session.add(user)
     db_session.commit()
 
-    inputs = retrieve(db_session, user.id)
+    inputs = retrieve(db_session, user.id, EngineConfig())
 
     assert inputs.signals.favorites == ()
     assert inputs.neighbor_index == {}
     assert inputs.pool_stats.pool_size == 1
+
+
+def test_library_signals_reach_the_engine_with_genres(
+    db_session: Session, empty_catalog: None
+) -> None:
+    loved = add_candidate(db_session, "Heat", genre_ids=(80,), release_date=RELEASED)  # Crime
+    liked = add_candidate(db_session, "Ronin", genre_ids=(28,), release_date=RELEASED)  # Action
+    meh = add_candidate(db_session, "Meh", release_date=RELEASED)
+    saved = add_candidate(db_session, "Later", release_date=RELEASED)
+    nope = add_candidate(db_session, "Nope", release_date=RELEASED)
+    neighbor = add_candidate(db_session, "Collateral", genre_ids=(80,), release_date=RELEASED)
+    for source in (loved, liked, meh):
+        recommends(db_session, source, [provider_id(db_session, neighbor)])
+    user = User(email="shelf@example.com", password_hash="not-a-real-hash")
+    db_session.add(user)
+    db_session.flush()
+    library.rate(db_session, user.id, loved, 5)
+    library.rate(db_session, user.id, liked, 4)
+    library.rate(db_session, user.id, meh, 3)
+    library.add_to_watchlist(db_session, user.id, saved)
+    library.mark_not_for_me(db_session, user.id, nope)
+    db_session.commit()
+
+    signals = retrieve(db_session, user.id, EngineConfig())
+    inputs = signals.signals
+
+    assert [(r.title_id, r.name, r.stars) for r in inputs.ratings] == [
+        (loved, "Heat", 5),
+        (liked, "Ronin", 4),
+        (meh, "Meh", 3),
+    ]
+    assert inputs.ratings[0].genre_ids == frozenset({genre_id(db_session, "crime")})
+    # Rating marks watched (data-model.md §5), so all three are watched too.
+    assert {t.title_id for t in inputs.watched} == {loved, liked, meh}
+    assert [t.title_id for t in inputs.watchlist] == [saved]
+    assert [t.title_id for t in inputs.not_for_me] == [nope]
+    # Neighbor lists only for possible anchors: 4-5★, not 3★.
+    assert set(signals.neighbor_index) == {loved, liked}

@@ -216,6 +216,33 @@ def test_excluded_titles_are_not_shown_again(me: Send, pool: Pool) -> None:
     assert not set(first) & set(more)
 
 
+def test_a_rating_and_a_not_for_me_change_the_next_shortlist(me: Send, pool: Pool) -> None:
+    """Roadmap M4 "done when": library feedback measurably changes recommendations."""
+    before = recommendations(me).json()
+    dismissed = next(
+        r["title"]["id"]
+        for r in before["results"]
+        if r["title"]["id"] not in (pool.arrival, pool.dune)
+    )
+
+    assert me("PUT", f"/api/me/ratings/{pool.arrival}", {"value": 5}).status_code == 200
+    assert me("PUT", f"/api/me/not-for-me/{dismissed}").status_code == 200
+    after = recommendations(me).json()
+
+    shown = result_ids_of(after)
+    assert before["cold_start"] is True and after["cold_start"] is False
+    assert dismissed not in shown  # not for me: never again (until undone)
+    assert pool.arrival not in shown  # rated means watched
+    # Arrival's TMDB recommendation now comes with the rating as its reason.
+    [dune] = [r for r in after["results"] if r["title"]["id"] == pool.dune]
+    assert dune["reasons"][0] == {
+        "type": "favorite_neighbor",
+        "text": "Because you rated Arrival 5★",
+        "anchor_title_id": pool.arrival,
+    }
+    assert shown != result_ids_of(before)
+
+
 # --- Validation -------------------------------------------------------------------------------
 
 
