@@ -16,6 +16,7 @@ from screening_room.db import create_db_engine, create_session_factory
 from screening_room.modules.catalog import router as catalog_router
 from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
 from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
+from screening_room.modules.discovery import router as discovery_router
 from screening_room.modules.identity import router as identity_router
 from screening_room.modules.identity.csrf import csrf_protect
 from screening_room.modules.profile import router as profile_router
@@ -27,6 +28,7 @@ ROUTERS: list[APIRouter] = [
     identity_router.router,
     catalog_router.router,
     profile_router.router,
+    discovery_router.router,
 ]
 
 

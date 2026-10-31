@@ -34,6 +34,13 @@ class TitleCardOut(BaseModel):
     poster_url: str | None
 
 
+class TitlePreviewOut(TitleCardOut):
+    """A card plus enough to decide without opening the title page (recommendations)."""
+
+    overview: str | None
+    runtime_minutes: int | None  # movies; often unknown for TV
+
+
 class CastMemberOut(BaseModel):
     name: str
     character: str | None

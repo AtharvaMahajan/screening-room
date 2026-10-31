@@ -105,6 +105,20 @@ forbidden_modules = [
 ]
 allow_indirect_imports = true
 
+[[tool.importlinter.contracts]]
+name = "The recommendation engine uses nothing from the app around it (it's pure)"
+type = "forbidden"
+source_modules = ["screening_room.modules.discovery.engine"]
+forbidden_modules = [
+    "screening_room.modules.discovery.retrieval",
+    "screening_room.modules.discovery.service",
+    "screening_room.modules.discovery.router",
+    "screening_room.modules.discovery.models",
+    "screening_room.modules.catalog",
+    "screening_room.modules.profile",
+    "screening_room.modules.identity",
+]
+
 # --- Ruff: lint + format ------------------------------------------------------
 [tool.ruff]
 line-length = 100
@@ -130,7 +144,7 @@ known-third-party = ["alembic"]
 [tool.mypy]
 python_version = "3.15"
 strict = true
-files = ["src", "tests", "alembic"]
+files = ["src", "tests", "alembic", "scripts"]
 plugins = ["pydantic.mypy"]
 
 # --- pytest ------------------------------------------------------------------

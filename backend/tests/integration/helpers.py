@@ -83,6 +83,7 @@ def add_candidate(
     vote_count: int = 1000,
     original_name: str | None = None,
     release_date: date | None = None,  # None = unreleased, for the recommender
+    runtime_minutes: int | None = None,  # None = the fake's default (100 for movies)
 ) -> int:
     """Put a fully hydrated candidate-pool title in the catalog; returns its id."""
     details = fake_title(
@@ -92,6 +93,8 @@ def add_candidate(
         details,
         summary=replace(details.summary, original_name=original_name, release_date=release_date),
     )
+    if runtime_minutes is not None:
+        details = replace(details, runtime_minutes=runtime_minutes)
     now = datetime.now(UTC)
     run = IngestionRun(command="ingest", params={}, status="succeeded", counts={})
     db_session.add(run)

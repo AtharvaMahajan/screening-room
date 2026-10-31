@@ -215,6 +215,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/recommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Recommendations
+         * @description A fresh, explained shortlist. POST because every call is logged (§15).
+         *
+         *     Reads only the local database, never TMDB, so it carries the p95 < 1.5 s
+         *     target (overview.md §7). The request and its results commit together.
+         */
+        post: operations["create_recommendations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -295,6 +318,16 @@ export interface components {
             /** Password */
             password: string;
         };
+        /** NoticeOut */
+        NoticeOut: {
+            /**
+             * Code
+             * @enum {string}
+             */
+            code: "cold_start" | "few_results";
+            /** Text */
+            text: string;
+        };
         /**
          * PreferencesIn
          * @description Replaces the user's genre preferences. A genre can't be both.
@@ -311,6 +344,62 @@ export interface components {
             liked_genre_ids: number[];
             /** Avoided Genre Ids */
             avoided_genre_ids: number[];
+        };
+        /** ReasonOut */
+        ReasonOut: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "favorite_neighbor" | "genre_affinity" | "context_genre" | "runtime_fit" | "well_rated" | "pool_source";
+            /** Text */
+            text: string;
+            /** Anchor Title Id */
+            anchor_title_id?: number | null;
+        };
+        /** RecommendationOut */
+        RecommendationOut: {
+            /** Result Id */
+            result_id: number;
+            /** Rank */
+            rank: number;
+            title: components["schemas"]["TitlePreviewOut"];
+            /** Reasons */
+            reasons: components["schemas"]["ReasonOut"][];
+        };
+        /**
+         * RecommendationRequestIn
+         * @description What the user asked for this time. Every field is optional.
+         */
+        RecommendationRequestIn: {
+            /**
+             * Media Type
+             * @default any
+             * @enum {string}
+             */
+            media_type: "movie" | "tv" | "any";
+            /** Genre Ids */
+            genre_ids?: number[];
+            /** Max Runtime Minutes */
+            max_runtime_minutes?: number | null;
+            /** Exclude Title Ids */
+            exclude_title_ids?: number[];
+            /**
+             * Limit
+             * @default 5
+             */
+            limit: number;
+        };
+        /** RecommendationsOut */
+        RecommendationsOut: {
+            /** Request Id */
+            request_id: number;
+            /** Cold Start */
+            cold_start: boolean;
+            /** Notices */
+            notices: components["schemas"]["NoticeOut"][];
+            /** Results */
+            results: components["schemas"]["RecommendationOut"][];
         };
         /** RegisterIn */
         RegisterIn: {
@@ -396,6 +485,29 @@ export interface components {
              * @enum {string}
              */
             metadata_status: "fresh" | "stale" | "partial";
+        };
+        /**
+         * TitlePreviewOut
+         * @description A card plus enough to decide without opening the title page (recommendations).
+         */
+        TitlePreviewOut: {
+            /** Id */
+            id: number;
+            /**
+             * Media Type
+             * @enum {string}
+             */
+            media_type: "movie" | "tv";
+            /** Name */
+            name: string;
+            /** Year */
+            year: number | null;
+            /** Poster Url */
+            poster_url: string | null;
+            /** Overview */
+            overview: string | null;
+            /** Runtime Minutes */
+            runtime_minutes: number | null;
         };
         /** UserOut */
         UserOut: {
@@ -910,6 +1022,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FavoritesOut"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_recommendations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecommendationRequestIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecommendationsOut"];
                 };
             };
             /** @description Client error */

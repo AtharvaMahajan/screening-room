@@ -46,6 +46,7 @@ from screening_room.modules.catalog.schemas import (
     CastMember,
     GenreOut,
     TitleCardOut,
+    TitlePreviewOut,
     TitleRecord,
 )
 
@@ -487,6 +488,24 @@ def title_cards(
     return {title.id: _card(title, image_base_url) for title in titles}
 
 
+def title_previews(
+    session: Session, title_ids: Iterable[int], image_base_url: str
+) -> dict[int, TitlePreviewOut]:
+    """Preview data for these titles, by id (titles that don't exist are left out)."""
+    ids = list(title_ids)
+    if not ids:
+        return {}
+    titles = session.scalars(select(Title).where(Title.id.in_(ids)))
+    return {
+        title.id: TitlePreviewOut(
+            **_card(title, image_base_url).model_dump(),
+            overview=title.overview,
+            runtime_minutes=title.runtime_minutes,
+        )
+        for title in titles
+    }
+
+
 def _escape_like(text: str) -> str:
     """Make % and _ in user input match literally in a LIKE pattern."""
     return text.replace("\\", "\\\\").replace("%", r"\%").replace("_", r"\_")
@@ -537,9 +556,22 @@ def pool_candidates(session: Session) -> list[CandidateFeatures]:
     """Every candidate-pool title with its genres and seed sources, by title id.
 
     The whole pool, unfiltered: pool statistics then don't depend on what the
-    user asked for, and at <= ~2k titles a scan is a few milliseconds (§5).
+    user asked for. Only the columns the engine uses: loading whole Title objects
+    (overview text and all) took most of the request's time (M3 baseline).
     """
-    titles = session.scalars(select(Title).where(in_candidate_pool()).order_by(Title.id)).all()
+    titles = session.execute(
+        select(
+            Title.id,
+            Title.media_type,
+            Title.runtime_minutes,
+            Title.release_date,
+            Title.vote_average,
+            Title.vote_count,
+            Title.popularity,
+        )
+        .where(in_candidate_pool())
+        .order_by(Title.id)
+    ).all()
     pool_ids = select(Title.id).where(in_candidate_pool())
     genres: dict[int, set[int]] = {}
     for title_id, genre_id in session.execute(

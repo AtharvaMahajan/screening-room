@@ -1,0 +1,52 @@
+M3 evidence: recommendation latency and neighbor coverage on the real pool
+==========================================================================
+Measures POST /api/recommendations' service (recommendation-engine.md §15) against
+the real candidate pool from M2 (docs/evidence/m2-first-ingestion-report.txt).
+
+Command (from backend/, dev database, nothing is kept: one rolled-back transaction):
+  uv run python scripts/measure_recommendations.py --requests 300 --seed 2026
+
+Setup: Windows 11 laptop, PostgreSQL 17 in Docker Desktop, Python 3.15, SQLAlchemy
+installed WITHOUT its C extensions (Smart App Control, see README), so row loading
+is slower than a typical deployment. Timings on this machine vary 2-3x with load:
+a first run before the change below gave p95 454 ms with the same workload.
+
+Workload: synthetic. 20% cold-start users; the rest like 1-3 genres and pick 1-10
+favorites from the 300 most-voted pool titles (what local search surfaces first).
+Context: movie/tv/any, a genre filter 30% of the time, a runtime cap 30%.
+
+Change made while measuring: pool_candidates() loaded whole Title rows. Selecting
+only the 7 columns the engine uses cut that query from ~25 ms to ~7 ms (median of
+30 interleaved runs). Retrieval is still most of the time; the engine is ~10 ms.
+
+Reading the coverage numbers: "anchors with no eligible neighbor" is per request,
+after the context filters (e.g. a movie favorite's neighbors are mostly movies, so
+a TV-only request leaves it without any). Static coverage below ignores context.
+The M2 report's 12% is the share of ALL recommendation targets in the pool; here,
+most titles have at least one target that is.
+
+Script output follows, unedited.
+--------------------------------------------------------------------------
+Recommendation baseline (2026-10-31 15:26 UTC)
+Pool: 1336 titles. Requests: 300 (+10 warm-up),
+seed 2026, 64 cold-start.
+
+Latency, ms           p50     p95     max
+  service (logged)      87     205     629
+  incl. log inserts    102     274     655
+  target: p95 < 1500 (overview.md §7)
+
+Results
+  requests with < 5 results: 10
+  anchors with no eligible neighbor: 834 of 1310 (64%)
+  users with favorites shown >= 1 'Because you picked': 129 of 236 (55%)
+
+Neighbor coverage (TMDB recommendations that land in the pool)
+  Whole pool: 1336 titles
+    with >= 1 pool neighbor: 1072 (80%)
+    with >= 3 pool neighbors: 454
+    pool neighbors per title: median 2, mean 2.4, max 15
+  Top 300 by votes: 300 titles
+    with >= 1 pool neighbor: 257 (86%)
+    with >= 3 pool neighbors: 138
+    pool neighbors per title: median 2, mean 3.4, max 15
