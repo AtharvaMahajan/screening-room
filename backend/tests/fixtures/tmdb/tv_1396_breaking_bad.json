@@ -1,0 +1,1111 @@
+{
+  "adult": false,
+  "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+  "created_by": [
+    {
+      "credit_id": "52542286760ee31328001a7b",
+      "gender": 2,
+      "id": 66633,
+      "name": "Vince Gilligan",
+      "original_name": "Vince Gilligan",
+      "profile_path": "/wJIxATESjzsjSgvRhVavOmdamXc.jpg"
+    }
+  ],
+  "credits": {
+    "cast": [
+      {
+        "adult": false,
+        "character": "Walter White",
+        "credit_id": "52542282760ee313280017f9",
+        "gender": 2,
+        "id": 17419,
+        "known_for_department": "Acting",
+        "name": "Bryan Cranston",
+        "order": 0,
+        "original_name": "Bryan Cranston",
+        "popularity": 4.9496,
+        "profile_path": "/7Jahy5LZX2Fo8fGJltMreAI49hC.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Jesse Pinkman",
+        "credit_id": "52542282760ee31328001845",
+        "gender": 2,
+        "id": 84497,
+        "known_for_department": "Acting",
+        "name": "Aaron Paul",
+        "order": 1,
+        "original_name": "Aaron Paul",
+        "popularity": 3.4928,
+        "profile_path": "/8Ac9uuoYwZoYVAIJfRLzzLsGGJn.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Skyler White",
+        "credit_id": "52542282760ee3132800181b",
+        "gender": 1,
+        "id": 134531,
+        "known_for_department": "Acting",
+        "name": "Anna Gunn",
+        "order": 2,
+        "original_name": "Anna Gunn",
+        "popularity": 4.0569,
+        "profile_path": "/adppyeu1a4REN3khtgmXusrapFi.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Walter White Jr.",
+        "credit_id": "52542284760ee313280018a9",
+        "gender": 2,
+        "id": 209674,
+        "known_for_department": "Acting",
+        "name": "RJ Mitte",
+        "order": 3,
+        "original_name": "RJ Mitte",
+        "popularity": 6.6165,
+        "profile_path": "/sNPA92ZrssYhlaB1UA2pWcLD9db.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Hank Schrader",
+        "credit_id": "52542283760ee3132800187b",
+        "gender": 2,
+        "id": 14329,
+        "known_for_department": "Acting",
+        "name": "Dean Norris",
+        "order": 4,
+        "original_name": "Dean Norris",
+        "popularity": 4.3859,
+        "profile_path": "/mKRrEbsxAX3ro700HsViFArRM7l.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Marie Schrader",
+        "credit_id": "52542283760ee31328001891",
+        "gender": 1,
+        "id": 1217934,
+        "known_for_department": "Acting",
+        "name": "Betsy Brandt",
+        "order": 5,
+        "original_name": "Betsy Brandt",
+        "popularity": 1.6736,
+        "profile_path": "/xAnuzyjdMbQq9L1c4JNwXL52Wm4.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Saul Goodman",
+        "credit_id": "5271b180760ee35afc09bb8d",
+        "gender": 2,
+        "id": 59410,
+        "known_for_department": "Acting",
+        "name": "Bob Odenkirk",
+        "order": 7,
+        "original_name": "Bob Odenkirk",
+        "popularity": 3.6341,
+        "profile_path": "/rF0Lb6SBhGSTvjRffmlKRSeI3jE.jpg"
+      },
+      {
+        "adult": false,
+        "character": "Mike Ehrmantraut",
+        "credit_id": "5271b1e6760ee35af60941ad",
+        "gender": 2,
+        "id": 783,
+        "known_for_department": "Acting",
+        "name": "Jonathan Banks",
+        "order": 9,
+        "original_name": "Jonathan Banks",
+        "popularity": 4.733,
+        "profile_path": "/bswk26L13PvY4iMTwUTAsepXCLv.jpg"
+      }
+    ],
+    "crew": [
+      {
+        "adult": false,
+        "credit_id": "67ac7225f85f19913a9b8a2d",
+        "department": "Production",
+        "gender": 2,
+        "id": 24951,
+        "job": "Co-Executive Producer",
+        "known_for_department": "Production",
+        "name": "Peter Gould",
+        "original_name": "Peter Gould",
+        "popularity": 1.5866,
+        "profile_path": "/a2dJSpUiXQ2NAxqSzztr6WsnhOJ.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "67ac7024f71a3783e1bb4ea5",
+        "department": "Production",
+        "gender": 2,
+        "id": 103009,
+        "job": "Co-Executive Producer",
+        "known_for_department": "Writing",
+        "name": "Thomas Schnauz",
+        "original_name": "Thomas Schnauz",
+        "popularity": 1.4512,
+        "profile_path": "/uMz5wsgv6QQAgFI809SgCCbwYn9.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "6418a1a7a14bef00b815158a",
+        "department": "Costume & Make-Up",
+        "gender": 1,
+        "id": 1537674,
+        "job": "Costume Design",
+        "known_for_department": "Costume & Make-Up",
+        "name": "Jennifer Bryan",
+        "original_name": "Jennifer Bryan",
+        "popularity": 0.4303,
+        "profile_path": "/oA5QovyVfEG0SUIs0DIhGsriyok.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "64189e9c6a2227008de8d158",
+        "department": "Production",
+        "gender": 2,
+        "id": 1223193,
+        "job": "Co-Executive Producer",
+        "known_for_department": "Writing",
+        "name": "George Mastras",
+        "original_name": "George Mastras",
+        "popularity": 0.5565,
+        "profile_path": "/2K0NELbA0Ow45ECudbO2eFc1Fe4.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "67ac74429ed73a4324b0952e",
+        "department": "Production",
+        "gender": 1,
+        "id": 1223202,
+        "job": "Producer",
+        "known_for_department": "Production",
+        "name": "Diane Mercer",
+        "original_name": "Diane Mercer",
+        "popularity": 0.7736,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "5254228d760ee31328001cc7",
+        "department": "Production",
+        "gender": 2,
+        "id": 17419,
+        "job": "Producer",
+        "known_for_department": "Acting",
+        "name": "Bryan Cranston",
+        "original_name": "Bryan Cranston",
+        "popularity": 4.9496,
+        "profile_path": "/7Jahy5LZX2Fo8fGJltMreAI49hC.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "6449841d05a53304be1b880d",
+        "department": "Production",
+        "gender": 2,
+        "id": 1930718,
+        "job": "Location Manager",
+        "known_for_department": "Production",
+        "name": "Christian Diaz de Bedoya",
+        "original_name": "Christian Diaz de Bedoya",
+        "popularity": 0.5102,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "64189f7aa14bef0099c8395a",
+        "department": "Production",
+        "gender": 2,
+        "id": 3970747,
+        "job": "Associate Producer",
+        "known_for_department": "Production",
+        "name": "Andrew Ortner",
+        "original_name": "Andrew Ortner",
+        "popularity": 0.3741,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "64189e12a14bef00b81514a9",
+        "department": "Production",
+        "gender": 2,
+        "id": 1223194,
+        "job": "Co-Executive Producer",
+        "known_for_department": "Writing",
+        "name": "Sam Catlin",
+        "original_name": "Sam Catlin",
+        "popularity": 0.9152,
+        "profile_path": "/xc9Ax2kpvQLayUaFL1d1NTUQ7df.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "64189e5f6a2227008de8d147",
+        "department": "Production",
+        "gender": 1,
+        "id": 29779,
+        "job": "Executive Producer",
+        "known_for_department": "Directing",
+        "name": "Michelle MacLaren",
+        "original_name": "Michelle MacLaren",
+        "popularity": 1.2376,
+        "profile_path": "/3LcH5eNiysMWaepARllVrS4Dzn7.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "64189dcea14bef008100712b",
+        "department": "Production",
+        "gender": 1,
+        "id": 1223199,
+        "job": "Co-Executive Producer",
+        "known_for_department": "Production",
+        "name": "Melissa Bernstein",
+        "original_name": "Melissa Bernstein",
+        "popularity": 1.1752,
+        "profile_path": "/rSztwqMUIko8RkmwjxBse1XDW3g.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "539980a1c3a3681d0d00148b",
+        "department": "Art",
+        "gender": 2,
+        "id": 12706,
+        "job": "Production Design",
+        "known_for_department": "Art",
+        "name": "Mark S. Freeborn",
+        "original_name": "Mark S. Freeborn",
+        "popularity": 0.5046,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "64634c54ef8b3200fe7e825f",
+        "department": "Crew",
+        "gender": 2,
+        "id": 4065202,
+        "job": "Thanks",
+        "known_for_department": "Crew",
+        "name": "Richard J. Berry",
+        "original_name": "Richard J. Berry",
+        "popularity": 0.5202,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "690e575cdc4f028746a0bd66",
+        "department": "Art",
+        "gender": 2,
+        "id": 1494529,
+        "job": "Property Master",
+        "known_for_department": "Art",
+        "name": "Mark Hansen",
+        "original_name": "Mark Hansen",
+        "popularity": 0.5561,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "644465ffd38b580521114ec4",
+        "department": "Production",
+        "gender": 2,
+        "id": 1537675,
+        "job": "Casting Associate",
+        "known_for_department": "Production",
+        "name": "Russell Scott",
+        "original_name": "Russell Scott",
+        "popularity": 0.655,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "64189d12310325010151b7b7",
+        "department": "Production",
+        "gender": 2,
+        "id": 1223200,
+        "job": "Producer",
+        "known_for_department": "Production",
+        "name": "Stewart Lyons",
+        "original_name": "Stewart Lyons",
+        "popularity": 1.3349,
+        "profile_path": "/dCAN4EMn8rsqALwDIjf9aNjuVTm.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "539980c8c3a3681d0700143a",
+        "department": "Art",
+        "gender": 2,
+        "id": 1330079,
+        "job": "Art Direction",
+        "known_for_department": "Art",
+        "name": "Bjarne Sletteland",
+        "original_name": "Bjarne Sletteland",
+        "popularity": 0.3438,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "6444663ccee2f6049f36d7d3",
+        "department": "Production",
+        "gender": 1,
+        "id": 6479,
+        "job": "Casting",
+        "known_for_department": "Production",
+        "name": "Sharon Bialy",
+        "original_name": "Sharon Bialy",
+        "popularity": 0.7396,
+        "profile_path": "/uOex6LpaQYncD0sQfVYD1frI5uJ.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "64446643cee2f604f336e877",
+        "department": "Production",
+        "gender": 1,
+        "id": 959387,
+        "job": "Casting",
+        "known_for_department": "Production",
+        "name": "Sherry Thomas",
+        "original_name": "Sherry Thomas",
+        "popularity": 0.5879,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "64634e45e3fa2f00e404a628",
+        "department": "Sound",
+        "gender": 2,
+        "id": 1069688,
+        "job": "Music Supervisor",
+        "known_for_department": "Sound",
+        "name": "Thomas Golubić",
+        "original_name": "Thomas Golubić",
+        "popularity": 0.7514,
+        "profile_path": "/umzkpmX3p3GdrSutAHFX7Rij0Sm.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "644986702fdec604e4a1236a",
+        "department": "Sound",
+        "gender": 2,
+        "id": 1537682,
+        "job": "Supervising Sound Editor",
+        "known_for_department": "Sound",
+        "name": "Nick Forshager",
+        "original_name": "Nick Forshager",
+        "popularity": 0.7682,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "6450485343501100ea397cba",
+        "department": "Crew",
+        "gender": 2,
+        "id": 1537690,
+        "job": "Stunt Coordinator",
+        "known_for_department": "Crew",
+        "name": "Al Goto",
+        "original_name": "Al Goto",
+        "popularity": 1.4627,
+        "profile_path": "/iH29BHKpmUO3iSKuhBSuj365VPl.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "52b7008819c29559eb03dd72",
+        "department": "Sound",
+        "gender": 2,
+        "id": 1280070,
+        "job": "Original Music Composer",
+        "known_for_department": "Sound",
+        "name": "Dave Porter",
+        "original_name": "Dave Porter",
+        "popularity": 0.6818,
+        "profile_path": "/flRW9QknVtU8HG7lLjMvflbhl2a.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "52542287760ee31328001b69",
+        "department": "Production",
+        "gender": 2,
+        "id": 5162,
+        "job": "Executive Producer",
+        "known_for_department": "Production",
+        "name": "Mark Johnson",
+        "original_name": "Mark Johnson",
+        "popularity": 1.1088,
+        "profile_path": "/gLuXkOQjqB81aHMGJ2OtYzEpHQu.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "68dc6b335afb57f2ce5315dd",
+        "department": "Sound",
+        "gender": 2,
+        "id": 1440228,
+        "job": "Sound Re-Recording Mixer",
+        "known_for_department": "Sound",
+        "name": "Eric Justen",
+        "original_name": "Eric Justen",
+        "popularity": 1.5177,
+        "profile_path": "/6XH9DhMhbWctzYRjMOHSXlNh9Es.jpg"
+      },
+      {
+        "adult": false,
+        "credit_id": "68dc79d76c365b970d5313ce",
+        "department": "Sound",
+        "gender": 2,
+        "id": 143921,
+        "job": "Sound Re-Recording Mixer",
+        "known_for_department": "Sound",
+        "name": "Jeffrey Perkins",
+        "original_name": "Jeffrey Perkins",
+        "popularity": 0.5104,
+        "profile_path": null
+      },
+      {
+        "adult": false,
+        "credit_id": "52542287760ee31328001af1",
+        "department": "Production",
+        "gender": 2,
+        "id": 66633,
+        "job": "Executive Producer",
+        "known_for_department": "Writing",
+        "name": "Vince Gilligan",
+        "original_name": "Vince Gilligan",
+        "popularity": 2.068,
+        "profile_path": "/wJIxATESjzsjSgvRhVavOmdamXc.jpg"
+      }
+    ]
+  },
+  "episode_run_time": [],
+  "first_air_date": "2008-01-20",
+  "genres": [
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 80,
+      "name": "Crime"
+    }
+  ],
+  "homepage": "https://www.sonypictures.com/tv/breakingbad",
+  "id": 1396,
+  "in_production": false,
+  "languages": [
+    "en",
+    "de",
+    "es"
+  ],
+  "last_air_date": "2013-09-29",
+  "last_episode_to_air": {
+    "air_date": "2013-09-29",
+    "episode_number": 16,
+    "episode_type": "finale",
+    "id": 62161,
+    "name": "Felina",
+    "overview": "All bad things must come to an end.",
+    "production_code": "",
+    "runtime": 56,
+    "season_number": 5,
+    "show_id": 1396,
+    "still_path": "/pA0YwyhvdDXP3BEGL2grrIhq8aM.jpg",
+    "vote_average": 9.3,
+    "vote_count": 332
+  },
+  "name": "Breaking Bad",
+  "networks": [
+    {
+      "id": 174,
+      "logo_path": "/pmvRmATOCaDykE6JrVoeYxlFHw3.png",
+      "name": "AMC",
+      "origin_country": "US"
+    }
+  ],
+  "next_episode_to_air": null,
+  "number_of_episodes": 62,
+  "number_of_seasons": 5,
+  "origin_country": [
+    "US"
+  ],
+  "original_language": "en",
+  "original_name": "Breaking Bad",
+  "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
+  "popularity": 196.1065,
+  "poster_path": "/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+  "production_companies": [
+    {
+      "id": 11073,
+      "logo_path": "/wHs44fktdoj6c378ZbSWfzKsM2Z.png",
+      "name": "Sony Pictures Television",
+      "origin_country": "US"
+    },
+    {
+      "id": 33742,
+      "logo_path": "/2jdh2sEa0R6y6uT0F7g0IgA2WO8.png",
+      "name": "High Bridge Productions",
+      "origin_country": "US"
+    },
+    {
+      "id": 2605,
+      "logo_path": null,
+      "name": "Gran Via Productions",
+      "origin_country": "US"
+    }
+  ],
+  "production_countries": [
+    {
+      "iso_3166_1": "US",
+      "name": "United States of America"
+    }
+  ],
+  "recommendations": {
+    "page": 1,
+    "results": [
+      {
+        "adult": false,
+        "backdrop_path": "/rfxryDIv8huejujg4JueDJx8zCz.jpg",
+        "first_air_date": "2015-02-08",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 60059,
+        "media_type": "tv",
+        "name": "Better Call Saul",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Better Call Saul",
+        "overview": "Six years before Saul Goodman meets Walter White. We meet him when the man who will become Saul Goodman is known as Jimmy McGill, a small-time lawyer searching for his destiny, and, more immediately, hustling to make ends meet. Working alongside, and, often, against Jimmy, is “fixer” Mike Ehrmantraut. The series tracks Jimmy’s transformation into Saul Goodman, the man who puts “criminal” in “criminal lawyer\".",
+        "popularity": 97.5132,
+        "poster_path": "/fC2HDm5t0kHl7mTm7jxMR31b7by.jpg",
+        "softcore": false,
+        "vote_average": 8.7,
+        "vote_count": 7042
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/64jEzC7YeKEpnn1YwjCGRo9ZvOX.jpg",
+        "first_air_date": "2018-11-16",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 80968,
+        "media_type": "tv",
+        "name": "Narcos: Mexico",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Narcos: Mexico",
+        "overview": "See the rise of the Guadalajara Cartel as an American DEA agent learns the danger of targeting narcos in 1980s Mexico.",
+        "popularity": 31.3081,
+        "poster_path": "/aXwMx8OvRFMfI1RmkbJm6Bq1jVg.jpg",
+        "softcore": false,
+        "vote_average": 7.921,
+        "vote_count": 1561
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/eEXwPg7nIERmRHC1yJoBf3Q5C7k.jpg",
+        "first_air_date": "2017-07-05",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 71694,
+        "media_type": "tv",
+        "name": "Snowfall",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Snowfall",
+        "overview": "Los Angeles. 1983. A storm is coming and its name is crack. Set against the infancy of the crack cocaine epidemic and its ultimate radical impact on the culture as we know it, the story follows numerous characters on a violent collision course.",
+        "popularity": 49.8225,
+        "poster_path": "/y7ntzl7msiaS6o7dvDbNG7XFYcR.jpg",
+        "softcore": false,
+        "vote_average": 8.4,
+        "vote_count": 825
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/y9ekzkPFmWSqUU3Kj0wHmYUM8qu.jpg",
+        "first_air_date": "2015-08-28",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 63351,
+        "media_type": "tv",
+        "name": "Narcos",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Narcos",
+        "overview": "A gritty chronicle of the war against Colombia's infamously violent and powerful drug cartels.",
+        "popularity": 38.3159,
+        "poster_path": "/rTmal9fDbwh5F0waol2hq35U4ah.jpg",
+        "softcore": false,
+        "vote_average": 8.089,
+        "vote_count": 3526
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/uNvpN37f9HbvsDBQFhHU5m2EnVo.jpg",
+        "first_air_date": "2022-06-12",
+        "genre_ids": [
+          18,
+          80,
+          9648
+        ],
+        "id": 128904,
+        "media_type": "tv",
+        "name": "Dark Winds",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Dark Winds",
+        "overview": "This psychological thriller follows two Navajo police officers, Leaphorn and Chee, in the 1970s Southwest as their search for clues in a grisly double murder case forces them to challenge their own spiritual beliefs and come to terms with the trauma of their pasts.",
+        "popularity": 30.7787,
+        "poster_path": "/kDlrMN0P9ByrEH2GoRbBFeZHbcf.jpg",
+        "softcore": false,
+        "vote_average": 7.5,
+        "vote_count": 222
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/eQJwfyMqSra10ck8HOoiCrbQR32.jpg",
+        "first_air_date": "2016-06-14",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 66025,
+        "media_type": "tv",
+        "name": "Animal Kingdom",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Animal Kingdom",
+        "overview": "17-year-old Joshua \"J\" Cody moves in with his freewheeling relatives in their Southern California beach town after his mother dies of a heroin overdose. Headed by boot-tough matriarch Janine \"Smurf\" Cody and her right-hand Baz, who runs the business and calls the shots, the clan also consists of Pope, the oldest and most dangerous of the Cody boys; Craig, the tough and fearless middle son; and Deran, the troubled, suspicious \"baby\" of the family.",
+        "popularity": 50.6801,
+        "poster_path": "/rzvdKrnSRKPFI0pgqMQknDPpRC9.jpg",
+        "softcore": false,
+        "vote_average": 7.798,
+        "vote_count": 583
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/3NVXTxrzxm5x7MBaQlzeLZk9pRD.jpg",
+        "first_air_date": "2016-06-23",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 66676,
+        "media_type": "tv",
+        "name": "Queen of the South",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Queen of the South",
+        "overview": "Teresa flees Mexico after her drug-runner boyfriend is murdered. Settling in Dallas, she looks to become the country's reigning drug smuggler and to avenge her lover's murder.",
+        "popularity": 23.2571,
+        "poster_path": "/rzdC5EHkkKJE6OPVdh6gT1pR1c9.jpg",
+        "softcore": false,
+        "vote_average": 7.6,
+        "vote_count": 482
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/2INMEKxee4z0mVYpHCS4AdPxgOb.jpg",
+        "first_air_date": "2018-09-25",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 81358,
+        "media_type": "tv",
+        "name": "Mr Inbetween",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Mr Inbetween",
+        "overview": "Ray Shoesmith is a father, ex-husband, boyfriend and best friend: tough roles to juggle in the modern age. Even harder when you’re a criminal for hire.",
+        "popularity": 17.406,
+        "poster_path": "/1FkONly4j7hxi6Pz5CmuhRN1Ops.jpg",
+        "softcore": false,
+        "vote_average": 8.31,
+        "vote_count": 381
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/vlG182ZY2WMzD5bjFZNnhyvv5V4.jpg",
+        "first_air_date": "2013-04-04",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 40008,
+        "media_type": "tv",
+        "name": "Hannibal",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Hannibal",
+        "overview": "Both a gift and a curse, Graham has the extraordinary ability to think like his prey—he sees what they see, feels what they feel. But while Graham is pursuing an especially troubling, cannibalistic murderer, Special Agent Jack Crawford teams him with a highly respected psychiatrist – a man with a taste for the criminal minded – Dr. Hannibal Lecter.",
+        "popularity": 44.6437,
+        "poster_path": "/pbV2eLnKSIm1epSZt473UYfqaeZ.jpg",
+        "softcore": false,
+        "vote_average": 8.3,
+        "vote_count": 3117
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/4TdmuuwiIiKw3JOjIuhdgYxRXnN.jpg",
+        "first_air_date": "2024-09-19",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 194764,
+        "media_type": "tv",
+        "name": "The Penguin",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "The Penguin",
+        "overview": "With the city in peril following the seawall's collapse, Oswald \"Oz\" Cobb seeks to fill the power vacuum left by the death of Carmine Falcone and finally give his mother Francis the life he's always promised. But first, Oz must confront his enemies and his own demoralizing reputation as \"the Penguin.\"",
+        "popularity": 36.8713,
+        "poster_path": "/vOWcqC4oDQws1doDWLO7d3dh5qc.jpg",
+        "softcore": false,
+        "vote_average": 8.361,
+        "vote_count": 1557
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/nj06Yo0yVzI7jx6novjyGOyNQKC.jpg",
+        "first_air_date": "2024-01-25",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 137893,
+        "media_type": "tv",
+        "name": "Griselda",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Griselda",
+        "overview": "Inspired by real events, this fictional dramatization shows Griselda Blanco's journey from Medellín to becoming \"the Godmother\" of Miami's drug empire.",
+        "popularity": 10.1776,
+        "poster_path": "/nhEtK1lJKb3kqBtDBDXynGr3hJL.jpg",
+        "softcore": false,
+        "vote_average": 7.238,
+        "vote_count": 426
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/n7dkSG7IbMfqoRoDf4HpC28R9nM.jpg",
+        "first_air_date": "2019-06-10",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 70168,
+        "media_type": "tv",
+        "name": "Too Old to Die Young",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Too Old to Die Young",
+        "overview": "In one tragic night, Los Angeles County Sheriff's Deputy Martin Jones's life is blown apart, and he is forced into a deadly underground of Cartel soldiers, Yakuza assassins, and mysterious vigilantes. Soon he finds himself lost on a surreal odyssey of murder, mysticism and vengeance, as his past sins close in on him.",
+        "popularity": 10.5755,
+        "poster_path": "/xGBwXf02Mu2zzqxh6TomLC7xfk7.jpg",
+        "softcore": false,
+        "vote_average": 7.4,
+        "vote_count": 197
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/yPkRxn3HKBJig1IJes7PQMF2iUC.jpg",
+        "first_air_date": "2021-06-06",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 126116,
+        "media_type": "tv",
+        "name": "Time",
+        "origin_country": [
+          "GB"
+        ],
+        "original_language": "en",
+        "original_name": "Time",
+        "overview": "Guilt, violence and impossible choices – what does it take to survive?",
+        "popularity": 31.4904,
+        "poster_path": "/ozngyBGF4uuxIrs1ZpE8rbPus8S.jpg",
+        "softcore": false,
+        "vote_average": 7.616,
+        "vote_count": 294
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/csOIulXwQxsuCFp3ZZ9cYkJmCwH.jpg",
+        "first_air_date": "2018-02-26",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 71715,
+        "media_type": "tv",
+        "name": "Good Girls",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Good Girls",
+        "overview": "Three \"good girl\" suburban wives and mothers suddenly find themselves in desperate circumstances and decide to stop playing it safe and risk everything to take their power back.",
+        "popularity": 29.1303,
+        "poster_path": "/wpgg6G3UHXepH2Zgpt4W60d6gxR.jpg",
+        "softcore": false,
+        "vote_average": 7.806,
+        "vote_count": 726
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/f1Z5X3iCCKK5FGu5VvzPkXO7eOl.jpg",
+        "first_air_date": "2015-08-07",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 64199,
+        "media_type": "tv",
+        "name": "Sneaky Pete",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Sneaky Pete",
+        "overview": "A con man on the run from a vicious gangster takes cover from his past by assuming the identity of his prison cellmate, Pete, “reuniting” with Pete’s estranged family, a colorful, dysfunctional group that threatens to drag him into a world just as dangerous as the one he’s trying to escape - and, just maybe, give him a taste of the loving family he’s never had.",
+        "popularity": 29.4452,
+        "poster_path": "/nNpcea9lLHI4iv8QpOIvHveVnT9.jpg",
+        "softcore": false,
+        "vote_average": 7.494,
+        "vote_count": 447
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/ojSWom4hbO8RAhMem8jITICrKlD.jpg",
+        "first_air_date": "2019-05-13",
+        "genre_ids": [
+          80,
+          18
+        ],
+        "id": 85385,
+        "media_type": "tv",
+        "name": "L.A.'s Finest",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "L.A.'s Finest",
+        "overview": "Syd Burnett has left her complicated past behind to become an LAPD detective. Paired with a new partner, Nancy McKenna, a working mom with an equally complex past, Syd is pushed to examine whether her unapologetic lifestyle might be masking a greater personal secret. These two women don't agree on much, but they find common ground when it comes to taking on the most dangerous criminals in Los Angeles.",
+        "popularity": 18.9155,
+        "poster_path": "/pecfFki7ADklKNuqMrcBD7U9lWc.jpg",
+        "softcore": false,
+        "vote_average": 6.874,
+        "vote_count": 266
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/ulm1ex4JFYJByyaPyqTr47MFyEQ.jpg",
+        "first_air_date": "2025-11-06",
+        "genre_ids": [
+          18,
+          10765
+        ],
+        "id": 225171,
+        "media_type": "tv",
+        "name": "Pluribus",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Pluribus",
+        "overview": "The most miserable person on Earth must save the world from happiness.",
+        "popularity": 32.6777,
+        "poster_path": "/z7Nga7Q9IGFWs5OEduY2gGFxnX3.jpg",
+        "softcore": false,
+        "vote_average": 7.919,
+        "vote_count": 1185
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/ioUbRvVdl8utMHEHknFhiJuqc1G.jpg",
+        "first_air_date": "2022-08-30",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 135868,
+        "media_type": "tv",
+        "name": "The Patient",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "The Patient",
+        "overview": "A psychotherapist finds himself held prisoner by a serial killer with an unusual request: curb his homicidal urges.",
+        "popularity": 8.6291,
+        "poster_path": "/fB1848j0pvNnYilXB0ho5OCfiIz.jpg",
+        "softcore": false,
+        "vote_average": 6.919,
+        "vote_count": 356
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/qdZCF4FXQwOgkd8PIIQelbDqAYO.jpg",
+        "first_air_date": "2020-11-17",
+        "genre_ids": [
+          80,
+          18,
+          9648
+        ],
+        "id": 100010,
+        "media_type": "tv",
+        "name": "Big Sky",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Big Sky",
+        "overview": "Private detective Cassie Dewell partners with ex-cop Jenny Hoyt on a search for two sisters who have been kidnapped by a truck driver on a remote highway in Montana. When they discover that these are not the only girls who have disappeared in the area, they must race against the clock to stop the perpetrator before another woman is taken.",
+        "popularity": 26.9284,
+        "poster_path": "/4CUK42x0TvcWvuRXfjAFQlCeRdf.jpg",
+        "softcore": false,
+        "vote_average": 7.189,
+        "vote_count": 307
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/is3ZdGCPEKTW7IyDe0khvE1nc6R.jpg",
+        "first_air_date": "2024-09-19",
+        "genre_ids": [
+          18,
+          80
+        ],
+        "id": 225634,
+        "media_type": "tv",
+        "name": "Monsters: The Lyle and Erik Menendez Story",
+        "origin_country": [
+          "US"
+        ],
+        "original_language": "en",
+        "original_name": "Monsters: The Lyle and Erik Menendez Story",
+        "overview": "The story of the Menéndez brothers, who were convicted in 1996 of murdering their parents José and Mary Louise “Kitty” Menéndez.",
+        "popularity": 32.3531,
+        "poster_path": "/x9YC2rpXHUFMqI1hCekKDm9UE4w.jpg",
+        "softcore": false,
+        "vote_average": 7.599,
+        "vote_count": 578
+      }
+    ],
+    "total_pages": 34,
+    "total_results": 680
+  },
+  "seasons": [
+    {
+      "air_date": "2009-02-17",
+      "episode_count": 9,
+      "id": 3577,
+      "name": "Specials",
+      "overview": "",
+      "poster_path": "/4RaIvSQgHHHPfaI1jFqaMR8UJWM.jpg",
+      "season_number": 0,
+      "vote_average": 0.0
+    },
+    {
+      "air_date": "2008-01-20",
+      "episode_count": 7,
+      "id": 3572,
+      "name": "Season 1",
+      "overview": "High school chemistry teacher Walter White's life is suddenly transformed by a dire medical diagnosis. Street-savvy former student Jesse Pinkman \"teaches\" Walter a new trade.",
+      "poster_path": "/1BP4xYv9ZG4ZVHkL7ocOziBbSYH.jpg",
+      "season_number": 1,
+      "vote_average": 8.4
+    },
+    {
+      "air_date": "2009-03-08",
+      "episode_count": 13,
+      "id": 3573,
+      "name": "Season 2",
+      "overview": "Walt must deal with the chain reaction of his choice, as he and Jesse face new and severe consequences. When danger and suspicion around Walt escalate, he is pushed to new levels of desperation. Just how much higher will the stakes rise? How far is Walt willing to go to ensure his family's security? Will his grand plan spiral out of control?",
+      "poster_path": "/e3oGYpoTUhOFK0BJfloru5ZmGV.jpg",
+      "season_number": 2,
+      "vote_average": 8.5
+    },
+    {
+      "air_date": "2010-03-21",
+      "episode_count": 13,
+      "id": 3575,
+      "name": "Season 3",
+      "overview": "Walt continues to battle dueling identities: a desperate husband and father trying to provide for his family, and a newly appointed key player in the Albuquerque drug trade. As the danger around him escalates, Walt is now entrenched in the complex worlds of an angst-ridden family on the verge of dissolution, and the ruthless and unrelenting drug cartel.",
+      "poster_path": "/ffP8Q8ew048YofHRnFVM18B2fPG.jpg",
+      "season_number": 3,
+      "vote_average": 8.4
+    },
+    {
+      "air_date": "2011-07-17",
+      "episode_count": 13,
+      "id": 3576,
+      "name": "Season 4",
+      "overview": "Walt and Jesse must cope with the fallout of their previous actions, both personally and professionally. Tension mounts as Walt faces a true standoff with his employer, Gus, with neither side willing or able to back down. Walt must also adjust to a new relationship with Skyler, whom while still reconciling her relationship with Walt, is committed to properly laundering Walt’s money and ensuring her sister Marie and an ailing Hank are financially stable.",
+      "poster_path": "/5ewrnKp4TboU4hTLT5cWO350mHj.jpg",
+      "season_number": 4,
+      "vote_average": 8.6
+    },
+    {
+      "air_date": "2012-07-15",
+      "episode_count": 16,
+      "id": 3578,
+      "name": "Season 5",
+      "overview": "Walt is faced with the prospect of moving on in a world without his enemy. As the pressure of a criminal life starts to build, Skyler struggles to keep Walt’s terrible secrets. Facing resistance from sometime adversary and former Fring lieutenant Mike, Walt tries to keep his world from falling apart even as his DEA Agent brother in law, Hank, finds numerous leads that could blaze a path straight to Walt. ",
+      "poster_path": "/r3z70vunihrAkjILQKWHX0G2xzO.jpg",
+      "season_number": 5,
+      "vote_average": 8.9
+    }
+  ],
+  "softcore": false,
+  "spoken_languages": [
+    {
+      "english_name": "English",
+      "iso_639_1": "en",
+      "name": "English"
+    },
+    {
+      "english_name": "German",
+      "iso_639_1": "de",
+      "name": "Deutsch"
+    },
+    {
+      "english_name": "Spanish",
+      "iso_639_1": "es",
+      "name": "Español"
+    }
+  ],
+  "status": "Ended",
+  "tagline": "Change the equation.",
+  "type": "Scripted",
+  "vote_average": 8.958,
+  "vote_count": 18999
+}

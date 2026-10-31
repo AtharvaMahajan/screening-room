@@ -1,7 +1,7 @@
 """FastAPI application factory.
 
-Run locally with:
-    uv run uvicorn screening_room.main:create_app --factory --reload
+Run locally with (see README.md for why --reload-dir matters):
+    uv run uvicorn screening_room.main:create_app --factory --reload --reload-dir src
 """
 
 from collections.abc import AsyncIterator

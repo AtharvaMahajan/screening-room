@@ -1,0 +1,464 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/zZqpAXxVSBtxV9qPBcscfXBcL2w.jpg",
+      "first_air_date": "2011-04-17",
+      "genre_ids": [
+        10765,
+        18,
+        10759
+      ],
+      "id": 1399,
+      "name": "Game of Thrones",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Game of Thrones",
+      "overview": "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
+      "popularity": 173.9719,
+      "poster_path": "/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
+      "softcore": false,
+      "vote_average": 8.475,
+      "vote_count": 28076
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/9P4IIMYY3HifqeruZq0ZZ9g7YUi.jpg",
+      "first_air_date": "2016-07-15",
+      "genre_ids": [
+        10759,
+        9648,
+        10765
+      ],
+      "id": 66732,
+      "name": "Stranger Things",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Stranger Things",
+      "overview": "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.",
+      "popularity": 118.6721,
+      "poster_path": "/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
+      "softcore": false,
+      "vote_average": 8.545,
+      "vote_count": 22058
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/rAOjnEFTuNysY7bot8zonhImGMh.jpg",
+      "first_air_date": "2010-10-31",
+      "genre_ids": [
+        10759,
+        18,
+        10765
+      ],
+      "id": 1402,
+      "name": "The Walking Dead",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Walking Dead",
+      "overview": "Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies. He sets out to find his family and encounters many other survivors along the way.",
+      "popularity": 130.3432,
+      "poster_path": "/ng3cMtxYKt1OSQYqFlnKWnVsqNO.jpg",
+      "softcore": false,
+      "vote_average": 8.08,
+      "vote_count": 18318
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/ta5oblpMlEcIPIS2YGcq9XEkWK2.jpg",
+      "first_air_date": "2016-01-25",
+      "genre_ids": [
+        80,
+        10765
+      ],
+      "id": 63174,
+      "name": "Lucifer",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Lucifer",
+      "overview": "Bored and unhappy as the Lord of Hell, Lucifer Morningstar abandoned his throne and retired to Los Angeles, where he has teamed up with LAPD detective Chloe Decker to take down criminals. But the longer he's away from the underworld, the greater the threat that the worst of humanity could escape.",
+      "popularity": 86.6615,
+      "poster_path": "/ekZobS8isE6mA53RAiGDG93hBxL.jpg",
+      "softcore": false,
+      "vote_average": 8.428,
+      "vote_count": 15757
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/bq28ajZaoMyzEIm6REelqyqtEDZ.jpg",
+      "first_air_date": "2019-07-25",
+      "genre_ids": [
+        10765,
+        10759
+      ],
+      "id": 76479,
+      "name": "The Boys",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Boys",
+      "overview": "A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+      "popularity": 109.1108,
+      "poster_path": "/in1R2dDc421JxsoRWaIIAqVI2KE.jpg",
+      "softcore": false,
+      "vote_average": 8.4,
+      "vote_count": 13610
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/lOr9NKxh4vMweufMOUDJjJhCRHW.jpg",
+      "first_air_date": "2021-01-15",
+      "genre_ids": [
+        10765,
+        9648,
+        18
+      ],
+      "id": 85271,
+      "name": "WandaVision",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "WandaVision",
+      "overview": "Wanda Maximoff and Vision—two super-powered beings living idealized suburban lives—begin to suspect that everything is not as it seems.",
+      "popularity": 35.3135,
+      "poster_path": "/ijWWwINc8h71NQ8j1LTJMFSj5wr.jpg",
+      "softcore": false,
+      "vote_average": 8.2,
+      "vote_count": 13009
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/q3jHCb4dMfYF6ojikKuHd6LscxC.jpg",
+      "first_air_date": "2021-06-09",
+      "genre_ids": [
+        18,
+        10765
+      ],
+      "id": 84958,
+      "name": "Loki",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Loki",
+      "overview": "After stealing the Tesseract during the events of “Avengers: Endgame,” an alternate version of Loki is brought to the mysterious Time Variance Authority, a bureaucratic organization that exists outside of time and space and monitors the timeline. They give Loki a choice: face being erased from existence due to being a “time variant” or help fix the timeline and stop a greater threat.",
+      "popularity": 56.1533,
+      "poster_path": "/kEl2t3OhXc3Zb9FBh1AuYzRTgZp.jpg",
+      "softcore": false,
+      "vote_average": 8.181,
+      "vote_count": 12864
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/gFkHcIh7iE5G0oVOgpmY8ONQjhl.jpg",
+      "first_air_date": "2014-10-07",
+      "genre_ids": [
+        18,
+        10765
+      ],
+      "id": 60735,
+      "name": "The Flash",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Flash",
+      "overview": "After being struck by lightning, CSI investigator Barry Allen awakens from a nine-month coma to discover he has been  granted the gift of super speed.  Teaming up with S.T.A.R. Labs, Barry takes on the persona of The Flash, the Fastest  Man Alive, to protect his city.",
+      "popularity": 6502.8816,
+      "poster_path": "/yZevl2vHQgmosfwUdVNzviIfaWS.jpg",
+      "softcore": false,
+      "vote_average": 7.741,
+      "vote_count": 11834
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/5BDNWWHweQL0q1fmTv7gmRXfnl4.jpg",
+      "first_air_date": "2013-12-02",
+      "genre_ids": [
+        16,
+        35,
+        10765,
+        10759
+      ],
+      "id": 60625,
+      "name": "Rick and Morty",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Rick and Morty",
+      "overview": "Follows a sociopathic genius scientist who drags his inherently timid grandson on adventures across the universe.",
+      "popularity": 132.9253,
+      "poster_path": "/owhkU6KRqdXoUQpjV8uyZGPtX58.jpg",
+      "softcore": false,
+      "vote_average": 8.7,
+      "vote_count": 11534
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/9zcbqSxdsRMZWHYtyCd1nXPr2xq.jpg",
+      "first_air_date": "2019-11-12",
+      "genre_ids": [
+        10765,
+        10759
+      ],
+      "id": 82856,
+      "name": "The Mandalorian",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Mandalorian",
+      "overview": "After the fall of the Galactic Empire, lawlessness has spread throughout the galaxy. A lone gunfighter makes his way through the outer reaches, earning his keep as a bounty hunter.",
+      "popularity": 54.4531,
+      "poster_path": "/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
+      "softcore": false,
+      "vote_average": 8.399,
+      "vote_count": 11357
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/iHSwvRVsRyxpX7FE7GbviaDvgGZ.jpg",
+      "first_air_date": "2022-11-23",
+      "genre_ids": [
+        10765,
+        9648,
+        35
+      ],
+      "id": 119051,
+      "name": "Wednesday",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Wednesday",
+      "overview": "Smart, sarcastic and a little dead inside, Wednesday Addams investigates twisted mysteries while making new friends — and foes — at Nevermore Academy.",
+      "popularity": 58.1961,
+      "poster_path": "/9PFonBhy4cQy7Jz20NpMygczOkv.jpg",
+      "softcore": false,
+      "vote_average": 8.326,
+      "vote_count": 10939
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/gHJhN9AJV4PmJ7YpLFa9ldDWuG8.jpg",
+      "first_air_date": "2019-02-15",
+      "genre_ids": [
+        10759,
+        10765,
+        18
+      ],
+      "id": 75006,
+      "name": "The Umbrella Academy",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Umbrella Academy",
+      "overview": "Reunited by their father's death, estranged siblings with extraordinary powers uncover shocking family secrets — and a looming threat to humanity.",
+      "popularity": 34.3381,
+      "poster_path": "/qhcwrnnCnN8NE1N6XXKHFmveJR9.jpg",
+      "softcore": false,
+      "vote_average": 8.447,
+      "vote_count": 10193
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/cJYLon9ejKJV7ua03ab8Tj9u067.jpg",
+      "first_air_date": "2009-09-10",
+      "genre_ids": [
+        18,
+        10765
+      ],
+      "id": 18165,
+      "name": "The Vampire Diaries",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Vampire Diaries",
+      "overview": "The story of two vampire brothers obsessed with the same girl, who bears a striking resemblance to the beautiful but ruthless vampire they knew and loved in 1864.",
+      "popularity": 6653.1087,
+      "poster_path": "/gbp4zM0FE0n23X4UFY5EBlacrog.jpg",
+      "softcore": false,
+      "vote_average": 8.3,
+      "vote_count": 9820
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/aTjbqMONy77fHJrIYu14g1F0d5h.jpg",
+      "first_air_date": "2021-03-19",
+      "genre_ids": [
+        10759,
+        10765,
+        18
+      ],
+      "id": 88396,
+      "name": "The Falcon and the Winter Soldier",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The Falcon and the Winter Soldier",
+      "overview": "Following the events of “Avengers: Endgame”, the Falcon, Sam Wilson and the Winter Soldier, Bucky Barnes team up in a global adventure that tests their abilities, and their patience.",
+      "popularity": 24.8094,
+      "poster_path": "/6kbAMLteGO8yyewYau6bJ683sw7.jpg",
+      "softcore": false,
+      "vote_average": 7.583,
+      "vote_count": 9059
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/8ZerYKvIaNUJZvAHXYTQu4qTwFw.jpg",
+      "first_air_date": "2014-03-19",
+      "genre_ids": [
+        10765,
+        10759,
+        18,
+        80
+      ],
+      "id": 48866,
+      "name": "The 100",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "The 100",
+      "overview": "100 years in the future, when the Earth has been abandoned due to radioactivity, the last surviving humans live on an ark orbiting the planet — but the ark won't last forever. So the repressive regime picks 100 expendable juvenile delinquents to send down to Earth to see if the planet is still habitable.",
+      "popularity": 5316.0386,
+      "poster_path": "/wHIMMLFsk32wIzDmawWkYVbxFCS.jpg",
+      "softcore": false,
+      "vote_average": 7.879,
+      "vote_count": 8848
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/z0YhJvomqedHF85bplUJEotkN5l.jpg",
+      "first_air_date": "2007-02-15",
+      "genre_ids": [
+        16,
+        10759,
+        10765
+      ],
+      "id": 31910,
+      "name": "Naruto Shippūden",
+      "origin_country": [
+        "JP"
+      ],
+      "original_language": "ja",
+      "original_name": "ナルト 疾風伝",
+      "overview": "After 2 and a half years Naruto finally returns to his village of Konoha, and sets about putting his ambitions to work. It will not be easy though as he has amassed a few more dangerous enemies, in the likes of the shinobi organization; Akatsuki.",
+      "popularity": 82.1068,
+      "poster_path": "/kV27j3Nz4d5z8u6mN3EJw9RiLg2.jpg",
+      "softcore": false,
+      "vote_average": 8.53,
+      "vote_count": 8834
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/lirPqYLTtd6XZqGn4cS1wiesTq0.jpg",
+      "first_air_date": "2005-09-13",
+      "genre_ids": [
+        18,
+        9648,
+        10765
+      ],
+      "id": 1622,
+      "name": "Supernatural",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Supernatural",
+      "overview": "When they were boys, Sam and Dean Winchester lost their mother to a mysterious and demonic supernatural force. Subsequently, their father raised them to be soldiers. He taught them about the paranormal evil that lives in the dark corners and on the back roads of America ... and he taught them how to kill it. Now, the Winchester brothers crisscross the country in their '67 Chevy Impala, battling every kind of supernatural threat they encounter along the way. ",
+      "popularity": 8110.1574,
+      "poster_path": "/8iixmfGx5EIFPdpNvB2JvI3VIqX.jpg",
+      "softcore": false,
+      "vote_average": 8.3,
+      "vote_count": 8793
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/3jDXL4Xvj3AzDOF6UH1xeyHW8MH.jpg",
+      "first_air_date": "2017-12-01",
+      "genre_ids": [
+        80,
+        18,
+        10765,
+        9648
+      ],
+      "id": 70523,
+      "name": "Dark",
+      "origin_country": [
+        "DE"
+      ],
+      "original_language": "de",
+      "original_name": "Dark",
+      "overview": "A missing child sets four families on a frantic hunt for answers as they unearth a mind-bending mystery that spans three generations.",
+      "popularity": 45.1011,
+      "poster_path": "/wiiyc3m6HKaQhFBYeuM7ySCNQsG.jpg",
+      "softcore": false,
+      "vote_average": 8.428,
+      "vote_count": 7957
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/rqbCbjB19amtOtFQbb3K2lgm2zv.jpg",
+      "first_air_date": "2013-04-07",
+      "genre_ids": [
+        16,
+        10765,
+        10759
+      ],
+      "id": 1429,
+      "name": "Attack on Titan",
+      "origin_country": [
+        "JP"
+      ],
+      "original_language": "ja",
+      "original_name": "進撃の巨人",
+      "overview": "100 years ago, the last remnants of humanity were forced to retreat behind the towering walls of a fortified city to escape the massive, man-eating Titans that roamed the land outside their fortress. Only the members of the Scouting Legion dared to stray beyond the safety of the walls – but even those brave warriors seldom returned alive. Those within the city clung to the illusion of a peaceful existence until the day that dream was shattered, and their slim chance at survival was reduced to one horrifying choice: kill – or be devoured!",
+      "popularity": 46.9154,
+      "poster_path": "/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg",
+      "softcore": false,
+      "vote_average": 8.69,
+      "vote_count": 7797
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/nTvM4mhqNlHIvUkI1gVnW6XP7GG.jpg",
+      "first_air_date": "2019-04-06",
+      "genre_ids": [
+        16,
+        10759,
+        10765
+      ],
+      "id": 85937,
+      "name": "Demon Slayer: Kimetsu no Yaiba",
+      "origin_country": [
+        "JP"
+      ],
+      "original_language": "ja",
+      "original_name": "鬼滅の刃",
+      "overview": "After a demon attack leaves his family slain and his sister cursed, Tanjiro embarks upon a perilous journey to find a cure and avenge those he's lost.",
+      "popularity": 22.6306,
+      "poster_path": "/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg",
+      "softcore": false,
+      "vote_average": 8.636,
+      "vote_count": 7553
+    }
+  ],
+  "total_pages": 69,
+  "total_results": 1369
+}

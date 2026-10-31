@@ -1,0 +1,423 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/9FE5eD92WfVCiivM9Pq9GVSrlWk.jpg",
+      "genre_ids": [
+        28,
+        53,
+        80
+      ],
+      "id": 155,
+      "original_language": "en",
+      "original_title": "The Dark Knight",
+      "overview": "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.",
+      "popularity": 2410.1551,
+      "poster_path": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "release_date": "2008-07-16",
+      "softcore": false,
+      "title": "The Dark Knight",
+      "video": false,
+      "vote_average": 8.539,
+      "vote_count": 37139
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/sl5NJ1vtyhP9Vr88bB4blULsJYp.jpg",
+      "genre_ids": [
+        16,
+        12,
+        14
+      ],
+      "id": 791523,
+      "original_language": "en",
+      "original_title": "Wildwood",
+      "overview": "Prue and her classmate Curtis are drawn into a magical forest filled with enchanted creatures, loyal allies, and formidable adversaries as they embark on a desperate quest to rescue Prue's abducted baby brother from a murder of crows led by a mysterious woman named Alexandra.",
+      "popularity": 1196.6757,
+      "poster_path": "/8g7q6o54WfKWRmUQ0Ye8OskevUY.jpg",
+      "release_date": "2026-10-19",
+      "softcore": false,
+      "title": "Wildwood",
+      "video": false,
+      "vote_average": 8.6,
+      "vote_count": 111
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
+      "genre_ids": [
+        878,
+        9648,
+        28
+      ],
+      "id": 1058424,
+      "original_language": "ko",
+      "original_title": "호프",
+      "overview": "In the remote South Korean village of Hope Harbor, police chief Bum-seok and officer Sung-ae are called to investigate a mysterious creature wreaking havoc on the community. But all is not as it seems, and perceptions can be misleading. What begins as ignorance plants the seed of disaster, escalating through human conflict into a tragedy of cosmic proportions.",
+      "popularity": 490.1318,
+      "poster_path": "/6VY1ZKgpsc8CfGsQcCGiYEgHdH0.jpg",
+      "release_date": "2026-07-15",
+      "softcore": false,
+      "title": "Hope",
+      "video": false,
+      "vote_average": 6.759,
+      "vote_count": 400
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/4tjxYg2AbOzzG9G1YuiT2NzYhlH.jpg",
+      "genre_ids": [
+        878,
+        28,
+        12
+      ],
+      "id": 969681,
+      "original_language": "en",
+      "original_title": "Spider-Man: Brand New Day",
+      "overview": "Fighting crime full-time as Spider-Man in a world that doesn't remember him—and the pressure of seeing his old friends move on without him—sparks a change in Peter Parker he may not have the power to control. But that transformation might also be the only thing that can stop a shocking new threat to the city and those he loves - a powerful villain no one can even see.",
+      "popularity": 421.3022,
+      "poster_path": "/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
+      "release_date": "2026-07-29",
+      "softcore": false,
+      "title": "Spider-Man: Brand New Day",
+      "video": false,
+      "vote_average": 8.5,
+      "vote_count": 6349
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/hbz4aeVsjnKb2HRoFbbr46Egh8y.jpg",
+      "genre_ids": [
+        10749,
+        53
+      ],
+      "id": 1596275,
+      "original_language": "de",
+      "original_title": "Drive – The Pretenders",
+      "overview": "A young race car mechanic fakes an engagement with racing's most scandalous star - officially for his reputation, secretly for her own shot behind the wheel. But soon the lie threatens to destroy everything - including what's already become so much more than just a deal.",
+      "popularity": 274.3374,
+      "poster_path": "/s9syckECnUYhKePQ1A0DC0mFVZ9.jpg",
+      "release_date": "2026-10-27",
+      "softcore": false,
+      "title": "Drive - The Pretenders",
+      "video": false,
+      "vote_average": 7.803,
+      "vote_count": 38
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/nGau0KBOaRILSK5MqFcuTfv7GMl.jpg",
+      "genre_ids": [
+        53
+      ],
+      "id": 1101412,
+      "original_language": "en",
+      "original_title": "Fall 2: Deadpoint",
+      "overview": "On a perilous climb across Thailand's Mount Kwan, two climbers become trapped thousands of feet above the ground, where vertigo-inducing heights, sheer exposure, and impossible odds turn every moment into a fight for survival.",
+      "popularity": 268.6338,
+      "poster_path": "/fgSm5ylwiXbIHn8UbUXDjk9RRu4.jpg",
+      "release_date": "2026-09-01",
+      "softcore": false,
+      "title": "Fall 2: Deadpoint",
+      "video": false,
+      "vote_average": 7.289,
+      "vote_count": 700
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/xSDoxv4pHvs4xZjvTb0Iqg1A6ro.jpg",
+      "genre_ids": [
+        27,
+        53,
+        878
+      ],
+      "id": 1400940,
+      "original_language": "en",
+      "original_title": "Clayface",
+      "overview": "Matt Hagen's meteoric rise from Gotham street kid to Hollywood leading man is tragically cut short when a local crime boss's actions leave him horribly disfigured. Abandoned by his team and with nothing left, Matt seeks out a cutting edge treatment that miraculously returns him to his former self… but also unexpectedly affects his grip on reality, spiraling him down a destructive path of all-consuming revenge.",
+      "popularity": 218.7851,
+      "poster_path": "/9l1NuFjel2j89hiuiJbsxfblqjy.jpg",
+      "release_date": "2026-10-19",
+      "softcore": false,
+      "title": "Clayface",
+      "video": false,
+      "vote_average": 7.5,
+      "vote_count": 288
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/bulFtfy3oBQtCnAMSi7g6DSSds3.jpg",
+      "genre_ids": [
+        12,
+        28,
+        14
+      ],
+      "id": 1368337,
+      "original_language": "en",
+      "original_title": "The Odyssey",
+      "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+      "popularity": 212.9039,
+      "poster_path": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
+      "release_date": "2026-07-15",
+      "softcore": false,
+      "title": "The Odyssey",
+      "video": false,
+      "vote_average": 8.015,
+      "vote_count": 4308
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/cKetrF2dAnQ0AMV5i4BMOs41I5P.jpg",
+      "genre_ids": [
+        9648,
+        53
+      ],
+      "id": 1283515,
+      "original_language": "en",
+      "original_title": "Verity",
+      "overview": "Lowen Ashleigh, hired to ghostwrite for best-selling author Verity Crawford, uncovers Verity's autobiographical notes, and becomes involved in what may prove to be a lethal conspiracy.",
+      "popularity": 197.3336,
+      "poster_path": "/rmaNMA1seHqpjtnYKzyynFAr1g8.jpg",
+      "release_date": "2026-09-30",
+      "softcore": false,
+      "title": "Verity",
+      "video": false,
+      "vote_average": 6.574,
+      "vote_count": 371
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/4pYKqctQvvdyhuGjiK4szH9jEv9.jpg",
+      "genre_ids": [
+        27,
+        28,
+        10752,
+        14,
+        53
+      ],
+      "id": 1657630,
+      "original_language": "es",
+      "original_title": "El despertar",
+      "overview": "An elite military unit on a mission in the South American jungle encounters a deadly supernatural force revealing an ancient presence that continues to claim anyone who dares enter its domain.",
+      "popularity": 188.6958,
+      "poster_path": "/u8v2kjcb5AHARPh0ZHmCHczWPuZ.jpg",
+      "release_date": "2026-10-29",
+      "softcore": false,
+      "title": "The Awakening",
+      "video": false,
+      "vote_average": 6.333,
+      "vote_count": 54
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/ytoLEl5yDaxB8AtZ52uKWjaQ9ql.jpg",
+      "genre_ids": [
+        27,
+        35,
+        14
+      ],
+      "id": 1514026,
+      "original_language": "en",
+      "original_title": "Buddy",
+      "overview": "Inside the colorful world of \"It's Buddy!\", a group of children spend their days singing, dancing, and helping Buddy - bright orange unicorn - spread happiness. But when one child refuses to play along, Buddy is not pleased and cracks begin to appear in this seemingly perfect world.",
+      "popularity": 182.7423,
+      "poster_path": "/1BdZbNvl1SfrrX8J9X5tQzN6Ivu.jpg",
+      "release_date": "2026-08-27",
+      "softcore": false,
+      "title": "Buddy",
+      "video": false,
+      "vote_average": 7.025,
+      "vote_count": 204
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/3k7GzxOdLZkN3eZsuhLi2eRzkXO.jpg",
+      "genre_ids": [
+        28,
+        53,
+        878
+      ],
+      "id": 1384216,
+      "original_language": "en",
+      "original_title": "The Dog Stars",
+      "overview": "After the world's population has been ravaged by a pandemic, a man lives a lonesome existence in a Colorado airplane hangar with his dog and a dour gunman he has befriended. When a mysterious transmission comes through on the radio while he’s flying his old Cessna, it sparks a hunt for the provenance of the sound.",
+      "popularity": 174.6315,
+      "poster_path": "/5O616X9vmRzQdB68PHzBewPittd.jpg",
+      "release_date": "2026-08-26",
+      "softcore": false,
+      "title": "The Dog Stars",
+      "video": false,
+      "vote_average": 6.997,
+      "vote_count": 580
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/p40lmrdI4blcAPZQMTPaiy5v5Ym.jpg",
+      "genre_ids": [
+        27,
+        53
+      ],
+      "id": 1291595,
+      "original_language": "en",
+      "original_title": "Insidious: Out of the Further",
+      "overview": "Gemma, a young mother raising her daughter in the house she grew up in, discovers she can travel into The Further, where she possesses an ability to bring what lives there back to the real world.",
+      "popularity": 166.4404,
+      "poster_path": "/4tTrW9dXCByS5wt2pXVWb58zNjz.jpg",
+      "release_date": "2026-08-19",
+      "softcore": false,
+      "title": "Insidious: Out of the Further",
+      "video": false,
+      "vote_average": 7.717,
+      "vote_count": 958
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/7RsPdXLDNugDIlwXPVeeprNfMx.jpg",
+      "genre_ids": [
+        27,
+        14,
+        9648
+      ],
+      "id": 1232569,
+      "original_language": "en",
+      "original_title": "Pinocchio: Unstrung",
+      "overview": "Influenced by a sinister Cricket and created by Geppetto, Pinocchio launches a violent crusade to carve himself into a real boy like his brother James, one piece at a time.",
+      "popularity": 163.2107,
+      "poster_path": "/hJNdizFlxOW89edX3Rzr6OliSFI.jpg",
+      "release_date": "2026-07-22",
+      "softcore": false,
+      "title": "Pinocchio: Unstrung",
+      "video": false,
+      "vote_average": 6.467,
+      "vote_count": 151
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/iRIhPqqoUHiFBxn8oYf3gCQnaKk.jpg",
+      "genre_ids": [
+        28,
+        53
+      ],
+      "id": 1294189,
+      "original_language": "en",
+      "original_title": "The Mongoose",
+      "overview": "A falsely accused war hero with nothing to lose leads police on an epic televised cross-country car chase, helped by members of his former Special Forces Army battalion and closely monitored by a fascinated public rooting for his safe getaway.",
+      "popularity": 147.8685,
+      "poster_path": "/eSS5mvSG84UUuvtbHel5Yu3Wik4.jpg",
+      "release_date": "2026-10-29",
+      "softcore": false,
+      "title": "The Mongoose",
+      "video": false,
+      "vote_average": 7.125,
+      "vote_count": 8
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/jdJsnhHfkIi3J7jwfiCFT4gXNx5.jpg",
+      "genre_ids": [
+        28,
+        35,
+        12
+      ],
+      "id": 1148365,
+      "original_language": "en",
+      "original_title": "Matchbox the Movie",
+      "overview": "When a group of former childhood friends reconnect, their reunion takes a wild turn as they stumble upon a dangerous international plot—and must save the world.",
+      "popularity": 143.6022,
+      "poster_path": "/aHhHRz6nOpwkqJs5ASeRGAdK2dt.jpg",
+      "release_date": "2026-10-05",
+      "softcore": false,
+      "title": "Matchbox the Movie",
+      "video": false,
+      "vote_average": 7.663,
+      "vote_count": 552
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/3icyRAqgakNcQn6aDVz9libFmBA.jpg",
+      "genre_ids": [
+        27,
+        878,
+        12
+      ],
+      "id": 1423191,
+      "original_language": "en",
+      "original_title": "Resident Evil",
+      "overview": "Medical courier Bryan unwittingly finds himself fighting for survival as one fateful, horrifying night collapses around him in chaos.",
+      "popularity": 139.1992,
+      "poster_path": "/i7UyjfPio0VFHB9rBUZSFyhOoM8.jpg",
+      "release_date": "2026-09-16",
+      "softcore": false,
+      "title": "Resident Evil",
+      "video": false,
+      "vote_average": 7.32,
+      "vote_count": 1100
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/dJTWIecL2vxsCRl5G0lRhPsfrhc.jpg",
+      "genre_ids": [
+        28,
+        53
+      ],
+      "id": 1228834,
+      "original_language": "en",
+      "original_title": "The Fix",
+      "overview": "Disillusioned by the end of the war in Afghanistan, a group of disgraced, war-torn ex-CIA operatives set out to Tehran to take down a life-changing score.",
+      "popularity": 129.0255,
+      "poster_path": "/jlP8XDjZN89GrpM3je5Uf8Grqx8.jpg",
+      "release_date": "2026-09-10",
+      "softcore": false,
+      "title": "The Fix",
+      "video": false,
+      "vote_average": 6.1,
+      "vote_count": 82
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/fAlQZsCOCvxOj0PmFmt4i8IWR2u.jpg",
+      "genre_ids": [
+        28,
+        53
+      ],
+      "id": 1561726,
+      "original_language": "en",
+      "original_title": "Masterplan",
+      "overview": "When a legendary thief sets his sights on the Mona Lisa, he recruits two young strangers to help him before revealing they are long-lost siblings… and oh yes, by the way, he is their father. Thrown into a chaotic reunion they never asked for, this new family must learn to work together — and try not to kill each other — if they want any chance at pulling off the heist of the century.",
+      "popularity": 127.1597,
+      "poster_path": "/5xmXVd7nCK3tAo34XkO58SxUCip.jpg",
+      "release_date": "2026-10-16",
+      "softcore": false,
+      "title": "Masterplan",
+      "video": false,
+      "vote_average": 6.875,
+      "vote_count": 204
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/cNICUho5uiAGkfCAQq1ihyaMla4.jpg",
+      "genre_ids": [
+        16,
+        12,
+        14,
+        35,
+        10751
+      ],
+      "id": 1465063,
+      "original_language": "en",
+      "original_title": "Forgotten Island",
+      "overview": "While celebrating their last night together, high school graduates and best friends Jo and Raissa stumble upon a mysterious portal that transports them to the fantastical island of Nakali. When they discover that the memories of their entire friendship are the price for returning home, Jo and Raissa must race to find a way to leave the island before they forget each other forever.",
+      "popularity": 119.5326,
+      "poster_path": "/myd1K3gefdNAWFsGNRDdMeiK9Qg.jpg",
+      "release_date": "2026-09-10",
+      "softcore": false,
+      "title": "Forgotten Island",
+      "video": false,
+      "vote_average": 7.6,
+      "vote_count": 145
+    }
+  ],
+  "total_pages": 1001,
+  "total_results": 20001
+}

@@ -20,9 +20,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 _REPO_ROOT_ENV_FILE = Path(__file__).resolve().parents[3] / ".env"
 
 
-class DatabaseSettings(BaseSettings):
-    """Just the database URL: for tools that don't serve requests (migrations, tests)."""
-
+class _EnvSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=_REPO_ROOT_ENV_FILE,
         env_file_encoding="utf-8",
@@ -30,11 +28,33 @@ class DatabaseSettings(BaseSettings):
         extra="ignore",
     )
 
+
+class DatabaseSettings(_EnvSettings):
+    """Just the database URL: for tools that don't serve requests (migrations, tests)."""
+
     # e.g. postgresql+psycopg://user:password@127.0.0.1:5432/screening_room
     database_url: str
 
 
-class Settings(DatabaseSettings):
+class TmdbSettings(_EnvSettings):
+    """TMDB access (catalog-ingestion.md §10). Only ingestion and title detail need it,
+    so it's optional here; code that calls TMDB fails clearly when it's missing."""
+
+    # The "API Read Access Token" from themoviedb.org -> Settings -> API.
+    tmdb_api_token: SecretStr | None = None
+    # Requests per second, kept well below TMDB's published limits.
+    tmdb_rate_limit_rps: float = Field(default=20.0, gt=0)
+
+    def require_tmdb_token(self) -> str:
+        if self.tmdb_api_token is None:
+            raise RuntimeError(
+                "TMDB_API_TOKEN is not set. Add your TMDB API Read Access Token to .env "
+                "(see .env.example)."
+            )
+        return self.tmdb_api_token.get_secret_value()
+
+
+class Settings(DatabaseSettings, TmdbSettings):
     """Everything the web app needs."""
 
     # --- Required: the app refuses to start without these rather than guessing ---

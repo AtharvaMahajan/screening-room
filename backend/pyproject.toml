@@ -14,11 +14,13 @@ dependencies = [
     "alembic>=1.14",
     "argon2-cffi>=23.1",
     "email-validator>=2.2",
+    # HTTP client for TMDB (and FastAPI's TestClient): the maintained successor
+    # of httpx, with the same API.
+    "httpx2>=2.16",
 ]
 
 [dependency-groups]
 dev = [
-    "httpx2>=2.16", # HTTP client used by fastapi.testclient.TestClient
     "mypy>=1.13",
     "pytest>=8.3",
     "ruff>=0.8",

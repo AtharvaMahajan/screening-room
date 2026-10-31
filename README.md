@@ -44,8 +44,10 @@ Use three terminals, all started from the repository root.
 docker compose up -d --wait db
 
 # 2. API on http://127.0.0.1:8000 (reloads on code changes)
+#    --reload-dir src matters: without it the reloader polls every .py file in
+#    backend/, including ~2,000 in .venv, using most of a CPU core.
 cd backend
-uv run uvicorn screening_room.main:create_app --factory --reload
+uv run uvicorn screening_room.main:create_app --factory --reload --reload-dir src
 
 # 3. Web app on http://localhost:5173
 cd frontend
