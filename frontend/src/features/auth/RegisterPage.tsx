@@ -33,9 +33,10 @@ export function RegisterPage() {
     defaultValues: { email: "", display_name: "", password: "" },
   });
 
-  // Registering signs the user in; the updated session lands them on Home.
+  // Registering signs the user in: a new account goes on to onboarding. Anyone
+  // already signed in who opens this page just goes home.
   if (session.data?.user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={registration.isSuccess ? "/welcome" : "/"} replace />;
   }
 
   const onSubmit = form.handleSubmit(async ({ email, display_name, password }) => {

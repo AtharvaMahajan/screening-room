@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import { useSession } from "../auth/api";
 
 /** Home, for signed-in users only (behind RequireAuth). */
@@ -10,8 +12,11 @@ export function HomePage() {
         Welcome{user ? `, ${user.display_name ?? user.email}` : ""}
       </h1>
       <p className="text-stone-600 dark:text-stone-400">
-        Personalized recommendations arrive in a later milestone. For now, you're signed in and
-        everything is set up.
+        The Discover page arrives next. Meanwhile, you can{" "}
+        <Link to="/taste" className="text-amber-700 underline dark:text-amber-500">
+          tell us your taste
+        </Link>
+        .
       </p>
     </div>
   );

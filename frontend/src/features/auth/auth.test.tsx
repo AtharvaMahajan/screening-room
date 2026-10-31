@@ -3,7 +3,15 @@ import { screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { ADA, apiError, callsTo, mockApi, signedIn, signedOut } from "../../test/mockApi";
+import {
+  ADA,
+  apiError,
+  callsTo,
+  emptyTasteProfile,
+  mockApi,
+  signedIn,
+  signedOut,
+} from "../../test/mockApi";
 import { renderAt } from "../../test/render";
 
 async function fillSignIn(email: string, password: string) {
@@ -130,16 +138,20 @@ describe("register", () => {
     await user.click(screen.getByRole("button", { name: "Create account" }));
   }
 
-  it("creates the account, signs in and lands on home", async () => {
+  it("creates the account, signs in and goes on to onboarding", async () => {
     const api = mockApi({
       "GET /api/auth/session": signedOut,
       "POST /api/auth/register": () => signedIn(),
+      ...emptyTasteProfile,
     });
-    renderAt("/register");
+    const { router } = renderAt("/register");
 
     await fillRegister();
 
-    expect(await screen.findByRole("heading", { name: "Welcome, Ada" })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "What do you like to watch?" }),
+    ).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe("/welcome");
     expect(callsTo(api, "POST /api/auth/register")[0]?.body).toEqual({
       email: "ada@example.com",
       password: "correct horse battery",

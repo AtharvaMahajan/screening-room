@@ -55,3 +55,15 @@ export function callsTo(fetchMock: ReturnType<typeof mockApi>, key: string) {
       headers: init?.headers as Record<string, string>,
     }));
 }
+
+/** A new user's taste profile and a two-genre catalog, for pages that load them. */
+export const emptyTasteProfile: Record<string, Handler> = {
+  "GET /api/genres": () =>
+    Response.json([
+      { id: 7, slug: "drama", name: "Drama" },
+      { id: 16, slug: "science-fiction", name: "Science Fiction" },
+    ]),
+  "GET /api/me/preferences": () => Response.json({ liked_genre_ids: [], avoided_genre_ids: [] }),
+  "GET /api/me/favorites": () => Response.json({ favorites: [], max_favorites: 10 }),
+  "GET /api/titles?limit=12": () => Response.json([]),
+};

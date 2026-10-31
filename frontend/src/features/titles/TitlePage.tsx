@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router";
 
 import { ApiError } from "../../api/client";
 import { Button } from "../../components/Button";
+import { Poster } from "../../components/Poster";
 import { describeError } from "../../lib/errors";
 import { formatRuntime, languageName, yearOf } from "../../lib/format";
 import { type TitleDetail, useTitle } from "./api";
@@ -69,20 +70,7 @@ function TitleView({ title }: { title: TitleDetail }) {
     <article className="space-y-6 py-2">
       <MetadataNotice status={title.metadata_status} />
       <div className="flex flex-col gap-6 sm:flex-row">
-        {title.poster_url ? (
-          <img
-            src={title.poster_url}
-            alt={`Poster for ${title.name}`}
-            className="w-40 shrink-0 self-start rounded-md shadow-md sm:w-56"
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            className="flex aspect-[2/3] w-40 shrink-0 items-center justify-center rounded-md bg-stone-200 text-sm text-stone-500 sm:w-56 dark:bg-stone-800"
-          >
-            No poster
-          </div>
-        )}
+        <Poster url={title.poster_url} name={title.name} className="w-40 self-start sm:w-56" />
 
         <div className="min-w-0 space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title.name}</h1>
