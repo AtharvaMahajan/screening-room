@@ -1,0 +1,54 @@
+M5c evidence: load test of POST /api/recommendations (roadmap M5, overview.md §7)
+================================================================================
+Target: p95 < 1.5 s, measured server-side, warm local pool, ordinary profiles.
+
+Command (from backend/, against a separately started API without --reload):
+  uv run uvicorn screening_room.main:create_app --factory --port 8003
+  uv run python scripts/load_test.py --base-url http://127.0.0.1:8003
+
+Setup: the same Windows laptop as the M3 baseline (docs/evidence/m3-recommendation-
+baseline.txt): one uvicorn process, PostgreSQL 17 in Docker, SQLAlchemy without its
+C extensions. The load-test client runs on the same machine and competes for CPU.
+40 synthetic users created in the database (20% cold start; the rest with liked
+genres, 1-10 favorites, up to 15 ratings, 8 viewings, 4 watchlist and 3 "not for
+me" titles), varied contexts, 30% "show me more". All deleted afterwards (checked:
+0 left). No errors in 907 requests (server log checked).
+
+Script output follows, unedited.
+--------------------------------------------------------------------------------
+Load test of POST /api/recommendations (2026-10-31 22:35 UTC)
+Pool: 1336 titles. 40 synthetic users, 200 requests
+per concurrency level, seed 2026. Target: server p95 < 1500 ms.
+
+Concurrent  req/s  errors   server p50   p95    max    end-to-end p50   p95    max
+         1    7.4       0          90    188    278              130    226    343
+         5   10.4       0         295    468    629              457    685    721
+        10    9.2       0         573    953   1080             1076   1354   1647
+        20    9.1       0        1315   1849   2018             2255   2510   2927
+
+Cleanup: deleted 40 synthetic users and their logs.
+
+Reading the results
+-------------------
+- The target holds up to 10 concurrent requests (server p95 953 ms, end to end
+  1354 ms) and fails at 20 (server p95 1849 ms).
+- Throughput tops out at about 10 requests/second whatever the concurrency: one
+  Python process doing roughly 100 ms of CPU work per request. Past that, extra
+  concurrent requests queue for the CPU (Python runs one thread's code at a time),
+  so even the server-side time grows. It's a capacity limit, not a slow query.
+- In real use, one person asks for recommendations perhaps every 30 s or more, so
+  10 requests/second is roughly 300 people using Discover at the same moment.
+  For this project's scale the target is met with a wide margin.
+- Where one request's time goes (in-process, median of 20, a user with favorites
+  and a rating): retrieval 28 ms, of which loading the pool's candidates 16 ms;
+  the engine 7 ms. The rest is the web stack, CSRF and session checks, writing the
+  request log rows, building the response, and CPU shared with the client.
+
+If more capacity is ever needed (not done now: no need yet)
+- Keep the pool's candidates in memory: identical for every user, changed only by
+  ingestion. Saves about 16 ms of every request.
+- Run several worker processes. Capacity grows with CPU cores, but the in-memory
+  login rate limits would then need to live in PostgreSQL so every worker shares
+  them (security.md §8 anticipates this).
+- Re-run this test against production in M5f: different hardware, and the client
+  will no longer share the server's CPU.

@@ -176,6 +176,8 @@ Recommendation metrics come from the database's own logs, with no metrics server
 uv run python -m screening_room.jobs metrics --days 7   # latency p50/p95, cold starts, coverage, action rates
 ```
 
+To load-test the recommendation endpoint, start an API without `--reload` (e.g. on port 8003) and run `uv run python scripts/load_test.py` from `backend/`. It creates synthetic users in the database, deletes them afterwards, and prints latency per concurrency level. The latest results are in [docs/evidence/m5c-load-test.txt](docs/evidence/m5c-load-test.txt).
+
 ## Authentication
 
 Email and password, with server-side sessions in an HttpOnly cookie and signed CSRF tokens ([ADR-0007](docs/adr/0007-session-auth-and-csrf.md), [security.md](docs/architecture/security.md)). The API is under `/api/auth`: `GET session`, `POST register`, `POST login`, `POST logout`. Deleting an account is `DELETE /api/me` with the current password re-entered; it removes all the user's data.

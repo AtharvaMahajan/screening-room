@@ -140,7 +140,7 @@ A single handler transaction: `library.mark_watched()` inserts the viewing event
 
 | Attribute | Target / rule | Notes |
 |---|---|---|
-| **Recommendation latency** | **p95 < 1.5 s for `POST /api/recommendations`**, measured server-side with a warm local pool and an ordinary profile | Applies **only** to this endpoint, which is local-only by construction. Expected to be far lower (pool ≤ 2k titles). Baseline measured in M3, load-tested in M5 |
+| **Recommendation latency** | **p95 < 1.5 s for `POST /api/recommendations`**, measured server-side with a warm local pool and an ordinary profile | Applies **only** to this endpoint, which is local-only by construction. Expected to be far lower (pool ≤ 2k titles). Baseline measured in M3, load-tested in M5: met up to ~10 requests/second on one process ([evidence](../evidence/m5c-load-test.txt)) |
 | Search / detail latency | No p95 target in the MVP | These depend on TMDB. Bounded by client timeouts (connect ~3 s, read ~5 s, ≤1 retry on user-facing paths). Pool titles usually come from local data |
 | Reliability | A TMDB outage never makes the library, history or recommendations unavailable | Detail pages serve stale or partial data. Only search is unavailable |
 | Determinism | Same profile + context + pool snapshot + engine config ⇒ same results | [ADR-0010](../adr/0010-staged-deterministic-recommendation-pipeline.md) |
