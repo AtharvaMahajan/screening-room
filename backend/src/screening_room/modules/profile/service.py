@@ -12,6 +12,7 @@ from screening_room.modules.catalog import service as catalog
 from screening_room.modules.profile.models import UserFavoriteTitle, UserGenrePreference
 from screening_room.modules.profile.schemas import (
     MAX_FAVORITES,
+    FavoritePick,
     FavoritesOut,
     PreferencesIn,
     PreferencesOut,
@@ -113,8 +114,13 @@ def _favorite_ids(session: Session, user_id: int) -> list[int]:
 
 def taste_signals(session: Session, user_id: int) -> TasteSignals:
     preferences = get_preferences(session, user_id)
+    picks = session.execute(
+        select(UserFavoriteTitle.title_id, UserFavoriteTitle.created_at)
+        .where(UserFavoriteTitle.user_id == user_id)
+        .order_by(UserFavoriteTitle.created_at, UserFavoriteTitle.title_id)
+    )
     return TasteSignals(
         liked_genre_ids=frozenset(preferences.liked_genre_ids),
         avoided_genre_ids=frozenset(preferences.avoided_genre_ids),
-        favorite_title_ids=tuple(_favorite_ids(session, user_id)),
+        favorite_picks=tuple(FavoritePick(title_id, picked_at) for title_id, picked_at in picks),
     )

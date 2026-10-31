@@ -96,3 +96,18 @@ class TitleRecord:
     cast: tuple[CastMember, ...]
     directors: tuple[str, ...]
     creators: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CandidateFeatures:
+    """A candidate-pool title's features, for the recommender's retrieval."""
+
+    title_id: int
+    media_type: Literal["movie", "tv"]
+    genre_ids: frozenset[int]
+    runtime_minutes: int | None
+    release_date: date | None
+    vote_average: float | None
+    vote_count: int | None
+    popularity: float | None
+    source_keys: frozenset[str]

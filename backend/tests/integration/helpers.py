@@ -2,7 +2,7 @@
 
 import itertools
 from dataclasses import replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 from fastapi.testclient import TestClient
 from httpx2 import Response
@@ -82,12 +82,16 @@ def add_candidate(
     genre_ids: tuple[int, ...] = (18,),  # TMDB genre ids; 18 = Drama
     vote_count: int = 1000,
     original_name: str | None = None,
+    release_date: date | None = None,  # None = unreleased, for the recommender
 ) -> int:
     """Put a fully hydrated candidate-pool title in the catalog; returns its id."""
     details = fake_title(
         media_type, next(_candidate_ids), name, genre_ids=genre_ids, vote_count=vote_count
     )
-    details = replace(details, summary=replace(details.summary, original_name=original_name))
+    details = replace(
+        details,
+        summary=replace(details.summary, original_name=original_name, release_date=release_date),
+    )
     now = datetime.now(UTC)
     run = IngestionRun(command="ingest", params={}, status="succeeded", counts={})
     db_session.add(run)

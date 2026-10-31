@@ -41,7 +41,13 @@ from screening_room.modules.catalog.providers.base import (
     TitleDetails,
     TitleSummary,
 )
-from screening_room.modules.catalog.schemas import CastMember, GenreOut, TitleCardOut, TitleRecord
+from screening_room.modules.catalog.schemas import (
+    CandidateFeatures,
+    CastMember,
+    GenreOut,
+    TitleCardOut,
+    TitleRecord,
+)
 
 # (media type, provider genre id) -> internal genre ids, e.g. ("tv", 10765) -> [scifi, fantasy]
 GenreMap = Mapping[tuple[str, int], Sequence[int]]
@@ -522,3 +528,102 @@ def search_pool_titles(
     order_by += [Title.vote_count.desc().nulls_last(), Title.id]
     titles = session.scalars(statement.order_by(*order_by).limit(min(limit, SEARCH_LIMIT_MAX)))
     return [_card(title, image_base_url) for title in titles]
+
+
+# --- Retrieval for the recommender (recommendation-engine.md §5) -------------------------------
+
+
+def pool_candidates(session: Session) -> list[CandidateFeatures]:
+    """Every candidate-pool title with its genres and seed sources, by title id.
+
+    The whole pool, unfiltered: pool statistics then don't depend on what the
+    user asked for, and at <= ~2k titles a scan is a few milliseconds (§5).
+    """
+    titles = session.scalars(select(Title).where(in_candidate_pool()).order_by(Title.id)).all()
+    pool_ids = select(Title.id).where(in_candidate_pool())
+    genres: dict[int, set[int]] = {}
+    for title_id, genre_id in session.execute(
+        select(TitleGenre.title_id, TitleGenre.genre_id).where(TitleGenre.title_id.in_(pool_ids))
+    ):
+        genres.setdefault(title_id, set()).add(genre_id)
+    sources: dict[int, set[str]] = {}
+    for title_id, source_key in session.execute(
+        select(CandidatePoolMembership.title_id, CandidatePoolMembership.source_key).where(
+            CandidatePoolMembership.title_id.in_(pool_ids)
+        )
+    ):
+        sources.setdefault(title_id, set()).add(source_key)
+    return [
+        CandidateFeatures(
+            title_id=t.id,
+            media_type=cast(MediaType, t.media_type),
+            genre_ids=frozenset(genres.get(t.id, ())),
+            runtime_minutes=t.runtime_minutes,
+            release_date=t.release_date,
+            vote_average=t.vote_average,
+            vote_count=t.vote_count,
+            popularity=t.popularity,
+            source_keys=frozenset(sources.get(t.id, ())),
+        )
+        for t in titles
+    ]
+
+
+def pool_neighbors(
+    session: Session, anchor_title_ids: Iterable[int]
+) -> dict[int, list[tuple[int, int]]]:
+    """Each anchor's provider recommendation list, resolved to CANDIDATE-POOL titles
+    only, as (title id, provider rank), best rank first. Targets outside the pool
+    are never recommended; they stay stored for coverage metrics (§5)."""
+    anchors = list(anchor_title_ids)
+    if not anchors:
+        return {}
+    rows = session.execute(
+        select(
+            ProviderTitleRecommendation.source_title_id,
+            Title.id,
+            ProviderTitleRecommendation.provider_rank,
+        )
+        .join(
+            Title,
+            and_(
+                Title.provider == ProviderTitleRecommendation.provider,
+                Title.media_type == ProviderTitleRecommendation.target_media_type,
+                Title.provider_id == ProviderTitleRecommendation.target_provider_id,
+            ),
+        )
+        .where(ProviderTitleRecommendation.source_title_id.in_(anchors), in_candidate_pool())
+        .order_by(
+            ProviderTitleRecommendation.source_title_id,
+            ProviderTitleRecommendation.provider_rank,
+            Title.id,
+        )
+    )
+    neighbors: dict[int, list[tuple[int, int]]] = {}
+    for anchor_id, title_id, rank in rows:
+        neighbors.setdefault(anchor_id, []).append((title_id, rank))
+    return neighbors
+
+
+def genre_names(session: Session) -> dict[int, str]:
+    """All internal genre names by id (including ones not offered as preferences)."""
+    return {genre_id: name for genre_id, name in session.execute(select(Genre.id, Genre.name))}
+
+
+def titles_with_genres(
+    session: Session, title_ids: Iterable[int]
+) -> dict[int, tuple[str, frozenset[int]]]:
+    """(name, genre ids) for these titles, e.g. the user's favorites."""
+    ids = list(title_ids)
+    if not ids:
+        return {}
+    names = {
+        title_id: name
+        for title_id, name in session.execute(select(Title.id, Title.name).where(Title.id.in_(ids)))
+    }
+    genres: dict[int, set[int]] = {}
+    for title_id, genre_id in session.execute(
+        select(TitleGenre.title_id, TitleGenre.genre_id).where(TitleGenre.title_id.in_(ids))
+    ):
+        genres.setdefault(title_id, set()).add(genre_id)
+    return {tid: (name, frozenset(genres.get(tid, ()))) for tid, name in names.items()}

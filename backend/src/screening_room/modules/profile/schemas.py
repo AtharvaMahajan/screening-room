@@ -1,6 +1,7 @@
 """Profile DTOs: API models, and the taste signals the recommender reads (M3c)."""
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 
@@ -31,9 +32,19 @@ class FavoritesOut(BaseModel):
 
 
 @dataclass(frozen=True)
+class FavoritePick:
+    title_id: int
+    picked_at: datetime  # newer favorites win anchor ties (recommendation-engine.md §4)
+
+
+@dataclass(frozen=True)
 class TasteSignals:
     """What the recommender needs from the profile (recommendation-engine.md §3)."""
 
     liked_genre_ids: frozenset[int]
     avoided_genre_ids: frozenset[int]
-    favorite_title_ids: tuple[int, ...]  # oldest first
+    favorite_picks: tuple[FavoritePick, ...]  # oldest first
+
+    @property
+    def favorite_title_ids(self) -> tuple[int, ...]:
+        return tuple(pick.title_id for pick in self.favorite_picks)
