@@ -1,0 +1,213 @@
+{
+  "engine_version": "1.0.0",
+  "personas": {
+    "new_user": [
+      {
+        "title_id": 903,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1201,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 709,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 204,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1007,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ],
+    "scifi_fan": [
+      {
+        "title_id": 105,
+        "reasons": [
+          "favorite_neighbor"
+        ]
+      },
+      {
+        "title_id": 102,
+        "reasons": [
+          "favorite_neighbor",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 103,
+        "reasons": [
+          "favorite_neighbor",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 903,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1201,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ],
+    "comedy_movie_under_90": [
+      {
+        "title_id": 300,
+        "reasons": [
+          "genre_affinity",
+          "context_genre"
+        ]
+      },
+      {
+        "title_id": 306,
+        "reasons": [
+          "genre_affinity",
+          "context_genre"
+        ]
+      },
+      {
+        "title_id": 307,
+        "reasons": [
+          "genre_affinity",
+          "context_genre"
+        ]
+      },
+      {
+        "title_id": 704,
+        "reasons": [
+          "genre_affinity",
+          "context_genre"
+        ]
+      },
+      {
+        "title_id": 406,
+        "reasons": [
+          "genre_affinity",
+          "context_genre"
+        ]
+      }
+    ],
+    "tv_drama_fan": [
+      {
+        "title_id": 1305,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1306,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1307,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1400,
+        "reasons": [
+          "pool_source"
+        ]
+      },
+      {
+        "title_id": 1409,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ],
+    "horror_avoider": [
+      {
+        "title_id": 205,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 907,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 903,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1201,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 709,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ],
+    "no_usable_neighbors": [
+      {
+        "title_id": 1008,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1007,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1009,
+        "reasons": [
+          "genre_affinity",
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 1201,
+        "reasons": [
+          "well_rated"
+        ]
+      },
+      {
+        "title_id": 709,
+        "reasons": [
+          "well_rated"
+        ]
+      }
+    ]
+  }
+}

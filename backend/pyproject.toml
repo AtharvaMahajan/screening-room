@@ -46,18 +46,32 @@ forbidden_modules = ["screening_room.modules"]
 name = "identity depends on no other module (all modules may depend on identity)"
 type = "forbidden"
 source_modules = ["screening_room.modules.identity"]
-forbidden_modules = ["screening_room.modules.catalog", "screening_room.modules.profile"]
+forbidden_modules = [
+    "screening_room.modules.catalog",
+    "screening_room.modules.profile",
+    "screening_room.modules.discovery",
+]
 
 [[tool.importlinter.contracts]]
 name = "catalog depends on no module except identity (profile -> catalog, never back)"
 type = "forbidden"
 source_modules = ["screening_room.modules.catalog"]
-forbidden_modules = ["screening_room.modules.profile"]
+forbidden_modules = ["screening_room.modules.profile", "screening_room.modules.discovery"]
+
+[[tool.importlinter.contracts]]
+name = "profile depends only on catalog and identity (discovery -> profile, never back)"
+type = "forbidden"
+source_modules = ["screening_room.modules.profile"]
+forbidden_modules = ["screening_room.modules.discovery"]
 
 [[tool.importlinter.contracts]]
 name = "Modules use identity only through its service, schemas and dependencies"
 type = "forbidden"
-source_modules = ["screening_room.modules.catalog", "screening_room.modules.profile"]
+source_modules = [
+    "screening_room.modules.catalog",
+    "screening_room.modules.profile",
+    "screening_room.modules.discovery",
+]
 forbidden_modules = [
     "screening_room.modules.identity.models",
     "screening_room.modules.identity.router",
@@ -70,7 +84,7 @@ allow_indirect_imports = true
 [[tool.importlinter.contracts]]
 name = "Modules use catalog only through its service and schemas"
 type = "forbidden"
-source_modules = ["screening_room.modules.profile"]
+source_modules = ["screening_room.modules.profile", "screening_room.modules.discovery"]
 forbidden_modules = [
     "screening_room.modules.catalog.models",
     "screening_room.modules.catalog.router",
@@ -78,6 +92,16 @@ forbidden_modules = [
     "screening_room.modules.catalog.dependencies",
     "screening_room.modules.catalog.ingestion",
     "screening_room.modules.catalog.providers",
+]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "Modules use profile only through its service and schemas"
+type = "forbidden"
+source_modules = ["screening_room.modules.discovery"]
+forbidden_modules = [
+    "screening_room.modules.profile.models",
+    "screening_room.modules.profile.router",
 ]
 allow_indirect_imports = true
 

@@ -163,7 +163,9 @@ Each signal produces structured reason candidates alongside its value. `explain`
 | `well_rated` | `quality` ≥ 0.75 | "Rated {7.9}/10 by {12,400} TMDB users" |
 | `pool_source` | Fallback, always available | From the title's membership source, e.g. "Among TMDB's top-rated movies" or "Popular on TMDB" |
 
-**Selection:** first the highest-contributing *personal* reason (`favorite_neighbor` or `genre_affinity`), then one *context* or *quality* reason (`context_genre`, `runtime_fit`, `well_rated`). If no personal reason qualifies, show up to 2 non-personal reasons. If nothing qualifies, show `pool_source`.
+**Selection:** first one *personal* reason, then one *context* or *quality* reason (`context_genre`, `runtime_fit`, `well_rated`). If no personal reason qualifies, show up to 2 non-personal reasons. If nothing qualifies, show `pool_source`.
+
+For the personal reason, `favorite_neighbor` is preferred over `genre_affinity` whenever it passes its threshold, because it's the more specific, title-level reason. *(Decided in M3, replacing "highest contribution wins". A favorite's neighbors usually share its genres, so affinity almost always contributes more, and the "Because you picked" reason would rarely be shown.)*
 
 **Truthfulness rules:**
 - A reason may only state facts present in the inputs. "Because you picked *Arrival*" is true: the user picked it, and the system used that link. We never say "similar tone", "same director" or anything else we haven't computed.
