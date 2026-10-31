@@ -238,6 +238,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/recommendations/results/{result_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record Result Event
+         * @description Save, watch, rate, dismiss, skip or open a recommendation (FR-11).
+         *
+         *     One transaction: the library change and the event commit together
+         *     (overview.md §6.4). Returns the title's library state for the buttons.
+         */
+        post: operations["record_result_event"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/titles/{title_id}": {
         parameters: {
             query?: never;
@@ -524,6 +547,24 @@ export interface components {
             password: string;
             /** Display Name */
             display_name?: string | null;
+        };
+        /**
+         * ResultEventIn
+         * @description Something the user did with a recommendation (FR-11, data-model.md §3.4).
+         *
+         *     saved, watched, rated and not_for_me also update the library; opened and
+         *     skipped are only logged (a skip changes no preferences, ADR-0009).
+         */
+        ResultEventIn: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "opened" | "saved" | "watched" | "rated" | "not_for_me" | "skipped";
+            /** Rating */
+            rating?: number | null;
+            /** Watched On */
+            watched_on?: string | null;
         };
         /**
          * SessionOut
@@ -1201,6 +1242,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecommendationsOut"];
+                };
+            };
+            /** @description Client error */
+            "4XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Server error */
+            "5XX": {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    record_result_event: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                result_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResultEventIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleStateOut"];
                 };
             };
             /** @description Client error */

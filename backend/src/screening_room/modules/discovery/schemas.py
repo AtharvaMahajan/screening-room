@@ -1,8 +1,9 @@
 """Recommendation API models (recommendation-engine.md §3, §15)."""
 
-from typing import Annotated, Literal
+from datetime import date
+from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from screening_room.modules.catalog.schemas import TitlePreviewOut
 
@@ -54,3 +55,23 @@ class RecommendationsOut(BaseModel):
     cold_start: bool
     notices: list[NoticeOut]
     results: list[RecommendationOut]  # best first; may be fewer than asked for (§10)
+
+
+class ResultEventIn(BaseModel):
+    """Something the user did with a recommendation (FR-11, data-model.md §3.4).
+
+    saved, watched, rated and not_for_me also update the library; opened and
+    skipped are only logged (a skip changes no preferences, ADR-0009).
+    """
+
+    type: Literal["opened", "saved", "watched", "rated", "not_for_me", "skipped"]
+    rating: int | None = Field(default=None, ge=1, le=5)  # required for "rated", only
+    watched_on: date | None = None  # optional, for "watched" only
+
+    @model_validator(mode="after")
+    def _fields_match_type(self) -> Self:
+        if (self.type == "rated") != (self.rating is not None):
+            raise ValueError('"rating" is required for "rated", and only for it')
+        if self.watched_on is not None and self.type != "watched":
+            raise ValueError('"watched_on" only goes with "watched"')
+        return self

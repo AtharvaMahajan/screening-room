@@ -9,6 +9,7 @@ import time
 from dataclasses import asdict
 from datetime import UTC, date, datetime
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from screening_room.core.errors import AppError
@@ -24,7 +25,7 @@ from screening_room.modules.discovery.engine.types import (
     RecommendationContext,
     RecommendationOutcome,
 )
-from screening_room.modules.discovery.models import RecRequest, RecResult
+from screening_room.modules.discovery.models import RecRequest, RecResult, RecResultEvent
 from screening_room.modules.discovery.retrieval import retrieve
 from screening_room.modules.discovery.schemas import (
     NoticeOut,
@@ -32,7 +33,9 @@ from screening_room.modules.discovery.schemas import (
     RecommendationOut,
     RecommendationRequestIn,
     RecommendationsOut,
+    ResultEventIn,
 )
+from screening_room.modules.library import service as library
 
 ENGINE_CONFIG = EngineConfig()
 CONFIG_HASH = config_hash(ENGINE_CONFIG)
@@ -157,3 +160,38 @@ def _log(
     session.add_all(rows)
     session.flush()  # assigns each result's id
     return request, rows
+
+
+def record_result_event(
+    session: Session, user_id: int, result_id: int, event: ResultEventIn
+) -> int:
+    """Apply what the user did with a recommendation, and log it. Returns the title id.
+
+    The library change carries the result id (attribution, overview.md §6.4), and
+    both are staged for the handler's single commit: if the library rejects the
+    action (e.g. a future watch date), no event is logged either.
+    """
+    title_id = session.scalar(
+        select(RecResult.title_id)
+        .join(RecRequest, RecRequest.id == RecResult.request_id)
+        .where(RecResult.id == result_id, RecRequest.user_id == user_id)
+    )
+    if title_id is None:  # missing, or another user's: same answer, no leak
+        raise AppError(404, "result_not_found", "There's no such recommendation.")
+
+    match event.type:
+        case "saved":
+            library.add_to_watchlist(session, user_id, title_id, rec_result_id=result_id)
+        case "watched":
+            library.mark_watched(
+                session, user_id, title_id, event.watched_on, rec_result_id=result_id
+            )
+        case "rated":
+            assert event.rating is not None  # the schema requires it
+            library.rate(session, user_id, title_id, event.rating, rec_result_id=result_id)
+        case "not_for_me":
+            library.mark_not_for_me(session, user_id, title_id, rec_result_id=result_id)
+        case "opened" | "skipped":
+            pass  # logged only
+    session.add(RecResultEvent(result_id=result_id, event_type=event.type))
+    return title_id

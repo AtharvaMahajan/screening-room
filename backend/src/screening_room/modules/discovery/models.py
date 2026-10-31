@@ -1,7 +1,8 @@
 """ORM models for recommendation logging (data-model.md §3.4). Private to this module.
 
 Every request and its results are stored: they explain any past result and
-feed evaluation (recommendation-engine.md §13). Result events arrive in M4.
+feed evaluation (recommendation-engine.md §13), as do the user's actions on
+each result (events, M4c).
 """
 
 from datetime import datetime
@@ -69,3 +70,29 @@ class RecResult(Base):
     # Per-signal value, weighted contribution, and the favorite_neighbor source.
     score_breakdown: Mapped[dict[str, Any]] = mapped_column(JSONB)
     reasons: Mapped[list[dict[str, Any]]] = mapped_column(JSONB)  # as shown to the user
+
+
+EVENT_TYPES = ("opened", "saved", "watched", "rated", "not_for_me", "skipped")
+
+
+class RecResultEvent(Base):
+    """Something the user did with a recommendation. Append-only: each action is a row.
+
+    "skipped" is logged for dismissal metrics but changes no preferences (ADR-0009).
+    """
+
+    __tablename__ = "rec_result_events"
+    __table_args__ = (
+        CheckConstraint(
+            "event_type IN (" + ", ".join(f"'{t}'" for t in EVENT_TYPES) + ")",
+            name="event_type_valid",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(always=True), primary_key=True)
+    # CASCADE: events belong to their result, which belongs to the user's request.
+    result_id: Mapped[int] = mapped_column(
+        ForeignKey("rec_results.id", ondelete="CASCADE"), index=True
+    )
+    event_type: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
