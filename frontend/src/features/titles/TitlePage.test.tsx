@@ -20,8 +20,8 @@ const ARRIVAL: TitleDetail = {
   poster_url: "https://image.tmdb.org/t/p/w342/poster.jpg",
   backdrop_url: null,
   genres: [
-    { slug: "drama", name: "Drama" },
-    { slug: "science-fiction", name: "Science Fiction" },
+    { id: 7, slug: "drama", name: "Drama" },
+    { id: 16, slug: "science-fiction", name: "Science Fiction" },
   ],
   cast: [
     { name: "Amy Adams", character: "Louise Banks", profile_url: null },

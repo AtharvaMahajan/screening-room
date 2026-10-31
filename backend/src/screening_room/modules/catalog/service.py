@@ -9,7 +9,18 @@ from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime
 from typing import Any, cast
 
-from sqlalchemy import ColumnElement, and_, delete, exists, func, or_, select, tuple_, update
+from sqlalchemy import (
+    ColumnElement,
+    and_,
+    case,
+    delete,
+    exists,
+    func,
+    or_,
+    select,
+    tuple_,
+    update,
+)
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
@@ -30,7 +41,7 @@ from screening_room.modules.catalog.providers.base import (
     TitleDetails,
     TitleSummary,
 )
-from screening_room.modules.catalog.schemas import CastMember, TitleRecord
+from screening_room.modules.catalog.schemas import CastMember, GenreOut, TitleCardOut, TitleRecord
 
 # (media type, provider genre id) -> internal genre ids, e.g. ("tv", 10765) -> [scifi, fantasy]
 GenreMap = Mapping[tuple[str, int], Sequence[int]]
@@ -379,7 +390,7 @@ def load_title_record(session: Session, title_id: int) -> TitleRecord | None:
     if title is None:
         return None
     genres = session.execute(
-        select(Genre.slug, Genre.name)
+        select(Genre.id, Genre.slug, Genre.name)
         .join(TitleGenre, TitleGenre.genre_id == Genre.id)
         .where(TitleGenre.title_id == title_id)
         .order_by(TitleGenre.position)
@@ -407,7 +418,7 @@ def load_title_record(session: Session, title_id: int) -> TitleRecord | None:
         adult=title.adult,
         detail_level=title.detail_level,
         details_synced_at=title.details_synced_at,
-        genres=tuple((slug, name) for slug, name in genres),
+        genres=tuple((genre_id, slug, name) for genre_id, slug, name in genres),
         cast=tuple(
             CastMember(name, character, profile)
             for role, character, name, profile in credits
@@ -416,3 +427,98 @@ def load_title_record(session: Session, title_id: int) -> TitleRecord | None:
         directors=tuple(name for role, _, name, _ in credits if role == "director"),
         creators=tuple(name for role, _, name, _ in credits if role == "creator"),
     )
+
+
+# --- Public queries for other modules (profile, discovery) ------------------------------------
+
+# Image sizes TMDB serves; URLs are built from configuration (ADR-0004).
+POSTER_SIZE = "w342"
+BACKDROP_SIZE = "w780"
+PROFILE_SIZE = "w185"
+
+# Genres the seed plan deliberately skips (TMDB "TV Movie", "News", "Talk"):
+# not offered as preferences or filters. See ingestion/seed_plan.py.
+NON_SELECTABLE_GENRES = frozenset({"tv-movie", "news", "talk"})
+
+SEARCH_LIMIT_MAX = 20
+
+
+def image_url(base_url: str, size: str, path: str | None) -> str | None:
+    return f"{base_url}/{size}{path}" if path else None
+
+
+def selectable_genres(session: Session) -> list[GenreOut]:
+    """The genres people can like, avoid or filter by, alphabetically."""
+    rows = session.scalars(
+        select(Genre).where(Genre.slug.not_in(NON_SELECTABLE_GENRES)).order_by(Genre.name)
+    )
+    return [GenreOut(id=genre.id, slug=genre.slug, name=genre.name) for genre in rows]
+
+
+def is_candidate(session: Session, title_id: int) -> bool:
+    """Is this title in the candidate pool (data-model.md §4)?"""
+    return bool(session.scalar(select(exists().where(Title.id == title_id, in_candidate_pool()))))
+
+
+def _card(title: Title, image_base_url: str) -> TitleCardOut:
+    return TitleCardOut(
+        id=title.id,
+        media_type=cast(MediaType, title.media_type),
+        name=title.name,
+        year=title.release_date.year if title.release_date else None,
+        poster_url=image_url(image_base_url, POSTER_SIZE, title.poster_path),
+    )
+
+
+def title_cards(
+    session: Session, title_ids: Iterable[int], image_base_url: str
+) -> dict[int, TitleCardOut]:
+    """Card data for these titles, by id (titles that don't exist are left out)."""
+    ids = list(title_ids)
+    if not ids:
+        return {}
+    titles = session.scalars(select(Title).where(Title.id.in_(ids)))
+    return {title.id: _card(title, image_base_url) for title in titles}
+
+
+def _escape_like(text: str) -> str:
+    """Make % and _ in user input match literally in a LIKE pattern."""
+    return text.replace("\\", "\\\\").replace("%", r"\%").replace("_", r"\_")
+
+
+def search_pool_titles(
+    session: Session,
+    *,
+    query: str | None,
+    media_type: MediaType | None,
+    genre_ids: Sequence[int],
+    limit: int,
+    image_base_url: str,
+) -> list[TitleCardOut]:
+    """Find candidate-pool titles locally, never calling TMDB (catalog-ingestion.md §11).
+
+    With `query`: a case-insensitive match on the name or original name. Names
+    that START with the query come first, then well-known titles (most votes),
+    because people searching for a favorite usually type a famous title.
+    Without `query`: "popular in your genres" suggestions, most-voted first.
+    """
+    statement = select(Title).where(in_candidate_pool())
+    if media_type is not None:
+        statement = statement.where(Title.media_type == media_type)
+    if genre_ids:
+        statement = statement.where(
+            exists().where(TitleGenre.title_id == Title.id, TitleGenre.genre_id.in_(genre_ids))
+        )
+    order_by: list[Any] = []
+    if query:
+        text = _escape_like(query.strip())
+        statement = statement.where(
+            or_(
+                Title.name.ilike(f"%{text}%", escape="\\"),
+                Title.original_name.ilike(f"%{text}%", escape="\\"),
+            )
+        )
+        order_by.append(case((Title.name.ilike(f"{text}%", escape="\\"), 0), else_=1))
+    order_by += [Title.vote_count.desc().nulls_last(), Title.id]
+    titles = session.scalars(statement.order_by(*order_by).limit(min(limit, SEARCH_LIMIT_MAX)))
+    return [_card(title, image_base_url) for title in titles]

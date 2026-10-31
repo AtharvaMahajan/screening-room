@@ -19,8 +19,19 @@ MetadataStatus = Literal["fresh", "stale", "partial"]
 
 
 class GenreOut(BaseModel):
+    id: int
     slug: str
     name: str
+
+
+class TitleCardOut(BaseModel):
+    """A title in a list: favorites, search results, later recommendations."""
+
+    id: int
+    media_type: Literal["movie", "tv"]
+    name: str
+    year: int | None
+    poster_url: str | None
 
 
 class CastMemberOut(BaseModel):
@@ -81,7 +92,7 @@ class TitleRecord:
     adult: bool
     detail_level: str
     details_synced_at: datetime | None
-    genres: tuple[tuple[str, str], ...]  # (slug, name), in display order
+    genres: tuple[tuple[int, str, str], ...]  # (id, slug, name), in display order
     cast: tuple[CastMember, ...]
     directors: tuple[str, ...]
     creators: tuple[str, ...]

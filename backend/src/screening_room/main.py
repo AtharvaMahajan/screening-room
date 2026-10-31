@@ -18,10 +18,16 @@ from screening_room.modules.catalog.providers.tmdb.client import TmdbClient
 from screening_room.modules.catalog.providers.tmdb.provider import TmdbProvider
 from screening_room.modules.identity import router as identity_router
 from screening_room.modules.identity.csrf import csrf_protect
+from screening_room.modules.profile import router as profile_router
 
 # Every router the app serves. tests/unit/test_sync_handlers.py checks each
 # route here, so a new module's router is registered by adding it to this list.
-ROUTERS: list[APIRouter] = [health.router, identity_router.router, catalog_router.router]
+ROUTERS: list[APIRouter] = [
+    health.router,
+    identity_router.router,
+    catalog_router.router,
+    profile_router.router,
+]
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:

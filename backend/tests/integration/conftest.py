@@ -13,12 +13,14 @@ from alembic.config import Config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 from fastapi.testclient import TestClient
-from sqlalchemy import Engine
+from sqlalchemy import Engine, delete
 from sqlalchemy.orm import Session
 
 from screening_room.config import DatabaseSettings, Settings
 from screening_room.db import create_db_engine, get_session
 from screening_room.main import create_app
+from screening_room.modules.catalog.models import IngestionRun, Person, Title
+from screening_room.modules.profile.models import UserFavoriteTitle
 from tests.conftest import make_test_settings
 
 ALEMBIC_INI = Path(__file__).resolve().parents[2] / "alembic.ini"
@@ -106,3 +108,14 @@ def client(db_session: Session, settings: Settings) -> Iterator[TestClient]:
     app.dependency_overrides[get_session] = override_get_session
     with TestClient(app) as test_client:
         yield test_client
+
+
+@pytest.fixture
+def empty_catalog(db_session: Session) -> None:
+    """Start from an EMPTY catalog, so tests that look at the whole pool aren't
+    affected by your real one. Undone with the rest of the test's transaction."""
+    db_session.execute(delete(UserFavoriteTitle))  # they reference titles (RESTRICT)
+    db_session.execute(delete(Title))  # cascades to genres, credits, memberships, lists
+    db_session.execute(delete(IngestionRun))
+    db_session.execute(delete(Person))
+    db_session.commit()  # releases a savepoint only

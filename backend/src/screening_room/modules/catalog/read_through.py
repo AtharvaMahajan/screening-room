@@ -34,12 +34,14 @@ from screening_room.modules.catalog.schemas import (
     TitleDetailOut,
     TitleRecord,
 )
+from screening_room.modules.catalog.service import (
+    BACKDROP_SIZE,
+    POSTER_SIZE,
+    PROFILE_SIZE,
+    image_url,
+)
 
 logger = logging.getLogger(__name__)
-
-POSTER_SIZE = "w342"
-BACKDROP_SIZE = "w780"
-PROFILE_SIZE = "w185"
 
 
 def get_title_detail(
@@ -99,10 +101,6 @@ def _fallback_status(record: TitleRecord) -> MetadataStatus:
     return "stale" if record.detail_level == "full" else "partial"
 
 
-def _image_url(settings: CatalogSettings, size: str, path: str | None) -> str | None:
-    return f"{settings.tmdb_image_base_url}/{size}{path}" if path else None
-
-
 def _to_out(
     record: TitleRecord, status: MetadataStatus, settings: CatalogSettings
 ) -> TitleDetailOut:
@@ -118,14 +116,18 @@ def _to_out(
         original_language=record.original_language,
         vote_average=record.vote_average,
         vote_count=record.vote_count,
-        poster_url=_image_url(settings, POSTER_SIZE, record.poster_path),
-        backdrop_url=_image_url(settings, BACKDROP_SIZE, record.backdrop_path),
-        genres=[GenreOut(slug=slug, name=name) for slug, name in record.genres],
+        poster_url=image_url(settings.tmdb_image_base_url, POSTER_SIZE, record.poster_path),
+        backdrop_url=image_url(settings.tmdb_image_base_url, BACKDROP_SIZE, record.backdrop_path),
+        genres=[
+            GenreOut(id=genre_id, slug=slug, name=name) for genre_id, slug, name in record.genres
+        ],
         cast=[
             CastMemberOut(
                 name=member.name,
                 character=member.character,
-                profile_url=_image_url(settings, PROFILE_SIZE, member.profile_path),
+                profile_url=image_url(
+                    settings.tmdb_image_base_url, PROFILE_SIZE, member.profile_path
+                ),
             )
             for member in record.cast
         ],

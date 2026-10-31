@@ -2,9 +2,9 @@
 (catalog-ingestion.md §8, §12): the pool it builds, idempotency, resumability,
 failure handling and the report.
 
-Each test starts from an EMPTY catalog: the `empty_catalog` fixture deletes all
-catalog rows inside the test's transaction, which is rolled back afterwards, so
-your real pool comes back untouched.
+Each test starts from an EMPTY catalog: the `empty_catalog` fixture (conftest.py)
+deletes all catalog rows inside the test's transaction, which is rolled back
+afterwards, so your real pool comes back untouched.
 """
 
 from collections.abc import Iterator
@@ -90,15 +90,6 @@ def make_provider(titles: list[TitleDetails] | None = None) -> FakeProvider:
 
 
 # --- Fixtures -----------------------------------------------------------------------------
-
-
-@pytest.fixture
-def empty_catalog(db_session: Session) -> None:
-    """Start from an empty catalog (undone with the rest of the test's transaction)."""
-    db_session.execute(delete(Title))  # cascades to genres, credits, memberships, lists
-    db_session.execute(delete(IngestionRun))
-    db_session.execute(delete(Person))
-    db_session.commit()  # releases a savepoint only
 
 
 OPEN_SESSIONS: list[int] = [0]

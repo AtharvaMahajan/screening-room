@@ -46,12 +46,18 @@ forbidden_modules = ["screening_room.modules"]
 name = "identity depends on no other module (all modules may depend on identity)"
 type = "forbidden"
 source_modules = ["screening_room.modules.identity"]
-forbidden_modules = ["screening_room.modules.catalog"]
+forbidden_modules = ["screening_room.modules.catalog", "screening_room.modules.profile"]
+
+[[tool.importlinter.contracts]]
+name = "catalog depends on no module except identity (profile -> catalog, never back)"
+type = "forbidden"
+source_modules = ["screening_room.modules.catalog"]
+forbidden_modules = ["screening_room.modules.profile"]
 
 [[tool.importlinter.contracts]]
 name = "Modules use identity only through its service, schemas and dependencies"
 type = "forbidden"
-source_modules = ["screening_room.modules.catalog"]
+source_modules = ["screening_room.modules.catalog", "screening_room.modules.profile"]
 forbidden_modules = [
     "screening_room.modules.identity.models",
     "screening_room.modules.identity.router",
@@ -59,6 +65,20 @@ forbidden_modules = [
 ]
 # A public function may use its own module's private parts (dependencies ->
 # service -> models), so only DIRECT imports of private parts are forbidden.
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "Modules use catalog only through its service and schemas"
+type = "forbidden"
+source_modules = ["screening_room.modules.profile"]
+forbidden_modules = [
+    "screening_room.modules.catalog.models",
+    "screening_room.modules.catalog.router",
+    "screening_room.modules.catalog.read_through",
+    "screening_room.modules.catalog.dependencies",
+    "screening_room.modules.catalog.ingestion",
+    "screening_room.modules.catalog.providers",
+]
 allow_indirect_imports = true
 
 # --- Ruff: lint + format ------------------------------------------------------
