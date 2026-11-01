@@ -48,7 +48,7 @@ const NEXT_FIVE = [6, 7, 8, 9, 10].map((id) => result(id, `Film ${String(id)}`))
 
 const ALL = [...FIRST_FIVE, ...NEXT_FIVE];
 
-function discover(routes: Record<string, (body: unknown) => Response> = {}) {
+function discover(routes: Record<string, (body: unknown) => Response | Promise<Response>> = {}) {
   return mockApi({
     ...fakeLibrary(
       ALL.map((r) => r.title.id),
@@ -130,6 +130,54 @@ describe("discover", () => {
       media_type: "tv",
       max_runtime_minutes: null,
     });
+  });
+
+  it("applies a changed filter right away once there's a list", async () => {
+    const api = discover();
+    renderAt("/");
+    const user = userEvent.setup();
+
+    await user.click(await screen.findByLabelText("Movie")); // no list yet: nothing sent
+    expect(callsTo(api, RECOMMEND)).toHaveLength(0);
+    await findSomething();
+    await user.click(screen.getByLabelText("TV"));
+    await user.selectOptions(screen.getByLabelText("Genre"), "Drama");
+
+    await waitFor(() => {
+      expect(callsTo(api, RECOMMEND)).toHaveLength(3);
+    });
+    expect(callsTo(api, RECOMMEND).map((call) => call.body)).toMatchObject([
+      { media_type: "movie", genre_ids: [] },
+      { media_type: "tv", genre_ids: [], exclude_title_ids: [] }, // a fresh list, not "more"
+      { media_type: "tv", genre_ids: [DRAMA] },
+    ]);
+  });
+
+  it("after quick changes, shows the list for the last choice", async () => {
+    let releaseSlow = () => {};
+    const slow = new Promise<void>((resolve) => {
+      releaseSlow = resolve;
+    });
+    discover({
+      [RECOMMEND]: async (body) => {
+        const media = (body as { media_type: string }).media_type;
+        if (media === "tv") {
+          await slow; // the TV answer is slow...
+          return shortlist([result(20, "TV Pick")]);
+        }
+        return shortlist(media === "movie" ? [result(30, "Movie Pick")] : FIRST_FIVE);
+      },
+    });
+    renderAt("/");
+    const user = await findSomething();
+
+    await user.click(screen.getByLabelText("TV"));
+    await user.click(screen.getByLabelText("Movie")); // ...and already replaced by this
+    releaseSlow();
+
+    await screen.findByRole("heading", { level: 2, name: "Movie Pick" });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(shownTitles()).toEqual(["Movie Pick"]); // not overwritten by the late TV answer
   });
 
   it("skips a title, then shows more without repeating anything already shown", async () => {

@@ -42,10 +42,16 @@ class TmdbProvider:
         data = self._client.get_json(f"/genre/{media_type}/list", {"language": LANGUAGE})
         return mapper.genres(data)
 
-    def search(self, query: str) -> list[TitleSummary]:
-        """TMDB multi-search, first page only (20 results): people are dropped."""
-        data = self._client.get_json(
-            "/search/multi",
-            {"query": query, "include_adult": "false", "language": LANGUAGE, "page": 1},
-        )
-        return mapper.search_results(data)
+    def search(self, query: str, media_type: MediaType | None = None) -> list[TitleSummary]:
+        """First page only (20 results). Both types: multi-search, people dropped.
+        One type: that type's own search, so all 20 results are of it."""
+        params: dict[str, str | int] = {
+            "query": query,
+            "include_adult": "false",
+            "language": LANGUAGE,
+            "page": 1,
+        }
+        if media_type is None:
+            return mapper.search_results(self._client.get_json("/search/multi", params))
+        page = mapper.list_page(media_type, self._client.get_json(f"/search/{media_type}", params))
+        return [summary for summary in page.results if not summary.adult]

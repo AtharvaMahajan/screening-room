@@ -120,6 +120,7 @@ class CatalogProvider(Protocol):
 
     def list_genres(self, media_type: MediaType) -> list[ProviderGenre]: ...
 
-    def search(self, query: str) -> list[TitleSummary]:
-        """Movies and TV shows matching `query`, best match first. No adult titles."""
+    def search(self, query: str, media_type: MediaType | None = None) -> list[TitleSummary]:
+        """Movies and TV shows (or only one of them) matching `query`, best match
+        first. No adult titles."""
         ...

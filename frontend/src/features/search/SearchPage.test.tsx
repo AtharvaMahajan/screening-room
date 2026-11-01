@@ -2,7 +2,7 @@ import { screen, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { emptyTasteProfile, mockApi, signedIn } from "../../test/mockApi";
+import { callsTo, emptyTasteProfile, mockApi, signedIn } from "../../test/mockApi";
 import { renderAt } from "../../test/render";
 import type { SearchResults, TitleCard } from "../titles/api";
 
@@ -69,6 +69,64 @@ describe("search", () => {
     renderAt("/search?q=zzz");
 
     expect(await screen.findByText("No movies or shows match “zzz”.")).toBeInTheDocument();
+  });
+
+  it("asks again for one type as soon as the type changes", async () => {
+    const user = userEvent.setup();
+    const api = mockApi({
+      "GET /api/auth/session": () => signedIn(),
+      "GET /api/search?q=dune": tmdb(card(1, "Dune"), card(2, "Dune", "tv")),
+      "GET /api/search?q=dune&media_type=tv": tmdb(card(2, "Dune", "tv"), card(3, "Dune: Prophecy", "tv")),
+    });
+    const { router } = renderAt("/search?q=dune");
+    await screen.findByText("Movie · 2016");
+
+    await user.click(
+      within(screen.getByRole("group", { name: "Type" })).getByRole("button", { name: "TV" }),
+    );
+
+    expect(await screen.findByText("Dune: Prophecy")).toBeInTheDocument();
+    expect(screen.queryByText("Movie · 2016")).not.toBeInTheDocument();
+    expect(new URLSearchParams(router.state.location.search).get("type")).toBe("tv");
+    expect(callsTo(api, "GET /api/search?q=dune&media_type=tv")).toHaveLength(1);
+  });
+
+  it("narrows the results to a decade instantly, without asking again", async () => {
+    const user = userEvent.setup();
+    const api = mockApi({
+      "GET /api/auth/session": () => signedIn(),
+      "GET /api/search?q=dune": tmdb(
+        { ...card(1, "Dune"), year: 2021 },
+        { ...card(2, "Dune (old)"), year: 1984 },
+      ),
+    });
+    renderAt("/search?q=dune");
+    await screen.findByText("Dune (old)");
+
+    await user.click(
+      within(screen.getByRole("group", { name: "Released" })).getByRole("button", {
+        name: "Before 1990",
+      }),
+    );
+
+    expect(screen.queryByText("Dune")).not.toBeInTheDocument();
+    expect(screen.getByText("Dune (old)")).toBeInTheDocument();
+    expect(screen.getByText("Showing 1 of 2 results.")).toBeInTheDocument();
+    expect(callsTo(api, "GET /api/search?q=dune")).toHaveLength(1);
+  });
+
+  it("opens with filters from a link", async () => {
+    mockApi({
+      "GET /api/auth/session": () => signedIn(),
+      "GET /api/search?q=dark&media_type=tv": tmdb({ ...card(7, "Dark", "tv"), year: 2017 }),
+    });
+    renderAt("/search?q=dark&type=tv&released=2010s");
+
+    expect(await screen.findByText("Dark")).toBeInTheDocument();
+    const pressed = screen
+      .getAllByRole("button", { pressed: true })
+      .map((button) => button.textContent);
+    expect(pressed).toEqual(["TV", "2010s"]);
   });
 
   it("is linked from the header", async () => {

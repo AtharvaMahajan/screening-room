@@ -28,6 +28,7 @@ from screening_room.db import end_read_transaction
 from screening_room.modules.catalog import service
 from screening_room.modules.catalog.providers.base import (
     CatalogProvider,
+    MediaType,
     ProviderError,
     ProviderNotFoundError,
 )
@@ -134,7 +135,11 @@ def _hydrate(
 
 
 def search_titles(
-    session: Session, query: str, provider: CatalogProvider | None, image_base_url: str
+    session: Session,
+    query: str,
+    provider: CatalogProvider | None,
+    image_base_url: str,
+    media_type: MediaType | None = None,
 ) -> SearchOut:
     """TMDB search; results are stored as summary rows so they get stable ids.
 
@@ -144,7 +149,7 @@ def search_titles(
     end_read_transaction(session)
     if provider is not None:
         try:
-            summaries = provider.search(query)
+            summaries = provider.search(query, media_type)
         except ProviderError as error:
             # Not the query itself: what people search for is their business (security.md §9).
             logger.warning(
@@ -169,7 +174,7 @@ def search_titles(
         results=service.search_pool_titles(
             session,
             query=query,
-            media_type=None,
+            media_type=media_type,
             genre_ids=[],
             limit=SEARCH_RESULTS,
             image_base_url=image_base_url,

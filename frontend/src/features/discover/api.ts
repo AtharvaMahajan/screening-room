@@ -61,6 +61,9 @@ export function useDiscoverState() {
 export function useRecommend() {
   const queryClient = useQueryClient();
   return useMutation({
+    // One at a time, in order: after quick filter changes, the list shown is
+    // always for the LAST choice, never a slower earlier answer.
+    scope: { id: "recommend" },
     mutationFn: ({ context, seenIds }: { context: DiscoverContext; seenIds: number[] }) =>
       apiSend<Recommendations>("POST", "/api/recommendations", toRequest(context, seenIds)),
     onSuccess: (shortlist, { context, seenIds }) => {

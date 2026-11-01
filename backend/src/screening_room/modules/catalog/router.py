@@ -67,8 +67,9 @@ def search(
     provider: CatalogProviderDep,
     settings: SettingsDep,
     q: Annotated[str, Query(min_length=1, max_length=100)],
+    media_type: Literal["movie", "tv"] | None = None,
 ) -> SearchOut:
-    """Search TMDB for movies and TV shows, beyond our candidate pool (FR-03).
+    """Search TMDB for movies and TV shows (or only one), beyond our pool (FR-03).
 
     Results are stored as catalog rows (so they have ids and title pages) but
     don't become recommendable. Falls back to our own catalog if TMDB is down.
@@ -76,4 +77,6 @@ def search(
     query = q.strip()
     if not query:
         raise AppError(422, "empty_query", "Type something to search for.")
-    return read_through.search_titles(session, query, provider, settings.tmdb_image_base_url)
+    return read_through.search_titles(
+        session, query, provider, settings.tmdb_image_base_url, media_type
+    )

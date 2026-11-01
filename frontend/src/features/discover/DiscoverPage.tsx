@@ -43,7 +43,17 @@ export function DiscoverPage() {
         }}
         className="space-y-4"
       >
-        <ContextControls context={context} genres={genres} onChange={setContext} />
+        <ContextControls
+          context={context}
+          genres={genres}
+          onChange={(next) => {
+            setContext(next);
+            // Once there's a list, changing a filter updates it right away.
+            if (state) {
+              recommend.mutate({ context: next, seenIds: [] });
+            }
+          }}
+        />
         <Button type="submit" disabled={recommend.isPending}>
           {recommend.isPending ? "Finding…" : "Find something"}
         </Button>

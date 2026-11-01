@@ -188,7 +188,7 @@ export interface paths {
         };
         /**
          * Search
-         * @description Search TMDB for movies and TV shows, beyond our candidate pool (FR-03).
+         * @description Search TMDB for movies and TV shows (or only one), beyond our pool (FR-03).
          *
          *     Results are stored as catalog rows (so they have ids and title pages) but
          *     don't become recommendable. Falls back to our own catalog if TMDB is down.
@@ -1255,6 +1255,7 @@ export interface operations {
         parameters: {
             query: {
                 q: string;
+                media_type?: ("movie" | "tv") | null;
             };
             header?: never;
             path?: never;

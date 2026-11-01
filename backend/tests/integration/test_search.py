@@ -24,6 +24,7 @@ from screening_room.modules.catalog.models import (
     Title,
 )
 from screening_room.modules.catalog.providers.base import (
+    MediaType,
     ProviderRef,
     TitleDetails,
     TitleSummary,
@@ -41,9 +42,9 @@ class WatchedProvider(FakeProvider):
         super().__init__(titles)
         self._session = session
 
-    def search(self, query: str) -> list[TitleSummary]:
+    def search(self, query: str, media_type: MediaType | None = None) -> list[TitleSummary]:
         assert not self._session.in_transaction(), "TMDB called with a transaction open"
-        return super().search(query)
+        return super().search(query, media_type)
 
     def get_details(self, ref: ProviderRef) -> TitleDetails:
         assert not self._session.in_transaction(), "TMDB called with a transaction open"
@@ -139,6 +140,36 @@ def test_without_a_tmdb_token_search_is_local(
     body = search(api, word)
 
     assert (body["source"], result_names(body)) == ("local", [f"{word} Pool Title"])
+
+
+@pytest.mark.parametrize(
+    ("media_type", "expected"),
+    [("movie", ["{w} Odyssey", "{w} Returns"]), ("tv", ["The {w} Files"])],
+)
+def test_search_can_ask_for_movies_or_tv_only(
+    api: TestClient, tmdb: FakeProvider, word: str, media_type: str, expected: list[str]
+) -> None:
+    response = api.get("/api/search", params={"q": word, "media_type": media_type})
+
+    assert response.status_code == 200, response.text
+    assert result_names(response.json()) == [name.format(w=word) for name in expected]
+    assert tmdb.calls[-1] == ("search", (word, media_type))  # asked TMDB for that type
+
+
+def test_the_local_fallback_honours_the_media_type(
+    api: TestClient, tmdb: FakeProvider, word: str, db_session: Session
+) -> None:
+    add_candidate(db_session, f"{word} Local Film")
+    add_candidate(db_session, f"{word} Local Show", media_type="tv")
+    tmdb.search_failing = True
+
+    body = api.get("/api/search", params={"q": word, "media_type": "tv"}).json()
+
+    assert (body["source"], result_names(body)) == ("local", [f"{word} Local Show"])
+
+
+def test_an_unknown_media_type_is_rejected(api: TestClient) -> None:
+    assert api.get("/api/search", params={"q": "x", "media_type": "film"}).status_code == 422
 
 
 @pytest.mark.parametrize("q", ["", "   ", "x" * 101])

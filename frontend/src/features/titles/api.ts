@@ -54,13 +54,11 @@ export type SearchResults = components["schemas"]["SearchOut"];
  * Search TMDB for any movie or TV show (GET /api/search). `source: "local"` means
  * TMDB couldn't be reached, so only titles already in our catalog were searched.
  */
-export function useCatalogSearch(query: string) {
+export function useCatalogSearch(query: string, mediaType: "movie" | "tv" | null = null) {
+  const params = new URLSearchParams({ q: query, ...(mediaType ? { media_type: mediaType } : {}) });
   return useQuery({
-    queryKey: ["search", query],
-    queryFn: ({ signal }) =>
-      apiGet<SearchResults>(`/api/search?${new URLSearchParams({ q: query }).toString()}`, {
-        signal,
-      }),
+    queryKey: ["search", query, mediaType],
+    queryFn: ({ signal }) => apiGet<SearchResults>(`/api/search?${params.toString()}`, { signal }),
     enabled: query.length > 0,
     staleTime: 5 * 60 * 1000, // the same words again shouldn't call TMDB again
     placeholderData: keepPreviousData,

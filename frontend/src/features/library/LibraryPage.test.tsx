@@ -22,7 +22,7 @@ const AT = "2026-10-30T12:00:00Z"; // noon UTC: still Oct 30 in nearly every tim
 const json = (body: unknown) => () => Response.json(body);
 
 function rowNames() {
-  return screen
+  return within(screen.getByRole("main")) // not the header's tabs
     .queryAllByRole("listitem")
     .map((item) => within(item).getAllByRole("link").at(-1)?.textContent);
 }

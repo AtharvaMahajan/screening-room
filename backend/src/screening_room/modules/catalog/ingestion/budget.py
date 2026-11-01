@@ -48,6 +48,6 @@ class CountingProvider:
         self._spend()
         return self._inner.list_genres(media_type)
 
-    def search(self, query: str) -> list[TitleSummary]:
+    def search(self, query: str, media_type: MediaType | None = None) -> list[TitleSummary]:
         self._spend()
-        return self._inner.search(query)
+        return self._inner.search(query, media_type)

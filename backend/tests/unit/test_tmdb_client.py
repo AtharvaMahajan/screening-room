@@ -266,3 +266,35 @@ def test_details_fetch_credits_and_recommendations_in_one_request() -> None:
     assert fake.requests[0].url.path == "/3/tv/1396"
     assert fake.requests[0].url.params["append_to_response"] == "credits,recommendations"
     assert details.summary.name == "Breaking Bad"
+
+
+def test_search_for_both_types_uses_multi_search() -> None:
+    fake = Fake(ok({"page": 1, "results": []}))
+
+    provider_with(fake).search("arrival")
+
+    request = fake.requests[0]
+    assert request.url.path == "/3/search/multi"
+    assert (request.url.params["query"], request.url.params["include_adult"]) == (
+        "arrival",
+        "false",
+    )
+
+
+def test_search_for_one_type_uses_that_types_search_and_drops_adult_titles() -> None:
+    fake = Fake(
+        ok(
+            {
+                "page": 1,
+                "results": [
+                    {"id": 1, "name": "Dark", "first_air_date": "2017-12-01"},
+                    {"id": 2, "name": "Not for here", "adult": True},
+                ],
+            }
+        )
+    )
+
+    results = provider_with(fake).search("dark", "tv")
+
+    assert fake.requests[0].url.path == "/3/search/tv"
+    assert [(r.ref.media_type, r.name) for r in results] == [("tv", "Dark")]
