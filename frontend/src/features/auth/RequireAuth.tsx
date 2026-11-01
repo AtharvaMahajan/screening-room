@@ -14,7 +14,7 @@ export function RequireAuth() {
   const location = useLocation();
 
   if (session.isPending) {
-    return <p className="py-8 text-stone-500">Loading…</p>;
+    return <p className="py-8 text-stone-500 dark:text-stone-400">Loading…</p>;
   }
   if (session.isError) {
     return (

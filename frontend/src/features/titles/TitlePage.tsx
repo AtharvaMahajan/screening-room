@@ -22,7 +22,7 @@ function TitleLoader({ titleId }: { titleId: number }) {
   const title = useTitle(titleId);
 
   if (title.isPending) {
-    return <p className="py-8 text-stone-500">Loading…</p>;
+    return <p className="py-8 text-stone-500 dark:text-stone-400">Loading…</p>;
   }
   if (title.isError) {
     if (title.error instanceof ApiError && title.error.status === 404) {
@@ -76,14 +76,14 @@ function TitleView({ title }: { title: TitleDetail }) {
         <div className="min-w-0 space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title.name}</h1>
           {title.original_name && title.original_name !== title.name && (
-            <p className="text-stone-500 italic">{title.original_name}</p>
+            <p className="text-stone-500 dark:text-stone-400 italic">{title.original_name}</p>
           )}
           <p className="text-sm text-stone-600 dark:text-stone-400">{facts.join(" · ")}</p>
           <LibraryPanel titleId={title.id} />
           {title.vote_average !== null && title.vote_count ? (
             <p className="text-sm">
               <span className="font-medium">★ {title.vote_average.toFixed(1)}</span>
-              <span className="text-stone-500">
+              <span className="text-stone-500 dark:text-stone-400">
                 {" "}
                 / 10 from {title.vote_count.toLocaleString("en-US")} TMDB votes
               </span>
@@ -104,7 +104,7 @@ function TitleView({ title }: { title: TitleDetail }) {
           {title.overview && <p className="leading-relaxed">{title.overview}</p>}
           {people.length > 0 && (
             <p className="text-sm">
-              <span className="text-stone-500">
+              <span className="text-stone-500 dark:text-stone-400">
                 {title.media_type === "movie" ? "Directed by" : "Created by"}{" "}
               </span>
               {people.join(", ")}
@@ -122,7 +122,7 @@ function TitleView({ title }: { title: TitleDetail }) {
             {title.cast.map((member) => (
               <li key={`${member.name}-${member.character ?? ""}`} className="text-sm">
                 <span className="font-medium">{member.name}</span>
-                {member.character && <span className="text-stone-500"> as {member.character}</span>}
+                {member.character && <span className="text-stone-500 dark:text-stone-400"> as {member.character}</span>}
               </li>
             ))}
           </ul>

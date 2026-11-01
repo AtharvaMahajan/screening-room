@@ -87,16 +87,27 @@ def recommend(
 
 
 def _few_results_text(count: int, context: RecommendationContext) -> str:
-    """Never pad with ineligible titles; suggest relaxing a filter instead (§10)."""
-    found = (
-        "No titles match" if count == 0 else f"Only {count} title{'s' if count != 1 else ''} match"
-    )
+    """Never pad with ineligible titles; suggest relaxing a filter instead (§10).
+
+    Filters are only mentioned when some were set (1.1.1). Without any, a short
+    list means "show me more" ran out, or there's little to recommend yet.
+    """
+    titles = f"{count} title" if count == 1 else f"{count} titles"
     if context.max_runtime_minutes is not None:
-        hint = " Try a longer runtime."
+        hint = "Try a longer runtime."
     elif context.genre_ids:
-        hint = " Try fewer genres."
+        hint = "Try fewer genres."
     elif context.media_type != "any":
-        hint = " Try including both movies and TV."
-    else:
-        hint = ""
-    return f"{found} your filters.{hint}"
+        hint = "Try including both movies and TV."
+    elif context.exclude_title_ids:  # no filters: "show me more" ran out
+        return "No more titles to show." if count == 0 else f"Only {titles} more to show."
+    else:  # no filters, nothing excluded
+        return (
+            "There's nothing to recommend yet."
+            if count == 0
+            else f"Only {titles} to recommend right now."
+        )
+    found = (
+        "No titles match" if count == 0 else f"Only {titles} {'matches' if count == 1 else 'match'}"
+    )
+    return f"{found} your filters. {hint}"

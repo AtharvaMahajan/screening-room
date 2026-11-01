@@ -48,12 +48,12 @@ export function FavoritesPicker({
       <section aria-labelledby="picked-heading" className="space-y-2">
         <h3 id="picked-heading" className="font-medium">
           Your favorites{" "}
-          <span className="text-sm font-normal text-stone-500">
+          <span className="text-sm font-normal text-stone-500 dark:text-stone-400">
             {favorites.favorites.length} of {favorites.max_favorites}
           </span>
         </h3>
         {favorites.favorites.length === 0 ? (
-          <p className="text-sm text-stone-500">None yet. Pick a few titles you love below.</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400">None yet. Pick a few titles you love below.</p>
         ) : (
           <ul className="flex flex-wrap gap-2">
             {favorites.favorites.map((title) => (
@@ -69,7 +69,7 @@ export function FavoritesPicker({
                   onClick={() => {
                     remove.mutate(title.id);
                   }}
-                  className="rounded-full px-2 text-stone-500 hover:bg-stone-300 hover:text-stone-900 dark:hover:bg-stone-700 dark:hover:text-stone-100"
+                  className="rounded-full px-2 text-stone-500 dark:text-stone-400 hover:bg-stone-300 hover:text-stone-900 dark:hover:bg-stone-700 dark:hover:text-stone-100"
                 >
                   ×
                 </button>
@@ -106,7 +106,7 @@ export function FavoritesPicker({
           </p>
         )}
         {results.items?.length === 0 && (
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             {typed ? `No movies or shows match “${typed}”.` : "No suggestions yet."}
           </p>
         )}
@@ -157,13 +157,13 @@ function PickButton({
           className="w-full group-enabled:group-hover:opacity-80"
         />
         {isPicked && (
-          <span className="absolute inset-0 flex items-center justify-center rounded-md bg-amber-600/80 text-sm font-semibold text-white">
+          <span className="absolute inset-0 flex items-center justify-center rounded-md bg-amber-700/90 text-sm font-semibold text-white">
             ✓ Picked
           </span>
         )}
       </span>
       <span className="line-clamp-2 font-medium">{title.name}</span>
-      {title.year !== null && <span className="text-stone-500">{title.year}</span>}
+      {title.year !== null && <span className="text-stone-500 dark:text-stone-400">{title.year}</span>}
     </button>
   );
 }

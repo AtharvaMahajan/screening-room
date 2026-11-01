@@ -52,7 +52,7 @@ export function GenrePicker({
 }
 
 const SELECTED: Record<Stance, string> = {
-  like: "border-amber-600 bg-amber-600 text-white",
+  like: "border-amber-700 bg-amber-700 text-white",
   avoid: "border-stone-700 bg-stone-700 text-white line-through dark:border-stone-300 dark:bg-stone-300 dark:text-stone-900",
 };
 
@@ -75,7 +75,7 @@ function GenreRow({
     <fieldset className="space-y-2">
       <legend className="font-medium">
         {label}
-        {hint && <span className="ml-2 text-sm font-normal text-stone-500">{hint}</span>}
+        {hint && <span className="ml-2 text-sm font-normal text-stone-500 dark:text-stone-400">{hint}</span>}
       </legend>
       <div className="flex flex-wrap gap-2">
         {genres.map((genre) => {

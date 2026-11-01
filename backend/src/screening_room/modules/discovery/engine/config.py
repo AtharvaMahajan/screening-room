@@ -10,7 +10,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 
-ENGINE_VERSION = "1.1.0"  # 1.1.0: library signals (M4b). 1.0.1: genre_affinity wording
+ENGINE_VERSION = "1.1.1"  # 1.1.1: short-list notice wording. 1.1.0: library signals (M4b)
 
 
 class EngineConfig(BaseModel):

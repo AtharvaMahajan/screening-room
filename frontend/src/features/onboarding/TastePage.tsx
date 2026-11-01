@@ -49,7 +49,7 @@ export function TastePage({ welcome = false }: { welcome?: boolean }) {
           </Button>
         </div>
       ) : !genres.data || !preferences.data || !favorites.data ? (
-        <p className="text-stone-500">Loading…</p>
+        <p className="text-stone-500 dark:text-stone-400">Loading…</p>
       ) : (
         <>
           <section aria-labelledby="genres-heading" className="space-y-3">
@@ -85,7 +85,7 @@ export function TastePage({ welcome = false }: { welcome?: boolean }) {
       <footer className="flex items-center gap-4 border-t border-stone-200 pt-6 dark:border-stone-800">
         <Link
           to="/"
-          className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+          className="rounded-md bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
         >
           {welcome ? "Show my recommendations" : "Done"}
         </Link>

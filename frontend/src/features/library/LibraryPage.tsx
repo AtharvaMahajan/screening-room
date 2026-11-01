@@ -173,7 +173,7 @@ function ListShell<Item>({
   children: (items: Item[]) => ReactNode;
 }) {
   if (query.isPending) {
-    return <p className="text-stone-500">Loading…</p>;
+    return <p className="text-stone-500 dark:text-stone-400">Loading…</p>;
   }
   if (query.isError) {
     return (
@@ -186,7 +186,7 @@ function ListShell<Item>({
     );
   }
   if (query.data.length === 0) {
-    return <p className="text-stone-500">{media === "all" ? empty : "Nothing here of that kind."}</p>;
+    return <p className="text-stone-500 dark:text-stone-400">{media === "all" ? empty : "Nothing here of that kind."}</p>;
   }
   return (
     <ul className="divide-y divide-stone-200 dark:divide-stone-800">{children(query.data)}</ul>
@@ -212,7 +212,7 @@ function Row({
         <Link to={href} className="font-medium hover:underline">
           {title.name}
         </Link>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-stone-500 dark:text-stone-400">
           {[title.media_type === "movie" ? "Movie" : "TV", title.year, detail]
             .filter((part) => part !== null)
             .join(" · ")}
@@ -264,7 +264,7 @@ function Pill({
       aria-pressed={current}
       onClick={onClick}
       className={`rounded-full px-3 py-1 text-sm focus-visible:outline-2 focus-visible:outline-amber-600 ${
-        current ? "bg-amber-600 text-white" : "hover:bg-stone-200 dark:hover:bg-stone-800"
+        current ? "bg-amber-700 text-white" : "hover:bg-stone-200 dark:hover:bg-stone-800"
       }`}
     >
       {children}

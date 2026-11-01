@@ -30,7 +30,7 @@ export function TextField({ label, error, hint, ...inputProps }: TextFieldProps)
       {message && (
         <p
           id={messageId}
-          className={error ? "text-sm text-red-600 dark:text-red-400" : "text-sm text-stone-500"}
+          className={error ? "text-sm text-red-600 dark:text-red-400" : "text-sm text-stone-500 dark:text-stone-400"}
         >
           {message}
         </p>

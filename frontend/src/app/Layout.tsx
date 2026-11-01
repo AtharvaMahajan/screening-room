@@ -8,6 +8,18 @@ import { HealthStatus } from "../features/health/HealthStatus";
 export function Layout() {
   return (
     <div className="flex min-h-dvh flex-col">
+      {/* First stop for keyboard users: past the header, straight to the page. Hidden
+          until focused. Moves focus itself, so the URL doesn't gain a #main. */}
+      <a
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+        className="sr-only rounded-md bg-amber-700 px-3 py-2 text-sm font-medium text-white focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-10"
+      >
+        Skip to main content
+      </a>
       <header className="border-b border-stone-200 dark:border-stone-800">
         {/* Phones: brand and account on one row, page links on a second row below. */}
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
@@ -17,7 +29,7 @@ export function Layout() {
           <AccountMenu />
         </div>
       </header>
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
+      <main id="main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 outline-none">
         <Outlet />
       </main>
       <footer className="mx-auto w-full max-w-3xl px-4 py-4">

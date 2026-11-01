@@ -102,7 +102,7 @@ function ContextControls({
           ).map(([value, label]) => (
             <label
               key={value}
-              className="flex-1 cursor-pointer px-3 py-2 text-center has-checked:bg-amber-600 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-amber-600"
+              className="flex-1 cursor-pointer px-3 py-2 text-center has-checked:bg-amber-700 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-amber-600"
             >
               <input
                 type="radio"
@@ -189,7 +189,7 @@ function Select({
         {children}
       </select>
       {hint && (
-        <p id={`${id}-hint`} className="text-xs text-stone-500">
+        <p id={`${id}-hint`} className="text-xs text-stone-500 dark:text-stone-400">
           {hint}
         </p>
       )}
@@ -255,7 +255,7 @@ function Shortlist({
         </ol>
       ) : (
         shortlist.results.length > 0 && (
-          <p className="text-stone-500">That’s all of these set aside. Want to see more?</p>
+          <p className="text-stone-500 dark:text-stone-400">That’s all of these set aside. Want to see more?</p>
         )
       )}
 

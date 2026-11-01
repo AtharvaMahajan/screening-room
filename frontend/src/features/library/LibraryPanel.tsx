@@ -180,7 +180,7 @@ function Toggle({
       onClick={onClick}
       className={`rounded-md border px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 disabled:opacity-60 ${
         on
-          ? "border-amber-600 bg-amber-600 text-white"
+          ? "border-amber-700 bg-amber-700 text-white"
           : "border-stone-300 hover:bg-stone-200 dark:border-stone-700 dark:hover:bg-stone-800"
       }`}
     >

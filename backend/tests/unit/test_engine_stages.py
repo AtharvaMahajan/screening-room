@@ -10,6 +10,7 @@ import pytest
 from screening_room.modules.discovery.engine import eligibility, ranking, scoring
 from screening_room.modules.discovery.engine.config import EngineConfig, config_hash
 from screening_room.modules.discovery.engine.explain import explain, format_runtime
+from screening_room.modules.discovery.engine.pipeline import _few_results_text
 from screening_room.modules.discovery.engine.profile import build_profile
 from screening_room.modules.discovery.engine.types import (
     Anchor,
@@ -398,3 +399,36 @@ def test_scoring_weights_sum_to_one() -> None:
         + CONFIG.weight_popularity
     )
     assert weights == pytest.approx(1.0)
+
+
+# --- Short-list notice (§10) --------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("count", "context", "text"),
+    [
+        (0, RecommendationContext(), "There's nothing to recommend yet."),
+        (2, RecommendationContext(), "Only 2 titles to recommend right now."),
+        (0, RecommendationContext(exclude_title_ids=frozenset({1})), "No more titles to show."),
+        (1, RecommendationContext(exclude_title_ids=frozenset({1})), "Only 1 title more to show."),
+        (
+            2,
+            RecommendationContext(max_runtime_minutes=90),
+            "Only 2 titles match your filters. Try a longer runtime.",
+        ),
+        (
+            0,
+            RecommendationContext(genre_ids=frozenset({3})),
+            "No titles match your filters. Try fewer genres.",
+        ),
+        (
+            1,
+            RecommendationContext(media_type="tv", exclude_title_ids=frozenset({1})),
+            "Only 1 title matches your filters. Try including both movies and TV.",
+        ),
+    ],
+)
+def test_the_short_list_notice_mentions_filters_only_when_some_were_set(
+    count: int, context: RecommendationContext, text: str
+) -> None:
+    assert _few_results_text(count, context) == text

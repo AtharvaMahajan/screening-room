@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 
 const VARIANTS = {
   primary:
-    "bg-amber-600 text-white hover:bg-amber-700 disabled:bg-amber-600/60 focus-visible:outline-amber-600",
+    "bg-amber-700 text-white hover:bg-amber-800 disabled:bg-amber-700/60 focus-visible:outline-amber-600",
   danger:
     "bg-red-700 text-white hover:bg-red-800 disabled:bg-red-700/50 focus-visible:outline-red-700",
   quiet:

@@ -47,7 +47,7 @@ function Results({ results, query }: { results: SearchResults; query: string }) 
     <section aria-label={`Results for ${query}`} className="space-y-4">
       {results.source === "local" && <LocalOnlyNotice />}
       {results.results.length === 0 ? (
-        <p className="text-stone-500">No movies or shows match “{query}”.</p>
+        <p className="text-stone-500 dark:text-stone-400">No movies or shows match “{query}”.</p>
       ) : (
         <ul className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
           {results.results.map((title) => (
@@ -62,7 +62,7 @@ function Results({ results, query }: { results: SearchResults; query: string }) 
                   className="w-full group-hover:opacity-80"
                 />
                 <span className="line-clamp-2 font-medium">{title.name}</span>
-                <span className="block text-xs text-stone-500">
+                <span className="block text-xs text-stone-500 dark:text-stone-400">
                   {[title.media_type === "movie" ? "Movie" : "TV", title.year]
                     .filter((part) => part !== null)
                     .join(" · ")}
