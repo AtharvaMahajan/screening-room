@@ -5,6 +5,7 @@
     uv run python -m screening_room.jobs refresh [--older-than-days 14] [--limit N]
                                                  [--max-requests N]
     uv run python -m screening_room.jobs report
+    uv run python -m screening_room.jobs prune [--older-than-days 30]
     uv run python -m screening_room.jobs metrics [--days 7]
 
 This module only parses arguments and wires up real dependencies; the work is
@@ -19,6 +20,7 @@ from datetime import UTC, datetime, timedelta
 from screening_room.config import JobSettings, LogSettings
 from screening_room.core.logging import configure_logging
 from screening_room.db import create_db_engine, create_session_factory
+from screening_room.modules.catalog.ingestion.prune import prune_outside_pool
 from screening_room.modules.catalog.ingestion.report import build_report
 from screening_room.modules.catalog.ingestion.runs import (
     IngestOptions,
@@ -53,6 +55,11 @@ def build_parser() -> argparse.ArgumentParser:
     refresh.add_argument("--max-requests", type=int)
 
     commands.add_parser("report", help="pool composition and health (no provider calls)")
+
+    prune = commands.add_parser(
+        "prune", help="delete old titles outside the pool that nobody uses (no provider calls)"
+    )
+    prune.add_argument("--older-than-days", type=int, default=30)
 
     metrics = commands.add_parser(
         "metrics", help="recommendation latency, coverage and outcomes (no provider calls)"
@@ -99,6 +106,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     engine = create_db_engine(settings.database_url)
     session_factory = create_session_factory(engine)
     try:
+        if args.command == "prune":
+            older_than = datetime.now(UTC) - timedelta(days=args.older_than_days)
+            counts = prune_outside_pool(session_factory, older_than=older_than)
+            print(f"Pruned {counts.deleted} titles; kept {counts.kept_in_use} still in use.")
+            return 0
         if args.command == "metrics":
             since = datetime.now(UTC) - timedelta(days=args.days)
             with session_factory() as session:

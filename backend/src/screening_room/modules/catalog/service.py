@@ -18,6 +18,7 @@ from sqlalchemy import (
     func,
     or_,
     select,
+    true,
     tuple_,
     update,
 )
@@ -334,17 +335,32 @@ def record_sync_error(session: Session, title_id: int, message: str, at: datetim
 
 
 def titles_to_hydrate(
-    session: Session, *, stale_before: datetime, include_summary_only: bool, limit: int | None
+    session: Session,
+    *,
+    stale_before: datetime,
+    include_summary_only: bool,
+    limit: int | None,
+    pool_only: bool = True,
 ) -> list[tuple[int, ProviderRef]]:
-    """Pool titles whose details are stale (and, for `ingest`, summary-only ones),
-    oldest id first so runs are predictable (catalog-ingestion.md §7)."""
+    """Titles whose details are stale (and, for `ingest`, summary-only ones),
+    oldest id first so runs are predictable (catalog-ingestion.md §7).
+
+    `pool_only=False` (refresh) also covers titles outside the pool, e.g. found
+    through search, and summary-only ones gone stale: TMDB allows caching its
+    data for at most 6 months (API Terms of Use §1.C).
+    """
     needs_details = Title.details_synced_at < stale_before
     if include_summary_only:
         needs_details = or_(Title.detail_level == "summary", needs_details)
+    if not pool_only:
+        stale_summary = and_(
+            Title.detail_level == "summary", Title.summary_synced_at < stale_before
+        )
+        needs_details = or_(needs_details, stale_summary)
     rows = session.execute(
         select(Title.id, Title.provider, Title.media_type, Title.provider_id)
         .where(
-            has_pool_membership(),
+            has_pool_membership() if pool_only else true(),
             Title.provider_status == "active",
             Title.adult.is_(False),
             needs_details,
@@ -356,6 +372,24 @@ def titles_to_hydrate(
         (title_id, ProviderRef(provider, cast(MediaType, media_type), provider_id))
         for title_id, provider, media_type, provider_id in rows
     ]
+
+
+def stale_titles_outside_pool(session: Session, synced_before: datetime) -> list[int]:
+    """Titles outside the pool whose data was last fetched before `synced_before`."""
+    last_synced = func.greatest(Title.summary_synced_at, Title.details_synced_at)
+    return list(
+        session.scalars(
+            select(Title.id)
+            .where(~has_pool_membership(), last_synced < synced_before)
+            .order_by(Title.id)
+        )
+    )
+
+
+def delete_title(session: Session, title_id: int) -> None:
+    """Delete a title and its genres, credits and lists (CASCADE). The database
+    refuses (IntegrityError) while user data references it (RESTRICT)."""
+    session.execute(delete(Title).where(Title.id == title_id))
 
 
 def title_ids_for_refs(session: Session, refs: Iterable[ProviderRef]) -> dict[ProviderRef, int]:

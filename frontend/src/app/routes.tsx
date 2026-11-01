@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router";
 
+import { AboutPage } from "../features/about/AboutPage";
 import { AccountPage } from "../features/auth/AccountPage";
 import { GoodbyePage } from "../features/auth/GoodbyePage";
 import { RegisterPage } from "../features/auth/RegisterPage";
@@ -35,6 +36,7 @@ export const routes: RouteObject[] = [
       { path: "sign-in", element: <SignInPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "goodbye", element: <GoodbyePage /> },
+      { path: "about", element: <AboutPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

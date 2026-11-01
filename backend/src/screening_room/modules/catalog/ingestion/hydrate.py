@@ -47,6 +47,7 @@ def hydrate(
     limit: int | None,
     max_workers: int,
     counts: HydrateCounts | None = None,
+    pool_only: bool = True,
 ) -> HydrateCounts:
     # The caller may pass its own counts, so they survive an interrupted run.
     counts = counts if counts is not None else HydrateCounts()
@@ -57,6 +58,7 @@ def hydrate(
             stale_before=stale_before,
             include_summary_only=include_summary_only,
             limit=limit,
+            pool_only=pool_only,
         )
     counts.selected = len(todo)
     logger.info("hydrate: %d titles to fetch", len(todo))

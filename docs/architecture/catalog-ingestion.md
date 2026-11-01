@@ -37,7 +37,8 @@ python -m screening_room.jobs report
 | Command | What it does |
 |---|---|
 | `ingest` | Runs **discover** for every source in the seed plan, then **hydrate** for pool titles that are summary-only or stale |
-| `refresh` | Runs **hydrate** only, for pool titles whose `details_synced_at` is older than the TTL |
+| `refresh` | Runs **hydrate** only, for every stored title whose data is older than the TTL: pool titles and, since M5e, titles from search or picked as favorites (TMDB allows caching for at most 6 months) |
+| `prune` | *(M5e)* No provider calls. Deletes titles outside the pool whose data is older than 30 days, unless user data references them (the RESTRICT foreign keys refuse those deletes). Run before `refresh` |
 | `report` | Prints pool composition, staleness, errors and recommendation-list coverage (§12). Makes no API calls |
 | `--dry-run` | Prints the planned requests and quotas. No API calls, no writes |
 | `--max-requests` | A hard budget on TMDB calls for the run, for safe experimentation |
@@ -152,7 +153,7 @@ The same title appearing in five sources is still one `titles` row, with five me
 | `sync_error_count`, `last_sync_error`, `last_sync_error_at` | Consecutive hydration failures. Reset on success |
 | `provider_status` | `missing` after a provider 404. The row is kept and excluded from the pool |
 
-A single TTL (initial value: 14 days) applies to all titles in the MVP. `refresh` re-hydrates stale pool titles.
+A single TTL (initial value: 14 days) applies to all titles in the MVP. `refresh` re-hydrates every stale stored title, and `prune` removes old unused ones outside the pool. In production both run on a schedule (at least weekly), so no TMDB data is kept beyond TMDB's 6-month limit.
 
 **Deferred:**
 - per-type TTLs (e.g. shorter for ongoing TV)

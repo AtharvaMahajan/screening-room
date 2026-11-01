@@ -159,10 +159,13 @@ Recommendations draw on a local pool of movies and TV shows, filled from TMDB by
 uv run python -m screening_room.jobs ingest --dry-run       # the plan; no requests, no writes
 uv run python -m screening_room.jobs ingest                 # build or update the pool (~2 min, ~1,500 requests)
 uv run python -m screening_room.jobs report                 # what's in the pool (no requests)
-uv run python -m screening_room.jobs refresh                # re-fetch titles older than CATALOG_TTL_DAYS
+uv run python -m screening_room.jobs prune                  # delete old titles outside the pool nobody uses (no requests)
+uv run python -m screening_room.jobs refresh                # re-fetch every title older than CATALOG_TTL_DAYS
 ```
 
 Each title has a page at `http://localhost:5173/titles/<id>`, linked from Discover, Search and your Library. Pool titles are served from the local catalog. Stale ones are refreshed from TMDB, and if TMDB is down the page still works, with a note that some details may be out of date.
+
+TMDB's terms allow caching its data for at most 6 months, so production runs `prune` then `refresh` on a schedule, at least weekly. Every page shows TMDB's required attribution; see [docs/evidence/m5e-tmdb-terms.md](docs/evidence/m5e-tmdb-terms.md).
 
 Every run is safe to repeat and to interrupt: re-running continues where it stopped. `--max-requests N` caps the TMDB requests a run may make. Each run is recorded in the `ingestion_runs` table, and the first real run's report is in [docs/evidence/](docs/evidence/m2-first-ingestion-report.txt).
 

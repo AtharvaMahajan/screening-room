@@ -1,6 +1,7 @@
 import { Link, Outlet, useNavigate } from "react-router";
 
 import { Button } from "../components/Button";
+import { TmdbAttribution } from "../features/about/TmdbAttribution";
 import { useLogout, useSession } from "../features/auth/api";
 import { HealthStatus } from "../features/health/HealthStatus";
 
@@ -32,8 +33,9 @@ export function Layout() {
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 outline-none">
         <Outlet />
       </main>
-      <footer className="mx-auto w-full max-w-3xl px-4 py-4">
+      <footer className="mx-auto w-full max-w-3xl space-y-2 px-4 py-4">
         <HealthStatus />
+        <TmdbAttribution />
       </footer>
     </div>
   );

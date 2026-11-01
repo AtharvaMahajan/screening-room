@@ -111,7 +111,8 @@ def run_refresh(
     *,
     max_workers: int,
 ) -> RunResult:
-    """Re-hydrate pool titles whose details are older than the TTL."""
+    """Re-hydrate every stored title whose data is older than the TTL, in the pool
+    or not: TMDB data may be cached for at most 6 months (Terms of Use §1.C)."""
     hydrated = HydrateCounts()
 
     def work(counted: CountingProvider, run_id: int) -> None:
@@ -126,6 +127,7 @@ def run_refresh(
             limit=options.limit,
             max_workers=max_workers,
             counts=hydrated,
+            pool_only=False,
         )
 
     return _run(

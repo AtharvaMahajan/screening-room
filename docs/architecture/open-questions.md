@@ -13,7 +13,7 @@ This file tracks the PRD's open questions (§15) and the issues found during the
 | Q3 | Distinguish liked / disliked / unrated watched? | **Decided** | Optional 1–5★ ratings. Watched-unrated is a weak positive. `not_for_me` is a separate action | [ADR-0009](../adr/0009-ratings-and-not-for-me.md) |
 | Q4 | Which session controls are useful without feeling like a form? | **Validate** | v1: media type, genre direction (≤3), max runtime (movies). All optional. Mood presets deferred (E3). Check in usability tests | [engine §3](recommendation-engine.md#3-inputs) |
 | Q5 | When is a TV show "watched"? | **Decided** | Show-level, explicitly marked by the user (the PRD's MVP assumption) | PRD |
-| Q6 | What metadata and image use does TMDB permit? | **Open** | Must be reviewed before public deployment (**M5 gate**). Attribution page planned. Commercial use needs a separate agreement | [roadmap M5](../roadmap.md#m5-hardening-and-first-deployment) |
+| Q6 | What metadata and image use does TMDB permit? | **Decided** (M5e) | Non-commercial use under TMDB's free license; logo and verbatim notice on every page; data cached at most 6 months (`prune` + `refresh`). Review: [m5e-tmdb-terms.md](../evidence/m5e-tmdb-terms.md) | [roadmap M5](../roadmap.md#m5-hardening-and-first-deployment) |
 | Q7 | Is streaming availability essential for the first public release? | **Open** | Recommendation: make it the **first question in user testing**. It directly affects the "less browsing" promise | [future-considerations](future-considerations.md#catalog) |
 | Q8 | How do dismissed titles re-enter recommendations? | **Decided** | `not_for_me`: excluded until the user undoes it. Skip: ephemeral, only for the current discovery flow. Persisted `not_now` is E6 | [ADR-0009](../adr/0009-ratings-and-not-for-me.md) |
 
@@ -51,7 +51,7 @@ This file tracks the PRD's open questions (§15) and the issues found during the
 
 | # | Question | Needed by | Owner |
 |---|---|---|---|
-| O1 | TMDB terms for the intended use (Q6) | M5 (before public deployment) | Project owner |
+| O1 | TMDB terms for the intended use (Q6) | **Decided** 2026-10-31: free, non-commercial portfolio project | Project owner |
 | O2 | Is streaming availability needed for the first public release? (Q7) | First user tests (after M3/M4) | Project owner |
 | O4 | Hosting target for deployment | M5 | Project owner |
 | O5 | Do the v1 session controls help, or feel like a form? (Q4) | Usability tests after M3 | Project owner |
